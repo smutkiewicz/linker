@@ -41,7 +41,8 @@ dependencies {
 
     /**Libraries**/
     implementation(
-        "io.mattcarroll.hover:hover:$hover"
+        "io.mattcarroll.hover:hover:$hover",
+        "org.greenrobot:eventbus:$bus"
     )
 
     /**Testing**/
