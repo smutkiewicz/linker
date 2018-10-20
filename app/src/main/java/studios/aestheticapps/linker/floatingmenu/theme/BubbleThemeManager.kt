@@ -5,22 +5,9 @@ import org.greenrobot.eventbus.EventBus
 /**
  * Global entry point for Hover menu theming.
  */
-class BubbleThemeManager
+class BubbleThemeManager private constructor(bubbleTheme: BubbleTheme)
 {
-    private val bus: EventBus
-
-    var theme: BubbleTheme? = null
-        set(theme)
-        {
-            field = theme
-            bus.postSticky(theme)
-        }
-
-    private constructor(eventBus: EventBus, bubbleTheme: BubbleTheme)
-    {
-        bus = eventBus
-        theme = bubbleTheme
-    }
+    var theme: BubbleTheme = bubbleTheme
 
     companion object
     {
@@ -37,9 +24,8 @@ class BubbleThemeManager
         {
             if (instance == null)
             {
-                instance = BubbleThemeManager(eventBus, theme)
+                instance = BubbleThemeManager(theme)
             }
         }
     }
-
 }

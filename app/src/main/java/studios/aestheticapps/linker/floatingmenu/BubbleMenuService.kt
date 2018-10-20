@@ -8,24 +8,11 @@ import io.mattcarroll.hover.HoverView
 import io.mattcarroll.hover.window.HoverMenuService
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
-import studios.aestheticapps.linker.floatingmenu.util.Bus
 import java.io.IOException
 
 class BubbleMenuService : HoverMenuService()
 {
     private lateinit var bubbleMenu: BubbleMenu
-
-    override fun onCreate()
-    {
-        super.onCreate()
-        Bus.instance.register(this)
-    }
-
-    override fun onDestroy()
-    {
-        Bus.instance.unregister(this)
-        super.onDestroy()
-    }
 
     override fun getContextForHoverMenu()= ContextThemeWrapper(this, R.style.AppTheme)
 
@@ -46,7 +33,8 @@ class BubbleMenuService : HoverMenuService()
     {
         try
         {
-            bubbleMenu = DemoHoverMenuFactory().createDemoMenuFromCode(contextForHoverMenu, Bus.instance)
+            bubbleMenu = BubbleMenuFactory().createMenu(contextForHoverMenu)
+
             return bubbleMenu
         }
         catch (e: IOException)
@@ -57,7 +45,7 @@ class BubbleMenuService : HoverMenuService()
 
     companion object
     {
-        private val TAG = "DemoHoverMenuService"
+        private const val TAG = "DemoHoverMenuService"
 
         fun showFloatingMenu(context: Context)
             = context.startService(Intent(context, BubbleMenuService::class.java))

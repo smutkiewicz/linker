@@ -13,8 +13,8 @@ import android.view.View
  * Visual representation of a top-level tab in a Hover menu.
  */
 class BubbleTabView(private val myContext: Context,
-                    private val mCircleDrawable: Drawable,
-                    private var mIconDrawable: Drawable) : View(myContext)
+                    private val circleDrawable: Drawable,
+                    private var iconDrawable: Drawable) : View(myContext)
 {
     private var bckgroundColor: Int = 0
     private var foregroundColor: Int = 0
@@ -42,7 +42,7 @@ class BubbleTabView(private val myContext: Context,
         super.onSizeChanged(w, h, oldw, oldh)
 
         // Make circle as large as View minus padding.
-        mCircleDrawable.setBounds(
+        circleDrawable.setBounds(
             paddingLeft,
             paddingTop,
             w - paddingRight,
@@ -56,26 +56,26 @@ class BubbleTabView(private val myContext: Context,
 
     override fun onDraw(canvas: Canvas)
     {
-        mCircleDrawable.draw(canvas)
-        mIconDrawable.draw(canvas)
+        circleDrawable.draw(canvas)
+        iconDrawable.draw(canvas)
     }
 
     fun setTabBackgroundColor(@ColorInt backgroundColor: Int)
     {
         this.bckgroundColor = backgroundColor
-        mCircleDrawable.setColorFilter(this.bckgroundColor, PorterDuff.Mode.SRC_ATOP)
+        circleDrawable.setColorFilter(this.bckgroundColor, PorterDuff.Mode.SRC_ATOP)
     }
 
     fun setTabForegroundColor(@ColorInt foregroundColor: Int)
     {
         this.foregroundColor = foregroundColor
-        mIconDrawable.setColorFilter(this.foregroundColor, PorterDuff.Mode.SRC_ATOP)
+        iconDrawable.setColorFilter(this.foregroundColor, PorterDuff.Mode.SRC_ATOP)
     }
 
     fun setIcon(icon: Drawable)
     {
-        mIconDrawable = icon
-        mIconDrawable.setColorFilter(foregroundColor, PorterDuff.Mode.SRC_ATOP)
+        iconDrawable = icon
+        iconDrawable.setColorFilter(foregroundColor, PorterDuff.Mode.SRC_ATOP)
 
         updateIconBounds()
         invalidate()
@@ -83,7 +83,7 @@ class BubbleTabView(private val myContext: Context,
 
     private fun updateIconBounds()
     {
-        val bounds = Rect(mCircleDrawable.bounds)
+        val bounds = Rect(circleDrawable.bounds)
         bounds.set(
             bounds.left + iconInsetLeft,
             bounds.top + iconInsetTop,
@@ -91,6 +91,6 @@ class BubbleTabView(private val myContext: Context,
             bounds.bottom - iconInsetBottom
         )
 
-        mIconDrawable.bounds = bounds
+        iconDrawable.bounds = bounds
     }
 }
