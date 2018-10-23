@@ -21,7 +21,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <service android:name=".floatingmenu.BubbleMenuService"/>
+
+        <service android:enabled="true" android:name=".floatingmenu.BubbleMenuService">
+            <intent-filter>
+                <action android:name="android.intent.action.CONFIGURATION_CHANGED"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

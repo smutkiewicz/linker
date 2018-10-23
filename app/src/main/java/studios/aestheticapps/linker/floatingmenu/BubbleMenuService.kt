@@ -1,7 +1,9 @@
 package studios.aestheticapps.linker.floatingmenu
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.view.ContextThemeWrapper
 import io.mattcarroll.hover.HoverMenu
 import io.mattcarroll.hover.HoverView
@@ -12,6 +14,18 @@ import java.io.IOException
 class BubbleMenuService : HoverMenuService()
 {
     private lateinit var bubbleMenu: BubbleMenu
+
+    override fun onCreate()
+    {
+        super.onCreate()
+        initReceiver()
+    }
+
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        destroyReceiver()
+    }
 
     override fun getContextForHoverMenu()= ContextThemeWrapper(this, R.style.AppTheme)
 
@@ -36,9 +50,39 @@ class BubbleMenuService : HoverMenuService()
         }
     }
 
+    private fun initReceiver()
+    {
+        val filter = IntentFilter()
+        filter.addAction(BCAST_CONFIGCHANGED)
+        this.registerReceiver(broadcastReceiver, filter)
+    }
+
+    private fun destroyReceiver()
+    {
+        unregisterReceiver(broadcastReceiver)
+    }
+
+    private fun restartService()
+    {
+        stopService(Intent(this, BubbleMenuService::class.java))
+        startService(Intent(this, BubbleMenuService::class.java))
+    }
+
+    private var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver()
+    {
+        override fun onReceive(context: Context, myIntent: Intent)
+        {
+            if (myIntent.action == BCAST_CONFIGCHANGED)
+            {
+                restartService()
+            }
+        }
+    }
+
     companion object
     {
         private const val TAG = "DemoHoverMenuService"
+        private const val BCAST_CONFIGCHANGED = "android.intent.action.CONFIGURATION_CHANGED"
 
         fun showFloatingMenu(context: Context)
             = context.startService(Intent(context, BubbleMenuService::class.java))
