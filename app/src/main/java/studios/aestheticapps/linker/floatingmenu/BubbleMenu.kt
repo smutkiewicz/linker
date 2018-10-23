@@ -21,14 +21,11 @@ class BubbleMenu(private val context: Context,
 
     init
     {
-        for (tabId in data.keys)
-        {
-            sections.add(
-                HoverMenu.Section(
-                    HoverMenu.SectionId(tabId),
-                    createTabView(tabId),
-                    data[tabId]!!
-                )
+        data.keys.mapTo(sections) {
+            HoverMenu.Section(
+                HoverMenu.SectionId(it),
+                createTabView(it),
+                data[it]!!
             )
         }
     }
@@ -55,13 +52,13 @@ class BubbleMenu(private val context: Context,
         return when(sectionId)
         {
             ADD_TAB -> createTabView(
-                R.drawable.ic_delete,
+                R.drawable.ic_add,
                 theme.accentColor,
                 theme.baseColor
             )
 
             BROWSE_ITEMS_TAB -> createTabView(
-                R.drawable.ic_arrow_back,
+                R.drawable.linker_logo,
                 theme.accentColor,
                 theme.baseColor
             )

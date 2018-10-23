@@ -1,39 +1,39 @@
 package studios.aestheticapps.linker.floatingmenu.content
 
 import android.content.Context
+import android.content.Intent
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import io.mattcarroll.hover.Content
+import kotlinx.android.synthetic.main.activity_main.view.*
+import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
-import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
+import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.floatingmenu.ui.BubbleMotion
 
-//TODO add real content
 class BrowseItemsBubbleContent(context: Context) : FrameLayout(context), Content
 {
-    private var logo: View
     private var bubbleMotion: BubbleMotion
 
     init
     {
         LayoutInflater.from(context).inflate(R.layout.activity_main, this, true)
-
-        logo = findViewById(R.id.action_bar_title)
         bubbleMotion = BubbleMotion()
+
+        fab.setOnClickListener { _ ->
+            val intent = Intent(context, MainActivity::class.java)
+            startActivity(context, intent, null)
+
+            BubbleMenuService.destroyFloatingMenu(context)
+        }
     }
 
     override fun getView() = this
 
     override fun isFullscreen() = true
 
-    override fun onShown() = bubbleMotion.start(logo)
+    override fun onShown() {}
 
-    override fun onHidden() = bubbleMotion.stop()
-
-    fun onEventMainThread(newTheme: BubbleTheme)
-    {
-        /*mHoverTitleTextView!!.setTextColor(newTheme.getAccentColor())
-        mGoalsTitleTextView!!.setTextColor(newTheme.getAccentColor())*/
-    }
+    override fun onHidden() {}
 }

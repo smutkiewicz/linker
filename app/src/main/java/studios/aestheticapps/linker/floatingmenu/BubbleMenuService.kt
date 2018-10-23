@@ -7,7 +7,6 @@ import io.mattcarroll.hover.HoverMenu
 import io.mattcarroll.hover.HoverView
 import io.mattcarroll.hover.window.HoverMenuService
 import studios.aestheticapps.linker.R
-import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
 import java.io.IOException
 
 class BubbleMenuService : HoverMenuService()
@@ -24,17 +23,11 @@ class BubbleMenuService : HoverMenuService()
         }
     }
 
-    fun onEventMainThread(newTheme: BubbleTheme)
-    {
-        bubbleMenu.theme = newTheme
-    }
-
     private fun createHoverMenu(): HoverMenu?
     {
         try
         {
             bubbleMenu = BubbleMenuFactory().createMenu(contextForHoverMenu)
-
             return bubbleMenu
         }
         catch (e: IOException)
@@ -49,5 +42,8 @@ class BubbleMenuService : HoverMenuService()
 
         fun showFloatingMenu(context: Context)
             = context.startService(Intent(context, BubbleMenuService::class.java))
+
+        fun destroyFloatingMenu(context: Context)
+            = context.stopService(Intent(context, BubbleMenuService::class.java))
     }
 }

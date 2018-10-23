@@ -1,11 +1,16 @@
 package studios.aestheticapps.linker
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
+import studios.aestheticapps.linker.extensions.checkForDrawOverlaysPermissions
+import studios.aestheticapps.linker.extensions.createDrawOverlayPermissionsIntent
+import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
+import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
+import studios.aestheticapps.linker.floatingmenu.theme.BubbleThemeManager
 
 class MainActivity : AppCompatActivity()
 {
@@ -15,28 +20,63 @@ class MainActivity : AppCompatActivity()
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+        createFab()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
     {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean
     {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId)
         {
-            R.id.action_settings -> true
+            R.id.action_bubbles ->
+            {
+                openBubbles()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun createFab()
+    {
+        fab.setOnClickListener { _ ->
+            //TODO
+        }
+    }
+
+    private fun openBubbles()
+    {
+        if(checkForDrawOverlaysPermissions())
+        {
+            initThemeManager()
+            BubbleMenuService.showFloatingMenu(this@MainActivity)
+            finish()
+        }
+        else
+        {
+            createDrawOverlayPermissionsIntent()
+        }
+    }
+
+    private fun initThemeManager()
+    {
+        val defaultTheme = BubbleTheme(
+            ContextCompat.getColor(this, R.color.colorAccent),
+            ContextCompat.getColor(this, R.color.colorPrimary)
+        )
+
+        BubbleThemeManager.init(defaultTheme)
+    }
+
+    companion object
+    {
+        private const val TAG = "MainActivity"
+        const val MY_PERMISSIONS_REQUEST_DRAW_OVERLAY = 0
     }
 }

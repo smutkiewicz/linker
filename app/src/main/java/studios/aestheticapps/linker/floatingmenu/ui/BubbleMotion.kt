@@ -57,16 +57,20 @@ class BubbleMotion
     {
         // Calculate a new position and move the View.
         val mPositionOffset = brownianMotionGenerator.applyMotion(dtInMillis)
-        view!!.translationX = mPositionOffset.x
-        view!!.translationY = mPositionOffset.y
+        view!!.apply {
+            translationX = mPositionOffset.x
+            translationY = mPositionOffset.y
+        }
     }
 
     private fun updateGrowth()
     {
         // Calculate and apply scaling.
         val scale = growAndShrinkGenerator.applyGrowth(dtInMillis)
-        view!!.scaleX = scale
-        view!!.scaleY = scale
+        view!!.apply {
+            scaleX = scale
+            scaleY = scale
+        }
 
         // Set elevation based on scale (the bigger, the higher).
         val baseElevation = 50

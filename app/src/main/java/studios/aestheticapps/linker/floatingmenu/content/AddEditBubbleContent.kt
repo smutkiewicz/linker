@@ -2,24 +2,18 @@ package studios.aestheticapps.linker.floatingmenu.content
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import io.mattcarroll.hover.Content
 import studios.aestheticapps.linker.R
-import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
 import studios.aestheticapps.linker.floatingmenu.ui.BubbleMotion
 
-//TODO add real content
 class AddEditBubbleContent(context: Context) : FrameLayout(context), Content
 {
-    private var logo: View
     private var bubbleMotion: BubbleMotion
 
     init
     {
-        LayoutInflater.from(context).inflate(R.layout.activity_main, this, true)
-
-        logo = findViewById(R.id.action_bar_title)
+        LayoutInflater.from(context).inflate(R.layout.content_main, this, true)
         bubbleMotion = BubbleMotion()
     }
 
@@ -27,13 +21,7 @@ class AddEditBubbleContent(context: Context) : FrameLayout(context), Content
 
     override fun isFullscreen() = true
 
-    override fun onShown() = bubbleMotion.start(logo)
+    override fun onShown() {}
 
-    override fun onHidden() = bubbleMotion.stop()
-
-    fun onEventMainThread(newTheme: BubbleTheme)
-    {
-        /*mHoverTitleTextView!!.setTextColor(newTheme.getAccentColor())
-        mGoalsTitleTextView!!.setTextColor(newTheme.getAccentColor())*/
-    }
+    override fun onHidden() {}
 }

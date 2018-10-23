@@ -1,26 +1,27 @@
 package studios.aestheticapps.linker.floatingmenu.theme
 
-import org.greenrobot.eventbus.EventBus
-
 /**
  * Global entry point for Hover menu theming.
  */
-class BubbleThemeManager private constructor(bubbleTheme: BubbleTheme)
+class BubbleThemeManager private constructor(var bubbleTheme: BubbleTheme)
 {
-    var theme: BubbleTheme = bubbleTheme
-
     companion object
     {
         var instance: BubbleThemeManager? = null
-            @Synchronized get()
-            {
-                if (field == null) throw RuntimeException("Cannot obtain HoverThemeManager before calling init().")
-
-                return field
-            }
 
         @Synchronized
-        fun init(eventBus: EventBus, theme: BubbleTheme)
+        fun obtainInstance(): BubbleThemeManager?
+        {
+            if (null == instance)
+            {
+                throw RuntimeException("Cannot obtain HoverThemeManager before calling init().")
+            }
+
+            return instance
+        }
+
+        @Synchronized
+        fun init(theme: BubbleTheme)
         {
             if (instance == null)
             {
