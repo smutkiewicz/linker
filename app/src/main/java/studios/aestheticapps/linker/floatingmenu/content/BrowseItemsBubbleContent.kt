@@ -10,22 +10,15 @@ import kotlinx.android.synthetic.main.activity_main.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
-import studios.aestheticapps.linker.floatingmenu.ui.BubbleMotion
 
 class BrowseItemsBubbleContent(context: Context) : FrameLayout(context), Content
 {
-    private var bubbleMotion: BubbleMotion
-
     init
     {
         LayoutInflater.from(context).inflate(R.layout.activity_main, this, true)
-        bubbleMotion = BubbleMotion()
 
         fab.setOnClickListener { _ ->
-            val intent = Intent(context, MainActivity::class.java)
-            startActivity(context, intent, null)
-
-            BubbleMenuService.destroyFloatingMenu(context)
+            hideBubbles()
         }
     }
 
@@ -36,4 +29,13 @@ class BrowseItemsBubbleContent(context: Context) : FrameLayout(context), Content
     override fun onShown() {}
 
     override fun onHidden() {}
+
+    private fun hideBubbles()
+    {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(context, intent, null)
+
+        BubbleMenuService.destroyFloatingMenu(context)
+    }
 }

@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity()
     private fun initThemeManager()
     {
         val defaultTheme = BubbleTheme(
-            ContextCompat.getColor(this, R.color.colorAccent),
+            ContextCompat.getColor(this, R.color.colorPrimary),
             ContextCompat.getColor(this, R.color.colorPrimary)
         )
 

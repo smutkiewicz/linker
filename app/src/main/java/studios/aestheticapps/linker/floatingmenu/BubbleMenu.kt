@@ -72,7 +72,7 @@ class BubbleMenu(private val context: Context,
         val resources = context.resources
         val elevation = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
-            8f,
+            10f,
             resources.displayMetrics
         )
 
@@ -82,10 +82,7 @@ class BubbleMenu(private val context: Context,
             resources.getDrawable(tabBitmapRes)
         )
 
-        view.apply {
-            setTabBackgroundColor(backgroundColor)
-            setTabForegroundColor(iconColor)
-        }
+        view.setTabBackgroundColor(backgroundColor)
         
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
