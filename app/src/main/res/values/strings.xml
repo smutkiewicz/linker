@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Linker</string>
+
+    <!-- AppBar actions -->
     <string name="action_settings">Settings</string>
+    <string name="action_bubbles">Linker Bubbles</string>
+    <string name="service_is_active">Linker service is active.</string>
+    <string name="search_for_links_in_your_library">Search for links in your library...</string>
 </resources>
