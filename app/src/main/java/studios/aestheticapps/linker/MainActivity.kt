@@ -1,5 +1,7 @@
 package studios.aestheticapps.linker
 
+import android.app.ActivityManager
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -19,8 +21,12 @@ class MainActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+    }
 
-        createFab()
+    override fun onResume()
+    {
+        super.onResume()
+        if(isBubbleServiceRunning()) closeBubbles()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
@@ -43,13 +49,6 @@ class MainActivity : AppCompatActivity()
         }
     }
 
-    private fun createFab()
-    {
-        fab.setOnClickListener { _ ->
-            //TODO
-        }
-    }
-
     private fun openBubbles()
     {
         if(checkForDrawOverlaysPermissions())
@@ -64,6 +63,8 @@ class MainActivity : AppCompatActivity()
         }
     }
 
+    private fun closeBubbles() = BubbleMenuService.destroyFloatingMenu(this@MainActivity)
+
     private fun initThemeManager()
     {
         val defaultTheme = BubbleTheme(
@@ -72,6 +73,17 @@ class MainActivity : AppCompatActivity()
         )
 
         BubbleThemeManager.init(defaultTheme)
+    }
+
+    private fun isBubbleServiceRunning(): Boolean
+    {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE))
+        {
+            if (BubbleMenuService::class.java.name == service.service.className) return true
+        }
+
+        return false
     }
 
     companion object

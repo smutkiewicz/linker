@@ -6,19 +6,20 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import io.mattcarroll.hover.Content
-import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.add_edit_content.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 
-class AddEditBubbleContent(context: Context) : FrameLayout(context), Content
+class AddEditBubbleContent(context: Context,
+                           private val callback: BubbleContentCallback) : FrameLayout(context), Content
 {
     init
     {
-        LayoutInflater.from(context).inflate(R.layout.activity_main, this, true)
-        fab.setOnClickListener { _ ->
-            hideBubbles()
-        }
+        LayoutInflater.from(context).inflate(R.layout.add_edit_content, this, true)
+        setPadding(CONTENT_PADDING, CONTENT_PADDING, CONTENT_PADDING, CONTENT_PADDING)
+
+        createFab()
     }
 
     override fun getView() = this
@@ -29,6 +30,14 @@ class AddEditBubbleContent(context: Context) : FrameLayout(context), Content
 
     override fun onHidden() {}
 
+    private fun createFab()
+    {
+        saveLinkFab.setOnClickListener {
+            callback.collapseBubble()
+            true
+        }
+    }
+
     private fun hideBubbles()
     {
         val intent = Intent(context, MainActivity::class.java)
@@ -36,5 +45,10 @@ class AddEditBubbleContent(context: Context) : FrameLayout(context), Content
         ContextCompat.startActivity(context, intent, null)
 
         BubbleMenuService.destroyFloatingMenu(context)
+    }
+
+    private companion object
+    {
+        const val CONTENT_PADDING = 32
     }
 }

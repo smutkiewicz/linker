@@ -6,4 +6,11 @@
     <string name="action_bubbles">Linker Bubbles</string>
     <string name="service_is_active">Linker service is active.</string>
     <string name="search_for_links_in_your_library">Search for links in your library...</string>
+    <string name="nav_add">New Link</string>
+    <string name="nav_library">Library</string>
+    <string name="add_edit_my_description">My description....</string>
+    <string name="add_edit_link_url">Link URL</string>
+    <string name="add_edit_link_title">Add/Edit Link</string>
+    <string name="add_edit_title_hint">Title</string>
+    <string name="nav_sth_else">Sth else</string>
 </resources>

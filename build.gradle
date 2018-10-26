@@ -14,6 +14,7 @@ buildscript {
         /**Libraries**/
         hover = "0.9.8"
         bus = "3.1.1"
+        materialSpinner = "1.1.0"
 
         /**Testing**/
         junitAndroid = "4.12"
