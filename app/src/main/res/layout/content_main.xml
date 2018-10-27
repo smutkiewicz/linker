@@ -13,6 +13,6 @@
         tools:showIn="@layout/activity_main"
         tools:context=".MainActivity">
 
-    <include layout="@layout/add_edit_content"/>
+    <include layout="@layout/browse_items_content"/>
 
 </android.support.design.widget.CoordinatorLayout>

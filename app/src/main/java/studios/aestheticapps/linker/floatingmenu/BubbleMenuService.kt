@@ -40,15 +40,12 @@ class BubbleMenuService : HoverMenuService(), BubbleContentCallback
     override fun onHoverMenuLaunched(intent: Intent, hoverView: HoverView)
     {
         hoverView.apply {
-            setMenu(createHoverMenu())
+            setMenu(createHoverMenu()!!)
             collapse()
         }
     }
 
-    override fun collapseBubble()
-    {
-        hoverView.collapse()
-    }
+    override fun collapseBubble() = hoverView.collapse()
 
     private fun createHoverMenu(): HoverMenu?
     {
@@ -106,16 +103,13 @@ class BubbleMenuService : HoverMenuService(), BubbleContentCallback
     {
         override fun onReceive(context: Context, myIntent: Intent)
         {
-            if (myIntent.action == BCAST_CONFIG_CHANGED)
-            {
-                restartService()
-            }
+            if (myIntent.action == BCAST_CONFIG_CHANGED) restartService()
         }
     }
 
     companion object
     {
-        private const val TAG = "DemoHoverMenuService"
+        private const val TAG = "BubbleMenuService"
         private const val SERVICE_CHANNEL_ID = "linker_channel_id"
         private const val BCAST_CONFIG_CHANGED = "android.intent.action.CONFIGURATION_CHANGED"
 

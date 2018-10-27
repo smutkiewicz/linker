@@ -14,7 +14,8 @@ import io.mattcarroll.hover.Content
 import studios.aestheticapps.linker.Link
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
-import studios.aestheticapps.linker.RecentLinksAdapter
+import studios.aestheticapps.linker.adapters.LinksAdapter
+import studios.aestheticapps.linker.adapters.RecentLinksAdapter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import java.util.*
 
@@ -22,13 +23,14 @@ class BrowseItemsBubbleContent(context: Context,
                                private val callback: BubbleContentCallback) : FrameLayout(context), Content
 {
     private lateinit var recentLinksAdapter: RecentLinksAdapter
+    private lateinit var linksAdapter: LinksAdapter
 
     init
     {
         LayoutInflater.from(context).inflate(R.layout.browse_items_content, this, true)
-        setPadding(CONTENT_PADDING, CONTENT_PADDING, CONTENT_PADDING, CONTENT_PADDING)
 
         createRecentRecyclerView()
+        createLinksRecyclerView()
     }
 
     override fun getView() = this
@@ -60,6 +62,21 @@ class BrowseItemsBubbleContent(context: Context,
         }
     }
 
+    private fun createLinksRecyclerView()
+    {
+        val recyclerView = findViewById<RecyclerView>(R.id.linksRecyclerView)
+        linksAdapter = LinksAdapter(createMockedList())
+
+        recyclerView.apply {
+            layoutManager = object : LinearLayoutManager(context)
+            {
+                override fun canScrollVertically() = false
+            }
+
+            adapter = linksAdapter
+        }
+    }
+
     private fun hideKeyboardFrom(context: Context, view: View)
     {
         val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -81,10 +98,5 @@ class BrowseItemsBubbleContent(context: Context,
         }
 
         return list
-    }
-
-    private companion object
-    {
-        const val CONTENT_PADDING = 32
     }
 }
