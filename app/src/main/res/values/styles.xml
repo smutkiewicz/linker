@@ -23,12 +23,4 @@
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
-    <!--<style name="CardViewStyle" parent="CardView">
-        <item name="app:cardBackgroundColor">#d9edf7</item>
-        <item name="tools:cardCornerRadius=">5dp"</item>
-        <item name="tools:cardElevation=">5dp"</item>
-        <item name="app:contentPadding=">10dp"</item>
-        <item name="tools:cardUseCompatPadding=">true</item>
-    </style>-->
-
 </resources>
