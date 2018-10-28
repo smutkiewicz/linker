@@ -7,7 +7,7 @@ class BrowseItemsPresenter(val browseItemsView: BrowseItemsContract.View) : Brow
 {
     init
     {
-        browseItemsView.setPresenter(this)
+        browseItemsView.presenter = this
     }
 
     override fun start() {}

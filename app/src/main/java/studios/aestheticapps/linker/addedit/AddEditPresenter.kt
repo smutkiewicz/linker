@@ -4,7 +4,7 @@ class AddEditPresenter(val addEditView: AddEditTaskContract.View) : AddEditTaskC
 {
     init
     {
-        addEditView.setPresenter(this)
+        addEditView.presenter = this
     }
 
     override fun start() {}

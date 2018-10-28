@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.base
+package studios.aestheticapps.linker
 
 interface BasePresenter
 {

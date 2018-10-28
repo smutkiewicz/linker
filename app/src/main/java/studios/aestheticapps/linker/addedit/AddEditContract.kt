@@ -1,7 +1,7 @@
 package studios.aestheticapps.linker.addedit
 
-import studios.aestheticapps.linker.base.BasePresenter
-import studios.aestheticapps.linker.base.BaseView
+import studios.aestheticapps.linker.BasePresenter
+import studios.aestheticapps.linker.BaseView
 
 interface AddEditTaskContract
 {

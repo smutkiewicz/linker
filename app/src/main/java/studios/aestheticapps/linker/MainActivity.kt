@@ -20,9 +20,15 @@ import studios.aestheticapps.linker.extensions.createDrawOverlayPermissionsInten
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleThemeManager
+import studios.aestheticapps.linker.main.MainContract
+import studios.aestheticapps.linker.main.MainPresenter
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener
+class MainActivity : AppCompatActivity(),
+    MainContract.View,
+    BottomNavigationView.OnNavigationItemSelectedListener
 {
+    override var presenter: MainContract.Presenter = MainPresenter(this)
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -86,18 +92,19 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return false
     }
 
-    private fun setUpViewPager()
+    override fun setUpViewPager()
     {
         val adapter = ScreenSlidePagerAdapter(supportFragmentManager)
         viewPager.adapter = adapter
+        viewPager.currentItem = 1
     }
 
-    private fun setUpBottomNavigation()
+    override fun setUpBottomNavigation()
     {
         bottomNavigation.setOnNavigationItemSelectedListener(this)
     }
 
-    private fun openBubbles()
+    override fun openBubbles()
     {
         if(checkForDrawOverlaysPermissions())
         {
@@ -111,9 +118,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
-    private fun closeBubbles() = BubbleMenuService.destroyFloatingMenu(this@MainActivity)
+    override fun closeBubbles()
+    {
+        BubbleMenuService.destroyFloatingMenu(this@MainActivity)
+    }
 
-    private fun initThemeManager()
+    override fun initThemeManager()
     {
         val defaultTheme = BubbleTheme(
             ContextCompat.getColor(this, R.color.colorPrimary),
@@ -140,7 +150,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
      */
     private inner class ScreenSlidePagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm)
     {
-        override fun getCount(): Int = 3
+        override fun getCount(): Int = 2
 
         override fun getItem(position: Int): Fragment?
         {
@@ -148,12 +158,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             {
                 0 -> AddEditFragment()
                 1 -> BrowseItemsFragment()
-                2 -> AddEditFragment()
                 else -> null
             }
         }
     }
-
 
     companion object
     {

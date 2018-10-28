@@ -20,7 +20,8 @@ import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 
 class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
 {
-    private var presenter: BrowseItemsContract.Presenter = BrowseItemsPresenter(this)
+    override var presenter: BrowseItemsContract.Presenter = BrowseItemsPresenter(this)
+
     private lateinit var recentLinksAdapter: RecentLinksAdapter
     private lateinit var linksAdapter: LinksAdapter
 
@@ -30,13 +31,10 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
     override fun onStart()
     {
         super.onStart()
+        presenter.start()
+
         createRecentRecyclerView()
         createLinksRecyclerView()
-    }
-
-    override fun setPresenter(presenter: BrowseItemsContract.Presenter)
-    {
-        this.presenter = presenter
     }
 
     override fun hideBubbles()
@@ -50,7 +48,12 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
 
     private fun createRecentRecyclerView()
     {
-        val horizontalLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val horizontalLayoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+
         recentLinksAdapter = RecentLinksAdapter(presenter.createMockedList())
 
         recentRecyclerView.apply {
@@ -64,12 +67,11 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
         linksAdapter = LinksAdapter(presenter.createMockedList())
 
         linksRecyclerView.apply {
+            adapter = linksAdapter
             layoutManager = object : LinearLayoutManager(context)
             {
                 override fun canScrollVertically() = false
             }
-
-            adapter = linksAdapter
         }
     }
 

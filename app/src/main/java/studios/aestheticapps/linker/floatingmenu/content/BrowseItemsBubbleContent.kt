@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import io.mattcarroll.hover.Content
+import kotlinx.android.synthetic.main.browse_items_content.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinksAdapter
@@ -22,7 +22,8 @@ import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 class BrowseItemsBubbleContent(context: Context,
                                private val callback: BubbleContentCallback) : FrameLayout(context), Content, BrowseItemsContract.View
 {
-    private var presenter: BrowseItemsContract.Presenter = BrowseItemsPresenter(this)
+    override var presenter: BrowseItemsContract.Presenter = BrowseItemsPresenter(this)
+
     private lateinit var recentLinksAdapter: RecentLinksAdapter
     private lateinit var linksAdapter: LinksAdapter
 
@@ -42,11 +43,6 @@ class BrowseItemsBubbleContent(context: Context,
 
     override fun onHidden() {}
 
-    override fun setPresenter(presenter: BrowseItemsContract.Presenter)
-    {
-        this.presenter = presenter
-    }
-
     override fun hideBubbles()
     {
         val intent = Intent(context, MainActivity::class.java)
@@ -58,11 +54,15 @@ class BrowseItemsBubbleContent(context: Context,
 
     private fun createRecentRecyclerView()
     {
-        val recyclerView = findViewById<RecyclerView>(R.id.recentRecyclerView)
-        val horizontalLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val horizontalLayoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+
         recentLinksAdapter = RecentLinksAdapter(presenter.createMockedList())
 
-        recyclerView.apply {
+        recentRecyclerView.apply {
             layoutManager = horizontalLayoutManager
             adapter = recentLinksAdapter
         }
@@ -70,16 +70,14 @@ class BrowseItemsBubbleContent(context: Context,
 
     private fun createLinksRecyclerView()
     {
-        val recyclerView = findViewById<RecyclerView>(R.id.linksRecyclerView)
         linksAdapter = LinksAdapter(presenter.createMockedList())
 
-        recyclerView.apply {
+        linksRecyclerView.apply {
+            adapter = linksAdapter
             layoutManager = object : LinearLayoutManager(context)
             {
                 override fun canScrollVertically() = false
             }
-
-            adapter = linksAdapter
         }
     }
 

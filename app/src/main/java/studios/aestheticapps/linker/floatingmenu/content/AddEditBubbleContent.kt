@@ -16,7 +16,7 @@ import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 class AddEditBubbleContent(context: Context,
                            private val callback: BubbleContentCallback) : FrameLayout(context), Content, AddEditTaskContract.View
 {
-    private var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
+    override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
     init
     {
@@ -32,11 +32,6 @@ class AddEditBubbleContent(context: Context,
     override fun onShown() {}
 
     override fun onHidden() {}
-
-    override fun setPresenter(presenter: AddEditTaskContract.Presenter)
-    {
-        this.presenter = presenter
-    }
 
     override fun createFab()
     {

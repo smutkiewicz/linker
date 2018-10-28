@@ -14,14 +14,15 @@ import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 
 class AddEditFragment : Fragment(), AddEditTaskContract.View
 {
-    private var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
+    override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
         = inflater.inflate(R.layout.add_edit_content, container, false)
 
-    override fun setPresenter(presenter: AddEditTaskContract.Presenter)
+    override fun onStart()
     {
-        this.presenter = presenter
+        super.onStart()
+        presenter.start()
     }
 
     override fun createFab()
