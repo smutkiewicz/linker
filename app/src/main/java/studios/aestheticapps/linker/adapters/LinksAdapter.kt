@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import studios.aestheticapps.linker.Link
+import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.R
 import java.util.*
 

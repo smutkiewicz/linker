@@ -9,15 +9,18 @@ import io.mattcarroll.hover.Content
 import kotlinx.android.synthetic.main.add_edit_content.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
+import studios.aestheticapps.linker.addedit.AddEditPresenter
+import studios.aestheticapps.linker.addedit.AddEditTaskContract
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 
 class AddEditBubbleContent(context: Context,
-                           private val callback: BubbleContentCallback) : FrameLayout(context), Content
+                           private val callback: BubbleContentCallback) : FrameLayout(context), Content, AddEditTaskContract.View
 {
+    private var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
+
     init
     {
         LayoutInflater.from(context).inflate(R.layout.add_edit_content, this, true)
-        setPadding(CONTENT_PADDING, CONTENT_PADDING, CONTENT_PADDING, CONTENT_PADDING)
 
         createFab()
     }
@@ -30,7 +33,12 @@ class AddEditBubbleContent(context: Context,
 
     override fun onHidden() {}
 
-    private fun createFab()
+    override fun setPresenter(presenter: AddEditTaskContract.Presenter)
+    {
+        this.presenter = presenter
+    }
+
+    override fun createFab()
     {
         saveLinkFab.setOnClickListener {
             callback.collapseBubble()
@@ -38,17 +46,12 @@ class AddEditBubbleContent(context: Context,
         }
     }
 
-    private fun hideBubbles()
+    override fun hideBubbles()
     {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         ContextCompat.startActivity(context, intent, null)
 
         BubbleMenuService.destroyFloatingMenu(context)
-    }
-
-    private companion object
-    {
-        const val CONTENT_PADDING = 32
     }
 }

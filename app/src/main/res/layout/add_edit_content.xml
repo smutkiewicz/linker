@@ -8,7 +8,7 @@
 
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" android:padding="8dp">
 
         <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -83,7 +83,8 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textSize="18sp"/>
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

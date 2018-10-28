@@ -1,46 +1,38 @@
-package studios.aestheticapps.linker.floatingmenu.content
+package studios.aestheticapps.linker.browseitems
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.support.v4.content.ContextCompat.startActivity
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
-import io.mattcarroll.hover.Content
+import kotlinx.android.synthetic.main.browse_items_content.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinksAdapter
 import studios.aestheticapps.linker.adapters.RecentLinksAdapter
-import studios.aestheticapps.linker.browseitems.BrowseItemsContract
-import studios.aestheticapps.linker.browseitems.BrowseItemsPresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 
-class BrowseItemsBubbleContent(context: Context,
-                               private val callback: BubbleContentCallback) : FrameLayout(context), Content, BrowseItemsContract.View
+class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
 {
     private var presenter: BrowseItemsContract.Presenter = BrowseItemsPresenter(this)
     private lateinit var recentLinksAdapter: RecentLinksAdapter
     private lateinit var linksAdapter: LinksAdapter
 
-    init
-    {
-        LayoutInflater.from(context).inflate(R.layout.browse_items_content, this, true)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
+        = inflater.inflate(R.layout.browse_items_content, container, false)
 
+    override fun onStart()
+    {
+        super.onStart()
         createRecentRecyclerView()
         createLinksRecyclerView()
     }
-
-    override fun getView() = this
-
-    override fun isFullscreen() = true
-
-    override fun onShown() {}
-
-    override fun onHidden() {}
 
     override fun setPresenter(presenter: BrowseItemsContract.Presenter)
     {
@@ -51,18 +43,17 @@ class BrowseItemsBubbleContent(context: Context,
     {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(context, intent, null)
+        ContextCompat.startActivity(context!!, intent, null)
 
-        BubbleMenuService.destroyFloatingMenu(context)
+        BubbleMenuService.destroyFloatingMenu(context!!)
     }
 
     private fun createRecentRecyclerView()
     {
-        val recyclerView = findViewById<RecyclerView>(R.id.recentRecyclerView)
         val horizontalLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recentLinksAdapter = RecentLinksAdapter(presenter.createMockedList())
 
-        recyclerView.apply {
+        recentRecyclerView.apply {
             layoutManager = horizontalLayoutManager
             adapter = recentLinksAdapter
         }
@@ -70,10 +61,9 @@ class BrowseItemsBubbleContent(context: Context,
 
     private fun createLinksRecyclerView()
     {
-        val recyclerView = findViewById<RecyclerView>(R.id.linksRecyclerView)
         linksAdapter = LinksAdapter(presenter.createMockedList())
 
-        recyclerView.apply {
+        linksRecyclerView.apply {
             layoutManager = object : LinearLayoutManager(context)
             {
                 override fun canScrollVertically() = false
