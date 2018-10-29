@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.addedit
+package studios.aestheticapps.linker.content.addedit
 
 import studios.aestheticapps.linker.BasePresenter
 import studios.aestheticapps.linker.BaseView
@@ -12,7 +12,4 @@ interface AddEditTaskContract
     }
 
     interface Presenter : BasePresenter
-    {
-
-    }
 }

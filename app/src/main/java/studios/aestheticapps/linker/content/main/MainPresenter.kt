@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.main
+package studios.aestheticapps.linker.content.main
 
 class MainPresenter(val mainView: MainContract.View) : MainContract.Presenter
 {

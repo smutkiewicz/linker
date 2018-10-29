@@ -18,7 +18,7 @@
     <string name="add_edit_title_hint">Title</string>
 
     <!-- Bottom navigation -->
-    <string name="nav_add">New Link</string>
+    <string name="nav_add">New</string>
     <string name="nav_library">Library</string>
     <string name="nav_sth_else">Sth else</string>
 

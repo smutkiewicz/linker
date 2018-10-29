@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.addedit
+package studios.aestheticapps.linker.content.addedit
 
 import android.content.Intent
 import android.os.Bundle

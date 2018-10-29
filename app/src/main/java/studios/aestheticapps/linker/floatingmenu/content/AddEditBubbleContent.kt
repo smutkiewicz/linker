@@ -9,8 +9,8 @@ import io.mattcarroll.hover.Content
 import kotlinx.android.synthetic.main.add_edit_content.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
-import studios.aestheticapps.linker.addedit.AddEditPresenter
-import studios.aestheticapps.linker.addedit.AddEditTaskContract
+import studios.aestheticapps.linker.content.addedit.AddEditPresenter
+import studios.aestheticapps.linker.content.addedit.AddEditTaskContract
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 
 class AddEditBubbleContent(context: Context,

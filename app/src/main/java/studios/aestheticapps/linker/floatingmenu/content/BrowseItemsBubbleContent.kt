@@ -15,8 +15,8 @@ import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinksAdapter
 import studios.aestheticapps.linker.adapters.RecentLinksAdapter
-import studios.aestheticapps.linker.browseitems.BrowseItemsContract
-import studios.aestheticapps.linker.browseitems.BrowseItemsPresenter
+import studios.aestheticapps.linker.content.browseitems.BrowseItemsContract
+import studios.aestheticapps.linker.content.browseitems.BrowseItemsPresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 
 class BrowseItemsBubbleContent(context: Context,

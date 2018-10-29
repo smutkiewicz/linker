@@ -8,9 +8,9 @@
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:background="?android:selectableItemBackground"
-        app:cardCornerRadius="16dp"
         android:layout_height="80dp"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        app:cardCornerRadius="@dimen/card_corner_radius">
 
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/miniatureIb"/>
 
         <TextView
-                android:id="@+id/urlTv"
+                android:id="@+id/domainTv"
                 android:text="@string/sample_link"
                 android:layout_width="0dp"
                 android:layout_height="43dp"

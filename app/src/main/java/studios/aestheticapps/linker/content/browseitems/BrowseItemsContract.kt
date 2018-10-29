@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.browseitems
+package studios.aestheticapps.linker.content.browseitems
 
 import studios.aestheticapps.linker.BasePresenter
 import studios.aestheticapps.linker.BaseView
@@ -14,6 +14,9 @@ interface BrowseItemsContract
 
     interface Presenter : BasePresenter
     {
+        val repository: LinkedList<Link>
+
         fun createMockedList(): LinkedList<Link>
+        fun removeItem(position: Int)
     }
 }

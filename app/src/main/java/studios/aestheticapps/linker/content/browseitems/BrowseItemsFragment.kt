@@ -1,16 +1,15 @@
-package studios.aestheticapps.linker.browseitems
+package studios.aestheticapps.linker.content.browseitems
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.browse_items_content.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
@@ -54,7 +53,7 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
             false
         )
 
-        recentLinksAdapter = RecentLinksAdapter(presenter.createMockedList())
+        recentLinksAdapter = RecentLinksAdapter(presenter.repository)
 
         recentRecyclerView.apply {
             layoutManager = horizontalLayoutManager
@@ -64,20 +63,38 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
 
     private fun createLinksRecyclerView()
     {
-        linksAdapter = LinksAdapter(presenter.createMockedList())
+        linksAdapter = LinksAdapter(presenter.repository)
 
         linksRecyclerView.apply {
             adapter = linksAdapter
+            isNestedScrollingEnabled = false
             layoutManager = object : LinearLayoutManager(context)
             {
                 override fun canScrollVertically() = false
             }
         }
+
+        setUpSwipeGestures()
     }
 
-    private fun hideKeyboardFrom(context: Context, view: View)
+    private fun setUpSwipeGestures()
     {
-        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
+        val helper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+        {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
+            {
+                presenter.removeItem(viewHolder.adapterPosition)
+                linksAdapter.notifyItemRemoved(viewHolder.adapterPosition)
+                recentLinksAdapter.notifyDataSetChanged()
+            }
+
+            override fun onMove(recyclerView: RecyclerView?,
+                                viewHolder: RecyclerView.ViewHolder?,
+                                target: RecyclerView.ViewHolder?): Boolean { return false }
+        })
+
+        helper.attachToRecyclerView(linksRecyclerView)
     }
 }

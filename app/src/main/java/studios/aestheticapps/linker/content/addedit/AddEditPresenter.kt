@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.addedit
+package studios.aestheticapps.linker.content.addedit
 
 class AddEditPresenter(val addEditView: AddEditTaskContract.View) : AddEditTaskContract.Presenter
 {
