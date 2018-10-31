@@ -26,6 +26,10 @@
     <string name="sample_title_of_a_link">Title of a link</string>
     <string name="sample_link">github.com</string>
     <string name="sample_recent_item">Example Item</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet
+        tellus. Phasellus pharetra nulla ac diam. Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus, sed posuere libero dui id orci. Nam congue,
+        pede vitae dapibus aliquet, elit magna vulputate arcu, vel tempus metus leo non est.
+    </string>
 
     <!-- New stuff, for refactor -->
 
