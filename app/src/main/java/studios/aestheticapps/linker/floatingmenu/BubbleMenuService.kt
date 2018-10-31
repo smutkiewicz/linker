@@ -13,10 +13,11 @@ import io.mattcarroll.hover.HoverMenu
 import io.mattcarroll.hover.HoverView
 import io.mattcarroll.hover.window.HoverMenuService
 import studios.aestheticapps.linker.R
+import studios.aestheticapps.linker.floatingmenu.content.BubbleContentCallback
 import studios.aestheticapps.linker.utils.NotificationBuilder
 import java.io.IOException
 
-class BubbleMenuService : HoverMenuService()
+class BubbleMenuService : HoverMenuService(), BubbleContentCallback
 {
     private lateinit var bubbleMenu: BubbleMenu
 
@@ -39,16 +40,18 @@ class BubbleMenuService : HoverMenuService()
     override fun onHoverMenuLaunched(intent: Intent, hoverView: HoverView)
     {
         hoverView.apply {
-            setMenu(createHoverMenu())
+            setMenu(createHoverMenu()!!)
             collapse()
         }
     }
+
+    override fun collapseBubble() = hoverView.collapse()
 
     private fun createHoverMenu(): HoverMenu?
     {
         try
         {
-            bubbleMenu = BubbleMenuFactory().createMenu(contextForHoverMenu)
+            bubbleMenu = BubbleMenuFactory().createMenu(contextForHoverMenu, this)
             return bubbleMenu
         }
         catch (e: IOException)
@@ -100,16 +103,13 @@ class BubbleMenuService : HoverMenuService()
     {
         override fun onReceive(context: Context, myIntent: Intent)
         {
-            if (myIntent.action == BCAST_CONFIG_CHANGED)
-            {
-                restartService()
-            }
+            if (myIntent.action == BCAST_CONFIG_CHANGED) restartService()
         }
     }
 
     companion object
     {
-        private const val TAG = "DemoHoverMenuService"
+        private const val TAG = "BubbleMenuService"
         private const val SERVICE_CHANNEL_ID = "linker_channel_id"
         private const val BCAST_CONFIG_CHANGED = "android.intent.action.CONFIGURATION_CHANGED"
 

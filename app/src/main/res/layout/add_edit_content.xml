@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:padding="8dp">
+
+        <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <Spinner
+                    android:id="@+id/linkTypeSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/addEditTitleTv"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"/>
+
+            <EditText
+                    android:id="@+id/linkTitleEt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"
+                    android:inputType="text|textAutoComplete"
+                    android:singleLine="true"
+                    android:hint="@string/add_edit_title_hint"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/linkTypeSpinner"/>
+
+            <EditText
+                    android:id="@+id/descriptionEt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/urlEt"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="8dp"
+                    android:lines="4"
+                    android:inputType="text|textAutoCorrect|textAutoComplete|textMultiLine|textImeMultiLine"
+                    android:hint="@string/add_edit_my_description"
+                    android:singleLine="false"/>
+
+            <EditText
+                    android:id="@+id/urlEt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/linkTitleEt"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"
+                    android:inputType="text|textUri"
+                    android:hint="@string/add_edit_link_url"
+                    app:layout_constraintHorizontal_bias="0.0"/>
+
+            <TextView
+                    android:id="@+id/addEditTitleTv"
+                    android:text="@string/add_edit_link_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textSize="18sp"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+    <android.support.design.widget.FloatingActionButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_check"
+            android:id="@+id/saveLinkFab"
+            android:focusable="true"/>
+
+</android.support.design.widget.CoordinatorLayout>

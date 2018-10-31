@@ -42,7 +42,8 @@ dependencies {
     /**Libraries**/
     implementation(
         "io.mattcarroll.hover:hover:$hover",
-        "org.greenrobot:eventbus:$bus"
+        "org.greenrobot:eventbus:$bus",
+        "com.weiwangcn.betterspinner:library-material:$materialSpinner"
     )
 
     /**Testing**/
