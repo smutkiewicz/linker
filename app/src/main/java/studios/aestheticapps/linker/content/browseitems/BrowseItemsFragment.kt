@@ -1,5 +1,6 @@
 package studios.aestheticapps.linker.content.browseitems
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,19 +11,21 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.browse_items_content.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
-import studios.aestheticapps.linker.adapters.LinksAdapter
-import studios.aestheticapps.linker.adapters.RecentLinksAdapter
+import studios.aestheticapps.linker.adapters.LinkAdapter
+import studios.aestheticapps.linker.adapters.RecentLinkAdapter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
+import studios.aestheticapps.linker.model.Link
 
 class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
 {
     override var presenter: BrowseItemsContract.Presenter = BrowseItemsPresenter(this)
 
-    private lateinit var recentLinksAdapter: RecentLinksAdapter
-    private lateinit var linksAdapter: LinksAdapter
+    private lateinit var recentLinkAdapter: RecentLinkAdapter
+    private lateinit var linkAdapter: LinkAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
         = inflater.inflate(R.layout.browse_items_content, container, false)
@@ -30,10 +33,17 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
     override fun onStart()
     {
         super.onStart()
-        presenter.start()
+        presenter.start(activity!!.application)
 
-        createRecentRecyclerView()
-        createLinksRecyclerView()
+        setUpSearchBox()
+        setUpRecentRecyclerView()
+        setUpLinksRecyclerView()
+    }
+
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        presenter.stop()
     }
 
     override fun hideBubbles()
@@ -45,7 +55,7 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
         BubbleMenuService.destroyFloatingMenu(context!!)
     }
 
-    private fun createRecentRecyclerView()
+    override fun setUpRecentRecyclerView()
     {
         val horizontalLayoutManager = LinearLayoutManager(
             context,
@@ -53,20 +63,22 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
             false
         )
 
-        recentLinksAdapter = RecentLinksAdapter(presenter.repository)
+        recentLinkAdapter = RecentLinkAdapter()
+        recentLinkAdapter.elements = presenter.getRecentItems()
 
         recentRecyclerView.apply {
             layoutManager = horizontalLayoutManager
-            adapter = recentLinksAdapter
+            adapter = recentLinkAdapter
         }
     }
 
-    private fun createLinksRecyclerView()
+    override fun setUpLinksRecyclerView()
     {
-        linksAdapter = LinksAdapter(presenter.repository)
+        linkAdapter = LinkAdapter()
+        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
 
         linksRecyclerView.apply {
-            adapter = linksAdapter
+            adapter = linkAdapter
             isNestedScrollingEnabled = false
             layoutManager = object : LinearLayoutManager(context)
             {
@@ -77,24 +89,58 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
         setUpSwipeGestures()
     }
 
-    private fun setUpSwipeGestures()
+    override fun setUpSwipeGestures()
     {
-        val helper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+        val helper = ItemTouchHelper(
+            object : ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            )
         {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
             {
-                presenter.removeItem(viewHolder.adapterPosition)
-                linksAdapter.notifyItemRemoved(viewHolder.adapterPosition)
-                recentLinksAdapter.notifyDataSetChanged()
+                val holder = viewHolder as LinkAdapter.ViewHolder
+
+                presenter.removeItem(holder.id)
+                linkAdapter.notifyItemRemoved(viewHolder.adapterPosition)
+                recentLinkAdapter.notifyDataSetChanged()
             }
 
-            override fun onMove(recyclerView: RecyclerView?,
-                                viewHolder: RecyclerView.ViewHolder?,
-                                target: RecyclerView.ViewHolder?): Boolean { return false }
+            override fun onMove(rv: RecyclerView?,
+                                h: RecyclerView.ViewHolder?,
+                                t: RecyclerView.ViewHolder?): Boolean { return false }
         })
 
         helper.attachToRecyclerView(linksRecyclerView)
+    }
+
+    override fun setUpSearchBox()
+    {
+        searchBox.apply {
+            isActivated = true
+            isIconified = false
+
+            onActionViewExpanded()
+            clearFocus()
+
+            setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener
+            {
+                override fun onQueryTextSubmit(query: String) = false
+
+                override fun onQueryTextChange(newText: String): Boolean
+                {
+                    linkAdapter.elements = presenter.searchForItem(newText) as List<Link>
+                    return false
+                }
+            })
+        }
+
+        hideKeyboardFrom(view!!)
+    }
+
+    override fun hideKeyboardFrom(view: View)
+    {
+        val imm = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

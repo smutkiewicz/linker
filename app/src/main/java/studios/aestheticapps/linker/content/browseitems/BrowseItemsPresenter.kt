@@ -1,40 +1,36 @@
 package studios.aestheticapps.linker.content.browseitems
 
+import android.app.Application
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.persistence.LinkRepository
+import studios.aestheticapps.linker.persistence.LinkRoomDatabase
 import java.util.*
 
 class BrowseItemsPresenter(val browseItemsView: BrowseItemsContract.View) : BrowseItemsContract.Presenter
 {
-    override var repository: LinkedList<Link> = LinkedList()
+    private lateinit var repository: LinkRepository
 
     init
     {
         browseItemsView.presenter = this
-        createMockedList()
+    }
+
+    override fun start(application: Application)
+    {
+        repository = LinkRepository(application)
     }
 
     override fun start() {}
 
-    override fun createMockedList(): LinkedList<Link>
-    {
-        //TODO make REAL repository
-        repository.apply {
-            add(Link(title = "First link", domain = "github.com", url = "https://github.com/smutkiewicz"))
-            add(Link("Github", domain = "github.com", url = "https://github.com/smutkiewicz"))
-            add(Link("sth else", domain = "github.com", url = "https://github.com/smutkiewicz"))
-            add(Link("woooooooooooww", domain = "github.com", url = "https://github.com/smutkiewicz"))
-            add(Link("a loooooot of text", domain = "github.com", url = "https://github.com/smutkiewicz"))
-            add(Link("it works", domain = "github.com", url = "https://github.com/smutkiewicz"))
-            add(Link("nice try mate", domain = "github.com", url = "https://github.com/smutkiewicz"))
-            add(Link("Nice.", domain = "github.com", url = "https://github.com/smutkiewicz"))
-        }
+    override fun getAllItems(): LinkedList<Link> = repository.getAll()
 
-        return repository
-    }
+    override fun getRecentItems() = repository.getAll()
 
-    override fun removeItem(position: Int)
-    {
-        //TODO make REAL repository
-        repository.removeAt(position)
-    }
+    override fun searchForItem(phrase: String) = repository.search(phrase)
+
+    override fun addItem(link: Link) = repository.insert(link)
+
+    override fun removeItem(id: Int) = repository.delete(id)
+
+    override fun stop() = LinkRoomDatabase.destroyInstance()
 }

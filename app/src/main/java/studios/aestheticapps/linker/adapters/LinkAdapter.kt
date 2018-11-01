@@ -10,26 +10,16 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
 import java.util.*
 
-class LinksAdapter(private val links: LinkedList<Link>) : RecyclerView.Adapter<LinksAdapter.ViewHolder>()
+class LinkAdapter : RecyclerView.Adapter<LinkAdapter.ViewHolder>(), MyAdapter
 {
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    {
-        lateinit var link: Link
-
-        val titleTv: TextView = itemView.findViewById(R.id.titleTv)
-        val domainTv: TextView = itemView.findViewById(R.id.domainTv)
-        val isFavouriteIb: ImageButton = itemView.findViewById(R.id.favouriteIb)
-        val shareIb: ImageButton = itemView.findViewById(R.id.shareIb)
-
-        private var rowID: Long = 0
-
-        private fun setRowID(rowID: Long)
+    override var elements: List<Link> = LinkedList()
+        set(value)
         {
-            this.rowID = rowID
+            field = value
+            notifyDataSetChanged()
         }
-    }
 
-    override fun getItemCount() = links.size
+    override fun getItemCount() = elements.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
     {
@@ -44,10 +34,22 @@ class LinksAdapter(private val links: LinkedList<Link>) : RecyclerView.Adapter<L
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int)
     {
-        val link = links[position]
+        val link = elements[position]
         holder.apply {
+            id = link.id
             titleTv.text = link.title
             domainTv.text = link.domain
         }
+    }
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    {
+        lateinit var link: Link
+
+        var id: Int = 0
+        val titleTv: TextView = itemView.findViewById(R.id.titleTv)
+        val domainTv: TextView = itemView.findViewById(R.id.domainTv)
+        val isFavouriteIb: ImageButton = itemView.findViewById(R.id.favouriteIb)
+        val shareIb: ImageButton = itemView.findViewById(R.id.shareIb)
     }
 }

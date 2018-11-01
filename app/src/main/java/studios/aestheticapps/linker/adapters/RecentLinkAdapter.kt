@@ -5,24 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.R
+import studios.aestheticapps.linker.model.Link
 import java.util.*
 
-class RecentLinksAdapter(private val recentLinks: LinkedList<Link>) : RecyclerView.Adapter<RecentLinksAdapter.ViewHolder>()
+class RecentLinkAdapter : RecyclerView.Adapter<RecentLinkAdapter.ViewHolder>(), MyAdapter
 {
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    {
-        private var rowID: Long = 0
-        val titleTextView: TextView = itemView.findViewById(R.id.titleTv)
-
-        private fun setRowID(rowID: Long)
+    override var elements: List<Link> = LinkedList()
+        set(value)
         {
-            this.rowID = rowID
+            field = value
+            notifyDataSetChanged()
         }
-    }
 
-    override fun getItemCount() = recentLinks.size
+    override fun getItemCount() = elements.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
     {
@@ -37,7 +33,16 @@ class RecentLinksAdapter(private val recentLinks: LinkedList<Link>) : RecyclerVi
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int)
     {
-        val link = recentLinks[position]
-        holder.titleTextView.text = link.title
+        val link = elements[position]
+        holder.apply {
+            id = link.id
+            titleTextView.text = link.title
+        }
+    }
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    {
+        var id: Int = 0
+        val titleTextView: TextView = itemView.findViewById(R.id.titleTv)
     }
 }

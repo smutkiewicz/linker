@@ -8,4 +8,6 @@ class MainPresenter(val mainView: MainContract.View) : MainContract.Presenter
     }
 
     override fun start() {}
+
+    override fun stop() {}
 }

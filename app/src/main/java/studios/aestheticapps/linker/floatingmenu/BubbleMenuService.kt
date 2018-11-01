@@ -51,7 +51,7 @@ class BubbleMenuService : HoverMenuService(), BubbleContentCallback
     {
         try
         {
-            bubbleMenu = BubbleMenuFactory().createMenu(contextForHoverMenu, this)
+            bubbleMenu = BubbleMenuFactory().createMenu(contextForHoverMenu, application, this)
             return bubbleMenu
         }
         catch (e: IOException)

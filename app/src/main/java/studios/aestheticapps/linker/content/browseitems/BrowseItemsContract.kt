@@ -1,5 +1,6 @@
 package studios.aestheticapps.linker.content.browseitems
 
+import android.app.Application
 import studios.aestheticapps.linker.BasePresenter
 import studios.aestheticapps.linker.BaseView
 import studios.aestheticapps.linker.model.Link
@@ -10,13 +11,23 @@ interface BrowseItemsContract
     interface View : BaseView<Presenter>
     {
         fun hideBubbles()
+        fun hideKeyboardFrom(view: android.view.View)
+
+        fun setUpSwipeGestures()
+        fun setUpSearchBox()
+        fun setUpRecentRecyclerView()
+        fun setUpLinksRecyclerView()
     }
 
     interface Presenter : BasePresenter
     {
-        val repository: LinkedList<Link>
+        fun start(application: Application)
 
-        fun createMockedList(): LinkedList<Link>
+        fun getAllItems(): LinkedList<Link>
+        fun getRecentItems(): LinkedList<Link>
+        fun searchForItem(phrase: String): LinkedList<Link>
+
         fun removeItem(position: Int)
+        fun addItem(link: Link)
     }
 }

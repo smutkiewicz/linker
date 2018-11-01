@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -42,8 +44,8 @@ dependencies {
     /**Libraries**/
     implementation(
         "io.mattcarroll.hover:hover:$hover",
-        "org.greenrobot:eventbus:$bus",
-        "com.weiwangcn.betterspinner:library-material:$materialSpinner"
+        "android.arch.persistence.room:runtime:$roomVersion",
+        "android.arch.lifecycle:extensions:$archLifecycleVersion"
     )
 
     /**Testing**/
@@ -53,6 +55,9 @@ dependencies {
 
     androidTestImplementation(
         "com.android.support.test:runner:$testRunner",
-        "com.android.support.test.espresso:espresso-core:$testEspresso"
+        "com.android.support.test.espresso:espresso-core:$testEspresso",
+        "android.arch.persistence.room:testing:$roomVersion"
     )
+
+    kapt "android.arch.persistence.room:compiler:$roomVersion"
 }
