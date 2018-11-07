@@ -32,6 +32,8 @@
     </string>
     <string name="nav_home">Home</string>
     <string name="title_activity_details">DetailsActivity</string>
+    <string name="enormously_long_tag">#Enormously Long Tag</string>
+    <string name="new_tag">New Tag...</string>
 
     <!-- New stuff, for refactor -->
 

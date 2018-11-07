@@ -11,4 +11,5 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
                 var domain: String,
                 var isFavorite: Boolean = false,
                 var description: String = "",
+                var tags: String = "",
                 var lastUsed: String = "NEVER")

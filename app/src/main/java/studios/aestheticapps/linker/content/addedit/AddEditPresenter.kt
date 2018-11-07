@@ -25,4 +25,21 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
     override fun saveItem(link: Link) = repository.insert(link)
 
     override fun parseDomain(url: String) = "github.com"
+
+    override fun tagsToString(elements: MutableList<String>): String
+    {
+        var tagString = ""
+        elements.forEach{
+            tagString = "$tagString;$it"
+        }
+
+        return tagString
+    }
+
+    override fun stringToTags(tagString: String): MutableList<String>
+    {
+        val list = mutableListOf<String>()
+        list.addAll(tagString.split(";"))
+        return list
+    }
 }

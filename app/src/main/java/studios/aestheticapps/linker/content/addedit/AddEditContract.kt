@@ -18,5 +18,8 @@ interface AddEditTaskContract
         fun start(application: Application)
         fun parseDomain(url: String): String
         fun saveItem(link: Link)
+
+        fun tagsToString(elements: MutableList<String>): String
+        fun stringToTags(tagString: String): MutableList<String>
     }
 }
