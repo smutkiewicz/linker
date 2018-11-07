@@ -1,55 +1,51 @@
-package studios.aestheticapps.linker.floatingmenu.content
+package studios.aestheticapps.linker.content.home
 
 import android.app.Activity
-import android.app.Application
-import android.content.Context
 import android.content.Intent
-import android.support.v4.content.ContextCompat.startActivity
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
-import io.mattcarroll.hover.Content
-import kotlinx.android.synthetic.main.content_home.view.*
+import kotlinx.android.synthetic.main.content_home.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.RecentLinkAdapter
-import studios.aestheticapps.linker.content.home.HomeContract
-import studios.aestheticapps.linker.content.home.HomePresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 
-class BrowseItemsBubbleContent(context: Context,
-                               application: Application,
-                               private val callback: BubbleContentCallback) : FrameLayout(context), Content, HomeContract.View
+class HomeFragment : Fragment(), HomeContract.View
 {
     override var presenter: HomeContract.Presenter = HomePresenter(this)
 
     private lateinit var recentLinkAdapter: RecentLinkAdapter
 
-    init
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
+        = inflater.inflate(R.layout.content_home, container, false)
+
+    override fun onStart()
     {
-        LayoutInflater.from(context).inflate(R.layout.content_home, this, true)
-        presenter.start(application)
+        super.onStart()
+        presenter.start(activity!!.application)
 
         setUpRecentRecyclerView()
     }
 
-    override fun getView() = this
-
-    override fun isFullscreen() = true
-
-    override fun onShown() {}
-
-    override fun onHidden() {}
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        presenter.stop()
+    }
 
     override fun hideBubbles()
     {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(context, intent, null)
+        ContextCompat.startActivity(context!!, intent, null)
 
-        BubbleMenuService.destroyFloatingMenu(context)
+        BubbleMenuService.destroyFloatingMenu(context!!)
     }
 
     override fun setUpRecentRecyclerView()

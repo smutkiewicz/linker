@@ -30,6 +30,10 @@
         tellus. Phasellus pharetra nulla ac diam. Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus, sed posuere libero dui id orci. Nam congue,
         pede vitae dapibus aliquet, elit magna vulputate arcu, vel tempus metus leo non est.
     </string>
+    <string name="nav_home">Home</string>
+    <string name="title_activity_details">DetailsActivity</string>
+    <string name="enormously_long_tag">#Enormously Long Tag</string>
+    <string name="new_tag">New Tag...</string>
 
     <!-- New stuff, for refactor -->
 

@@ -8,15 +8,15 @@
           android:title="@string/nav_add"
           app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/action_home"
+          android:enabled="true"
+          android:icon="@drawable/ic_home"
+          android:title="@string/nav_home"
+          app:showAsAction="ifRoom" />
+
     <item android:id="@+id/action_library"
           android:enabled="true"
           android:icon="@drawable/ic_library"
           android:title="@string/nav_library"
-          app:showAsAction="ifRoom" />
-
-    <item android:id="@+id/action_sth_else"
-          android:enabled="true"
-          android:icon="@drawable/ic_bubble"
-          android:title="@string/nav_sth_else"
           app:showAsAction="ifRoom" />
 </menu>

@@ -6,7 +6,7 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import io.mattcarroll.hover.Content
-import kotlinx.android.synthetic.main.add_edit_content.view.*
+import kotlinx.android.synthetic.main.content_add_edit.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.content.addedit.AddEditPresenter
@@ -20,7 +20,7 @@ class AddEditBubbleContent(context: Context,
 
     init
     {
-        LayoutInflater.from(context).inflate(R.layout.add_edit_content, this, true)
+        LayoutInflater.from(context).inflate(R.layout.content_add_edit, this, true)
 
         createFab()
     }
@@ -41,7 +41,12 @@ class AddEditBubbleContent(context: Context,
         }
     }
 
-    override fun hideBubbles()
+    override fun cleanView()
+    {
+
+    }
+
+    private fun hideBubbles()
     {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
