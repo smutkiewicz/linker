@@ -36,8 +36,8 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
         presenter.start(activity!!.application)
 
         setUpSearchBox()
-        setUpRecentRecyclerView()
         setUpLinksRecyclerView()
+        setUpRecentRecyclerView()
     }
 
     override fun onDestroy()
