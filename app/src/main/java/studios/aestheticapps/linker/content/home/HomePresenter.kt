@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.content.browseitems
+package studios.aestheticapps.linker.content.home
 
 import android.app.Application
 import studios.aestheticapps.linker.persistence.LinkRepository
@@ -17,7 +17,7 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter
         repository = LinkRepository(application)
     }
 
-    override fun getRecentItems() = repository.getAll()
+    override fun getRecentItems() = repository.search("")
 
     override fun start() {}
 

@@ -11,7 +11,7 @@ import java.util.*
 
 class RecentLinkAdapter : RecyclerView.Adapter<RecentLinkAdapter.ViewHolder>(), MyAdapter
 {
-    override var elements: List<Link> = LinkedList()
+    override var elements: MutableList<Link> = LinkedList()
         set(value)
         {
             field = value
@@ -43,6 +43,6 @@ class RecentLinkAdapter : RecyclerView.Adapter<RecentLinkAdapter.ViewHolder>(), 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
         var id: Int = 0
-        val titleTextView: TextView = itemView.findViewById(R.id.titleTv)
+        val titleTextView: TextView = itemView.findViewById<TextView>(R.id.titleTv)
     }
 }

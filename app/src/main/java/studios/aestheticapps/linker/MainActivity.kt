@@ -14,18 +14,20 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
-import studios.aestheticapps.linker.content.browseitems.BrowseItemsFragment
+import studios.aestheticapps.linker.content.home.HomeFragment
+import studios.aestheticapps.linker.content.library.LibraryFragment
+import studios.aestheticapps.linker.content.main.MainContract
+import studios.aestheticapps.linker.content.main.MainPresenter
 import studios.aestheticapps.linker.extensions.checkForDrawOverlaysPermissions
 import studios.aestheticapps.linker.extensions.createDrawOverlayPermissionsIntent
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleThemeManager
-import studios.aestheticapps.linker.content.main.MainContract
-import studios.aestheticapps.linker.content.main.MainPresenter
 
 class MainActivity : AppCompatActivity(),
     MainContract.View,
-    BottomNavigationView.OnNavigationItemSelectedListener
+    BottomNavigationView.OnNavigationItemSelectedListener,
+    AddEditFragment.AddEditCallback
 {
     override var presenter: MainContract.Presenter = MainPresenter(this)
 
@@ -62,6 +64,12 @@ class MainActivity : AppCompatActivity(),
                 true
             }
 
+            R.id.action_search ->
+            {
+                viewPager.currentItem = LIBRARY
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -72,19 +80,19 @@ class MainActivity : AppCompatActivity(),
         {
             R.id.action_add ->
             {
-                viewPager.currentItem = 0
+                viewPager.currentItem = ADD_EDIT
+                return true
+            }
+
+            R.id.action_home ->
+            {
+                viewPager.currentItem = HOME
                 return true
             }
 
             R.id.action_library ->
             {
-                viewPager.currentItem = 1
-                return true
-            }
-
-            R.id.action_sth_else ->
-            {
-                viewPager.currentItem = 2
+                viewPager.currentItem = LIBRARY
                 return true
             }
         }
@@ -96,7 +104,8 @@ class MainActivity : AppCompatActivity(),
     {
         val adapter = ScreenSlidePagerAdapter(supportFragmentManager)
         viewPager.adapter = adapter
-        viewPager.currentItem = 1
+        viewPager.currentItem = HOME
+        viewPager.pagingEnabled = false
     }
 
     override fun setUpBottomNavigation()
@@ -133,6 +142,11 @@ class MainActivity : AppCompatActivity(),
         BubbleThemeManager.init(defaultTheme)
     }
 
+    override fun returnToMainView()
+    {
+        viewPager.currentItem = HOME
+    }
+
     private fun isBubbleServiceRunning(): Boolean
     {
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -153,7 +167,8 @@ class MainActivity : AppCompatActivity(),
             return when (position)
             {
                 0 -> AddEditFragment()
-                1 -> BrowseItemsFragment()
+                1 -> HomeFragment()
+                2 -> LibraryFragment()
                 else -> null
             }
         }
@@ -162,7 +177,10 @@ class MainActivity : AppCompatActivity(),
     companion object
     {
         private const val TAG = "MainActivity"
-        private const val PAGES_COUNT = 2
+        private const val ADD_EDIT = 0
+        private const val HOME = 1
+        private const val LIBRARY = 2
+        private const val PAGES_COUNT = 3
         const val MY_PERMISSIONS_REQUEST_DRAW_OVERLAY = 0
     }
 }

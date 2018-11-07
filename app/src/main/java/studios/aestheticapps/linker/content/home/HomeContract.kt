@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.content.browseitems
+package studios.aestheticapps.linker.content.home
 
 import android.app.Application
 import studios.aestheticapps.linker.BasePresenter

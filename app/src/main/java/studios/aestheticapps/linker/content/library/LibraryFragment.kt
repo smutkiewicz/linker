@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.content.browseitems
+package studios.aestheticapps.linker.content.library
 
 import android.app.Activity
 import android.content.Intent
@@ -12,23 +12,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import kotlinx.android.synthetic.main.browse_items_content.*
+import kotlinx.android.synthetic.main.content_library.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
-import studios.aestheticapps.linker.adapters.RecentLinkAdapter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 
-class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
+class LibraryFragment : Fragment(), LibraryContract.View
 {
-    override var presenter: BrowseItemsContract.Presenter = BrowseItemsPresenter(this)
+    override var presenter: LibraryContract.Presenter = LibraryPresenter(this)
 
-    private lateinit var recentLinkAdapter: RecentLinkAdapter
     private lateinit var linkAdapter: LinkAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
-        = inflater.inflate(R.layout.browse_items_content, container, false)
+        = inflater.inflate(R.layout.content_library, container, false)
 
     override fun onStart()
     {
@@ -37,7 +35,6 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
 
         setUpSearchBox()
         setUpLinksRecyclerView()
-        setUpRecentRecyclerView()
     }
 
     override fun onDestroy()
@@ -55,35 +52,15 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
         BubbleMenuService.destroyFloatingMenu(context!!)
     }
 
-    override fun setUpRecentRecyclerView()
-    {
-        val horizontalLayoutManager = LinearLayoutManager(
-            context,
-            LinearLayoutManager.HORIZONTAL,
-            false
-        )
-
-        recentLinkAdapter = RecentLinkAdapter()
-        recentLinkAdapter.elements = presenter.getRecentItems()
-
-        recentRecyclerView.apply {
-            layoutManager = horizontalLayoutManager
-            adapter = recentLinkAdapter
-        }
-    }
-
     override fun setUpLinksRecyclerView()
     {
-        linkAdapter = LinkAdapter()
+        linkAdapter = LinkAdapter(presenter as LinkAdapter.OnLibraryItemClickListener)
         linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
 
         linksRecyclerView.apply {
             adapter = linkAdapter
-            isNestedScrollingEnabled = false
-            layoutManager = object : LinearLayoutManager(context)
-            {
-                override fun canScrollVertically() = false
-            }
+            isNestedScrollingEnabled = true
+            layoutManager = LinearLayoutManager(context)
         }
 
         setUpSwipeGestures()
@@ -92,18 +69,14 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
     override fun setUpSwipeGestures()
     {
         val helper = ItemTouchHelper(
-            object : ItemTouchHelper.SimpleCallback(
-                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
-                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-            )
+            object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
         {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
             {
                 val holder = viewHolder as LinkAdapter.ViewHolder
 
                 presenter.removeItem(holder.id)
-                linkAdapter.notifyItemRemoved(viewHolder.adapterPosition)
-                recentLinkAdapter.notifyDataSetChanged()
+                linkAdapter.removeItem(viewHolder.adapterPosition)
             }
 
             override fun onMove(rv: RecyclerView?,
@@ -129,13 +102,23 @@ class BrowseItemsFragment : Fragment(), BrowseItemsContract.View
 
                 override fun onQueryTextChange(newText: String): Boolean
                 {
-                    linkAdapter.elements = presenter.searchForItem(newText) as List<Link>
+                    linkAdapter.elements = presenter.searchForItem(newText)
                     return false
                 }
             })
         }
 
         hideKeyboardFrom(view!!)
+    }
+
+    override fun startDetailView(link: Link)
+    {
+        //TODO DetailView
+    }
+
+    override fun startShareView(link: Link)
+    {
+        //TODO Share
     }
 
     override fun hideKeyboardFrom(view: View)

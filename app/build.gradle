@@ -45,10 +45,12 @@ dependencies {
     implementation(
         "io.mattcarroll.hover:hover:$hover",
         "android.arch.persistence.room:runtime:$roomVersion",
-        "android.arch.lifecycle:extensions:$archLifecycleVersion"
+        "android.arch.lifecycle:extensions:$archLifecycleVersion",
+        "com.facebook.android:facebook-share:[4,5)"
     )
 
     /**Testing**/
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation(
         "junit:junit:$junitAndroid"
     )

@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.content.browseitems
+package studios.aestheticapps.linker.content.home
 
 import android.app.Activity
 import android.content.Intent
@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import kotlinx.android.synthetic.main.browse_items_content.*
+import kotlinx.android.synthetic.main.content_home.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.RecentLinkAdapter
@@ -23,7 +23,7 @@ class HomeFragment : Fragment(), HomeContract.View
     private lateinit var recentLinkAdapter: RecentLinkAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
-        = inflater.inflate(R.layout.browse_items_content, container, false)
+        = inflater.inflate(R.layout.content_home, container, false)
 
     override fun onStart()
     {

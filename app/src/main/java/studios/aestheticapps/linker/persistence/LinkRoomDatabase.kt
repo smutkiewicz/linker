@@ -46,6 +46,7 @@ abstract class LinkRoomDatabase : RoomDatabase()
             override fun onOpen(db: SupportSQLiteDatabase)
             {
                 super.onOpen(db)
+                //PopulateDbAsync(INSTANCE!!).execute()
             }
         }
 
@@ -55,7 +56,6 @@ abstract class LinkRoomDatabase : RoomDatabase()
 
             override fun doInBackground(vararg params: Void): Void?
             {
-                dao.deleteAll()
                 dao.apply {
                     insert(Link(title = "First link", domain = "github.com", url = "https://github.com/smutkiewicz"))
                     insert(Link(title = "Github", domain = "github.com", url = "https://github.com/smutkiewicz"))
