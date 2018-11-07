@@ -11,6 +11,9 @@ interface AddEditTaskContract
     {
         fun createFab()
         fun cleanView()
+        fun createTagBtn()
+        fun addTag()
+        fun buildItem(): Link
     }
 
     interface Presenter : BasePresenter

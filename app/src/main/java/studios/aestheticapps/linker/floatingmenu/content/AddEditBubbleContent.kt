@@ -12,6 +12,7 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.content.addedit.AddEditPresenter
 import studios.aestheticapps.linker.content.addedit.AddEditTaskContract
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
+import studios.aestheticapps.linker.model.Link
 
 class AddEditBubbleContent(context: Context,
                            private val callback: BubbleContentCallback) : FrameLayout(context), Content, AddEditTaskContract.View
@@ -44,6 +45,21 @@ class AddEditBubbleContent(context: Context,
     override fun cleanView()
     {
 
+    }
+
+    override fun createTagBtn()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun addTag()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun buildItem(): Link
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private fun hideBubbles()

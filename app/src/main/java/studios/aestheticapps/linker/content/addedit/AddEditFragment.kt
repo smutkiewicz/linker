@@ -25,7 +25,9 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
     {
         super.onStart()
         presenter.start(activity!!.application)
+
         createFab()
+        createTagBtn()
         createTagRecyclerView()
     }
 
@@ -55,10 +57,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
     private fun createTagRecyclerView()
     {
         tagAdapter = TagAdapter()
-        tagAdapter.elements = mutableListOf(
-            "example", "set", "of tags", "a lot of tags", "exaaaampleeee",
-            "example", "set", "of tags", "a lot of tags", "exaaaampleeee",
-            "example", "set", "of tags", "a lot of tags", "exaaaampleeee")
+        tagAdapter.elements = mutableListOf()
 
         tagRecyclerView.adapter = tagAdapter
         tagRecyclerView.layoutManager = StaggeredGridLayoutManager(
@@ -67,7 +66,16 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         )
     }
 
-    private fun buildItem() = Link(
+    override fun createTagBtn()
+    {
+        addTagBtn.setOnClickListener{
+            addTag()
+        }
+    }
+
+    override fun addTag() = tagAdapter.addItem(newTagEt.text.toString())
+
+    override fun buildItem() = Link(
         title = addEditLinkTitleEt.text.toString(),
         url = addEditUrlEt.text.toString(),
         domain = presenter.parseDomain(addEditUrlEt.text.toString()),

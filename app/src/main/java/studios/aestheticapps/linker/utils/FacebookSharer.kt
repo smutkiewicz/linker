@@ -55,5 +55,5 @@ class FacebookSharer(private val context: Context)
         }
     }
 
-    private fun getAppId() = context.resources.getString(R.string.APP_ID)
+    private fun getAppId() = context.resources.getString(R.string.title_activity_details)
 }
