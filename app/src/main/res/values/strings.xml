@@ -34,6 +34,10 @@
     <string name="title_activity_details">DetailsActivity</string>
     <string name="enormously_long_tag">#Enormously Long Tag</string>
     <string name="new_tag">New Tag...</string>
+    <string name="addedit_confirm_exit">Discard changes?</string>
+    <string name="addedit_message_confirm_exit">Confirm exit</string>
+    <string name="addedit_dont_exit_button">Stay</string>
+    <string name="addedit_delete_button">Exit</string>
 
     <!-- New stuff, for refactor -->
 

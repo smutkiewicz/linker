@@ -35,7 +35,7 @@
         </service>
 
         <activity
-                android:name=".DetailsActivity"
+                android:name=".content.details.DetailsActivity"
                 android:label="@string/title_activity_details"
                 android:parentActivityName=".MainActivity"
                 android:theme="@style/AppTheme.NoActionBar">

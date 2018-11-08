@@ -15,6 +15,8 @@ import studios.aestheticapps.linker.model.Link
 class AddEditFragment : Fragment(), AddEditTaskContract.View
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
+    private var mode: Int = MODE_ADD
+
     private lateinit var callback: AddEditCallback
     private lateinit var tagAdapter: TagAdapter
 
@@ -31,6 +33,13 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         createTagRecyclerView()
     }
 
+    override fun onDestroyView()
+    {
+        addEditLinkTitleEt.clearFocus()
+        addEditUrlEt.clearFocus()
+        super.onDestroyView()
+    }
+
     override fun onAttach(context: Context)
     {
         super.onAttach(context)
@@ -40,9 +49,13 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
     override fun createFab()
     {
         saveLinkFab.setOnClickListener {
-            presenter.saveItem(buildItem())
-            cleanView()
-            callback.returnToMainView()
+            if (isLinkValid())
+            {
+                presenter.saveItem(buildItem())
+                cleanView()
+                callback.returnToMainView()
+            }
+
             true
         }
     }
@@ -53,6 +66,30 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         addEditUrlEt.text.clear()
         addEditDescriptionEt.text.clear()
     }
+
+    override fun createTagBtn()
+    {
+        addTagBtn.setOnClickListener{
+            addTag()
+        }
+    }
+
+    override fun addTag()
+    {
+        if (newTagEt.text.isNotBlank())
+        {
+            tagAdapter.addItem(newTagEt.text.toString())
+            newTagEt.text.clear()
+        }
+    }
+
+    override fun buildItem() = Link(
+        title = addEditLinkTitleEt.text.toString(),
+        url = addEditUrlEt.text.toString(),
+        domain = presenter.parseDomain(addEditUrlEt.text.toString()),
+        description = addEditDescriptionEt.text.toString(),
+        tags = presenter.tagsToString(tagAdapter.elements)
+    )
 
     private fun createTagRecyclerView()
     {
@@ -66,25 +103,44 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         )
     }
 
-    override fun createTagBtn()
+    private fun isLinkValid(): Boolean
     {
-        addTagBtn.setOnClickListener{
-            addTag()
+        var isValid = true
+
+        if (addEditLinkTitleEt.text.isBlank())
+        {
+            addEditLinkTitleEt.error = "You need to enter the title."
+            isValid = false
         }
+
+        if (addEditUrlEt.text.isBlank())
+        {
+            addEditUrlEt.error = "You need to enter a valid URL."
+            isValid = false
+        }
+
+        return isValid
     }
-
-    override fun addTag() = tagAdapter.addItem(newTagEt.text.toString())
-
-    override fun buildItem() = Link(
-        title = addEditLinkTitleEt.text.toString(),
-        url = addEditUrlEt.text.toString(),
-        domain = presenter.parseDomain(addEditUrlEt.text.toString()),
-        description = addEditDescriptionEt.text.toString(),
-        tags = presenter.tagsToString(tagAdapter.elements)
-    )
 
     interface AddEditCallback
     {
         fun returnToMainView()
+    }
+
+    companion object
+    {
+        const val MODE_ADD = 0
+        const val MODE_EDIT = 1
+
+        fun newInstance(mode: Int): AddEditFragment
+        {
+            val fragment = AddEditFragment()
+            val args = Bundle()
+
+            args.putInt("mode", mode)
+            fragment.arguments = args
+
+            return fragment
+        }
     }
 }

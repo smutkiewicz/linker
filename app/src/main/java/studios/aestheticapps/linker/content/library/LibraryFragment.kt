@@ -16,8 +16,10 @@ import kotlinx.android.synthetic.main.content_library.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
+import studios.aestheticapps.linker.content.details.DetailsActivity
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
 class LibraryFragment : Fragment(), LibraryContract.View
 {
@@ -107,13 +109,13 @@ class LibraryFragment : Fragment(), LibraryContract.View
                 }
             })
         }
-
-        hideKeyboardFrom(view!!)
     }
 
     override fun startDetailView(link: Link)
     {
-        //TODO DetailView
+        val intent = Intent(context, DetailsActivity::class.java)
+        intent.putExtra(PARCEL_LINK, link)
+        startActivity(intent)
     }
 
     override fun startShareView(link: Link)

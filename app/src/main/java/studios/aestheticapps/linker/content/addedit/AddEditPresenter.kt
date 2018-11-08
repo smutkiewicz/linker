@@ -30,7 +30,11 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
     {
         var tagString = ""
         elements.forEach{
-            tagString = "$tagString;$it"
+            when
+            {
+                tagString == "" -> tagString = "$it;"
+                else -> tagString = "$it;$tagString"
+            }
         }
 
         return tagString

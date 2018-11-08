@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
 
         setUpBottomNavigation()
         setUpViewPager()
@@ -158,6 +160,19 @@ class MainActivity : AppCompatActivity(),
         return false
     }
 
+    private fun buildExitDialogAndConfirmDelete(requestedPage: Int)
+    {
+        val builder = AlertDialog.Builder(this).apply {
+            setTitle(R.string.addedit_confirm_exit)
+            setMessage(R.string.addedit_message_confirm_exit)
+            setNegativeButton(R.string.addedit_dont_exit_button, null)
+            setPositiveButton(R.string.addedit_delete_button) { _, _ -> viewPager.currentItem = requestedPage }
+        }
+
+        builder.create()
+        builder.show()
+    }
+
     private inner class ScreenSlidePagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm)
     {
         override fun getCount(): Int = PAGES_COUNT
@@ -166,9 +181,9 @@ class MainActivity : AppCompatActivity(),
         {
             return when (position)
             {
-                0 -> AddEditFragment()
-                1 -> HomeFragment()
-                2 -> LibraryFragment()
+                ADD_EDIT -> AddEditFragment()
+                HOME -> HomeFragment()
+                LIBRARY -> LibraryFragment()
                 else -> null
             }
         }
