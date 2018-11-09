@@ -12,7 +12,6 @@ import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.addedit.DetailsContract
 import studios.aestheticapps.linker.content.addedit.DetailsPresenter
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
 class DetailsActivity : AppCompatActivity(), DetailsContract.View
 {
@@ -27,8 +26,6 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.View
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
 
-        model = intent.getParcelableExtra(PARCEL_LINK)
-
         createViewFromModel()
         createTagRecyclerView()
         createFab()
@@ -36,6 +33,8 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.View
 
     override fun createViewFromModel()
     {
+        model = intent.getParcelableExtra(Link.PARCEL_LINK)
+
         detailsTitleTv.text = model.title
         detailsUrlTv.text = model.url
         detailsDescrTv.text = model.description
@@ -47,7 +46,7 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.View
     override fun createTagRecyclerView()
     {
         val tagAdapter = TagAdapter()
-        tagAdapter.elements = model.stringToTags()
+        tagAdapter.elements = model.stringToListOfTags()
 
         detailsTagRv.adapter = tagAdapter
         detailsTagRv.layoutManager = StaggeredGridLayoutManager(
@@ -63,12 +62,10 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.View
         }
     }
 
-    fun createInternetIntent()
+    private fun createInternetIntent()
     {
-        detailsGoToUrlCv.setOnClickListener{
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(model.url)
-            startActivity(i)
-        }
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = Uri.parse(model.url)
+        startActivity(i)
     }
 }

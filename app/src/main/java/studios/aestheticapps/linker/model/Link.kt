@@ -4,6 +4,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import android.os.Parcel
 import android.os.Parcelable
+import android.text.TextUtils
 
 @Entity(tableName = "link_table")
 data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -12,7 +13,7 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
                 var url: String,
                 var domain: String,
                 var isFavorite: Boolean = false,
-                var description: String = "",
+                var description: String = "No description",
                 var tags: String = "",
                 var lastUsed: String = "NEVER") : Parcelable
 {
@@ -45,19 +46,22 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
 
     override fun describeContents() = 0
 
-    fun stringToTags(): MutableList<String>
+    fun stringToListOfTags(): MutableList<String>
     {
         val list = mutableListOf<String>()
-        list.addAll(tags.split(";"))
+        list.addAll(tags.split(DELIMITER))
         return list
     }
 
     companion object CREATOR : Parcelable.Creator<Link>
     {
+        private const val DELIMITER = ";"
         const val PARCEL_LINK = "linker_link"
 
         override fun createFromParcel(parcel: Parcel) = Link(parcel)
 
         override fun newArray(size: Int): Array<Link?> = arrayOfNulls(size)
+
+        fun listOfTagsToString(elements: MutableList<String>) = TextUtils.join(DELIMITER, elements)
     }
 }

@@ -26,24 +26,5 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
 
     override fun parseDomain(url: String) = "github.com"
 
-    override fun tagsToString(elements: MutableList<String>): String
-    {
-        var tagString = ""
-        elements.forEach{
-            when
-            {
-                tagString == "" -> tagString = "$it;"
-                else -> tagString = "$it;$tagString"
-            }
-        }
-
-        return tagString
-    }
-
-    override fun stringToTags(tagString: String): MutableList<String>
-    {
-        val list = mutableListOf<String>()
-        list.addAll(tagString.split(";"))
-        return list
-    }
+    override fun tagsToString(elements: MutableList<String>) = Link.listOfTagsToString(elements)
 }

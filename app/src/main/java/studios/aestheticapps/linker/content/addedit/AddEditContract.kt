@@ -23,6 +23,5 @@ interface AddEditTaskContract
         fun saveItem(link: Link)
 
         fun tagsToString(elements: MutableList<String>): String
-        fun stringToTags(tagString: String): MutableList<String>
     }
 }
