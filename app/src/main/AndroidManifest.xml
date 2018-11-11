@@ -25,6 +25,14 @@
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+                android:name=".content.details.DetailsActivity"
+                android:parentActivityName=".MainActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="studios.aestheticapps.linker.MainActivity"/>
+        </activity>
 
         <service
                 android:name=".floatingmenu.BubbleMenuService"
@@ -35,13 +43,19 @@
         </service>
 
         <activity
-                android:name=".content.details.DetailsActivity"
-                android:label="@string/title_activity_details"
-                android:parentActivityName=".MainActivity"
+                android:name=".EditActivity"
+                android:label="@string/title_activity_edit"
+                android:parentActivityName=".content.details.DetailsActivity"
                 android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="studios.aestheticapps.linker.MainActivity"/>
+                    android:value="studios.aestheticapps.linker.content.details.DetailsActivity"/>
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
     </application>
 

@@ -23,7 +23,7 @@ class LinkRepository internal constructor(application: Application)
 
     fun update(link: Link)
     {
-        UpdateAsyncTask(linkDao).execute(link).get()
+        UpdateAsyncTask(linkDao).execute(link)
     }
 
     fun insert(link: Link)

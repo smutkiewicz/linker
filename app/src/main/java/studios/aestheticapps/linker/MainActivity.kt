@@ -15,6 +15,8 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
+import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_ADD
+import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_EDIT
 import studios.aestheticapps.linker.content.home.HomeFragment
 import studios.aestheticapps.linker.content.library.LibraryFragment
 import studios.aestheticapps.linker.content.main.MainContract
@@ -24,6 +26,8 @@ import studios.aestheticapps.linker.extensions.createDrawOverlayPermissionsInten
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleThemeManager
+import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
 class MainActivity : AppCompatActivity(),
     MainContract.View,
@@ -106,7 +110,7 @@ class MainActivity : AppCompatActivity(),
     {
         val adapter = ScreenSlidePagerAdapter(supportFragmentManager)
         viewPager.adapter = adapter
-        viewPager.currentItem = HOME
+        goToEditViewIfNeeded()
         viewPager.pagingEnabled = false
     }
 
@@ -149,6 +153,28 @@ class MainActivity : AppCompatActivity(),
         viewPager.currentItem = HOME
     }
 
+    override fun goToEditViewIfNeeded()
+    {
+        if (intent.hasExtra(PARCEL_LINK)) viewPager.currentItem = ADD_EDIT
+        else viewPager.currentItem = HOME
+    }
+
+    override fun createViewFromModel(): AddEditFragment
+    {
+        return if (intent.hasExtra(PARCEL_LINK))
+        {
+            val model = intent.getParcelableExtra<Link>(PARCEL_LINK)
+            val myFragment = AddEditFragment.newInstance(MODE_EDIT)
+            myFragment.arguments!!.putParcelable(PARCEL_LINK, model)
+
+            myFragment
+        }
+        else
+        {
+            AddEditFragment.newInstance(MODE_ADD)
+        }
+    }
+
     private fun isBubbleServiceRunning(): Boolean
     {
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -181,7 +207,7 @@ class MainActivity : AppCompatActivity(),
         {
             return when (position)
             {
-                ADD_EDIT -> AddEditFragment()
+                ADD_EDIT -> createViewFromModel()
                 HOME -> HomeFragment()
                 LIBRARY -> LibraryFragment()
                 else -> null

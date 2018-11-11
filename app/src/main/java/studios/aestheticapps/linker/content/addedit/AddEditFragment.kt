@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.content_add_edit.*
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
 class AddEditFragment : Fragment(), AddEditTaskContract.View
 {
@@ -19,6 +20,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
 
     private lateinit var callback: AddEditCallback
     private lateinit var tagAdapter: TagAdapter
+    private var model: Link? = null //in EDIT_MODE
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
         = inflater.inflate(R.layout.content_add_edit, container, false)
@@ -28,9 +30,12 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         super.onStart()
         presenter.start(activity!!.application)
 
+        obtainModelAndMode()
+
         createFab()
         createTagBtn()
         createTagRecyclerView()
+        createViewFromModel()
     }
 
     override fun onDestroyView()
@@ -46,12 +51,20 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         callback = context as AddEditCallback
     }
 
+    override fun obtainModelAndMode()
+    {
+        mode = activity!!.intent.extras.getInt(MODE, MODE_ADD)
+        if (mode == MODE_EDIT) model = activity!!.intent.extras.getParcelable(PARCEL_LINK)
+    }
+
     override fun createFab()
     {
         saveLinkFab.setOnClickListener {
             if (isLinkValid())
             {
-                presenter.saveItem(buildItem())
+                if (mode == MODE_EDIT) presenter.updateItem(buildItem())
+                else presenter.saveItem(buildItem())
+
                 cleanView()
                 callback.returnToMainView()
             }
@@ -74,6 +87,17 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         }
     }
 
+    override fun createViewFromModel()
+    {
+        if (mode == MODE_EDIT)
+        {
+            addEditLinkTitleEt.setText(model!!.title)
+            addEditUrlEt.setText(model!!.url)
+            addEditDescriptionEt.setText(model!!.description)
+            tagAdapter.elements = model!!.stringToListOfTags()
+        }
+    }
+
     override fun addTag()
     {
         if (newTagEt.text.isNotBlank())
@@ -84,6 +108,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
     }
 
     override fun buildItem() = Link(
+        id = model?.id ?: 0,
         title = addEditLinkTitleEt.text.toString(),
         url = addEditUrlEt.text.toString(),
         domain = presenter.parseDomain(addEditUrlEt.text.toString()),
@@ -91,9 +116,9 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         tags = presenter.tagsToString(tagAdapter.elements)
     )
 
-    private fun createTagRecyclerView()
+    override fun createTagRecyclerView()
     {
-        tagAdapter = TagAdapter()
+        tagAdapter = TagAdapter(true)
         tagAdapter.elements = mutableListOf()
 
         tagRecyclerView.adapter = tagAdapter
@@ -109,13 +134,13 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
 
         if (addEditLinkTitleEt.text.isBlank())
         {
-            addEditLinkTitleEt.error = "You need to enter the title."
+            addEditLinkTitleEt.error = resources.getString(R.string.title_error)
             isValid = false
         }
 
         if (addEditUrlEt.text.isBlank())
         {
-            addEditUrlEt.error = "You need to enter a valid URL."
+            addEditUrlEt.error = resources.getString(R.string.url_error)
             isValid = false
         }
 
@@ -129,6 +154,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
 
     companion object
     {
+        private const val MODE = "mode"
         const val MODE_ADD = 0
         const val MODE_EDIT = 1
 
@@ -137,7 +163,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
             val fragment = AddEditFragment()
             val args = Bundle()
 
-            args.putInt("mode", mode)
+            args.putInt(MODE, mode)
             fragment.arguments = args
 
             return fragment

@@ -11,7 +11,7 @@ import android.widget.TextView
 import studios.aestheticapps.linker.R
 import java.util.*
 
-class TagAdapter : RecyclerView.Adapter<TagAdapter.ViewHolder>(), View.OnCreateContextMenuListener
+class TagAdapter(val isMenuEnabled: Boolean = false) : RecyclerView.Adapter<TagAdapter.ViewHolder>(), View.OnCreateContextMenuListener
 {
     var elements: MutableList<String> = LinkedList()
     var position: Int = 0
@@ -36,10 +36,13 @@ class TagAdapter : RecyclerView.Adapter<TagAdapter.ViewHolder>(), View.OnCreateC
             titleTextView.text = "#$tag"
         }
 
-        holder.itemView.setOnCreateContextMenuListener(this)
-        holder.itemView.setOnLongClickListener {
-            this.position = position
-            false
+        if (isMenuEnabled)
+        {
+            holder.itemView.setOnCreateContextMenuListener(this)
+            holder.itemView.setOnLongClickListener {
+                this.position = position
+                false
+            }
         }
     }
 

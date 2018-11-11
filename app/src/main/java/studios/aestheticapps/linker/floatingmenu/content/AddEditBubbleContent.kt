@@ -17,6 +17,16 @@ import studios.aestheticapps.linker.model.Link
 class AddEditBubbleContent(context: Context,
                            private val callback: BubbleContentCallback) : FrameLayout(context), Content, AddEditTaskContract.View
 {
+    override fun obtainModelAndMode()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun createTagRecyclerView()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
     init
@@ -58,6 +68,11 @@ class AddEditBubbleContent(context: Context,
     }
 
     override fun buildItem(): Link
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun createViewFromModel()
     {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

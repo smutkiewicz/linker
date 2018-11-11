@@ -40,10 +40,10 @@
                     android:layout_marginStart="8dp"/>
 
             <TextView
-                    android:text="https://github.com/smutkiewicz/linker/tree/master/app"
+                    android:id="@+id/detailsUrlTv"
+                    android:text="@string/sample_link"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/detailsUrlTv"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="8dp"
                     android:maxLines="3"
@@ -133,7 +133,7 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintTop_toBottomOf="@+id/detailsUrlTv"/>
             <TextView
-                    android:text="@string/lorem_ipsum"
+                    android:text="@string/sample_lorem_ipsum"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/detailsDescrTv"
@@ -142,17 +142,17 @@
                     app:layout_constraintStart_toEndOf="@+id/imageView5"
                     android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="8dp"/>
+                    android:layout_marginEnd="8dp" android:textStyle="italic"/>
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
+            android:id="@+id/shareFab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
             app:srcCompat="@drawable/ic_share_white"
-            android:id="@+id/shareFab"
             app:layout_anchorGravity="right|bottom"
             app:layout_anchor="@+id/scrollView2"
             android:layout_marginEnd="@dimen/fab_margin"

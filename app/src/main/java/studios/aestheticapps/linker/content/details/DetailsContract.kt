@@ -10,10 +10,8 @@ interface DetailsContract
         fun createViewFromModel()
         fun createTagRecyclerView()
         fun createFab()
+        fun openEdit()
     }
 
     interface Presenter : BasePresenter
-    {
-
-    }
 }

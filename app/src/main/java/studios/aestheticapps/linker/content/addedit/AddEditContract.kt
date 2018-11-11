@@ -9,9 +9,12 @@ interface AddEditTaskContract
 {
     interface View : BaseView<Presenter>
     {
+        fun obtainModelAndMode()
         fun createFab()
         fun cleanView()
         fun createTagBtn()
+        fun createViewFromModel()
+        fun createTagRecyclerView()
         fun addTag()
         fun buildItem(): Link
     }
@@ -21,6 +24,7 @@ interface AddEditTaskContract
         fun start(application: Application)
         fun parseDomain(url: String): String
         fun saveItem(link: Link)
+        fun updateItem(link: Link)
 
         fun tagsToString(elements: MutableList<String>): String
     }

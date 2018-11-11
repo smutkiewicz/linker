@@ -24,6 +24,8 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
 
     override fun saveItem(link: Link) = repository.insert(link)
 
+    override fun updateItem(link: Link) = repository.update(link)
+
     override fun parseDomain(url: String) = "github.com"
 
     override fun tagsToString(elements: MutableList<String>) = Link.listOfTagsToString(elements)
