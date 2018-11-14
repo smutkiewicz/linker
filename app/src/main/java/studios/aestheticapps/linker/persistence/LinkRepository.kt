@@ -19,8 +19,6 @@ class LinkRepository internal constructor(application: Application)
 
     fun search(phrase: String) = LinkedList(SearchAsyncTask(linkDao).execute(phrase).get())
 
-    fun searchById(id: Int): Link = SearchByIdAsyncTask(linkDao).execute(id).get()
-
     fun update(link: Link)
     {
         UpdateAsyncTask(linkDao).execute(link)
@@ -66,11 +64,6 @@ class LinkRepository internal constructor(application: Application)
     private class SearchAsyncTask internal constructor(private val asyncTaskDao: LinkDao) : AsyncTask<String, Void, List<Link>>()
     {
         override fun doInBackground(vararg params: String?): List<Link> = asyncTaskDao.search(params[0]!!)
-    }
-
-    private class SearchByIdAsyncTask internal constructor(private val asyncTaskDao: LinkDao) : AsyncTask<Int, Void, Link>()
-    {
-        override fun doInBackground(vararg params: Int?): Link = asyncTaskDao.searchById(params[0]!!)
     }
 
     private companion object

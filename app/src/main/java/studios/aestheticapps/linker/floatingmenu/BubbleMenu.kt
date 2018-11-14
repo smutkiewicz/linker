@@ -57,7 +57,13 @@ class BubbleMenu(private val context: Context,
                 theme.baseColor
             )
 
-            BROWSE_ITEMS_TAB -> createTabView(
+            LIBRARY_TAB -> createTabView(
+                R.drawable.ic_library,
+                theme.accentColor,
+                theme.baseColor
+            )
+
+            HOME_TAB -> createTabView(
                 R.drawable.linker_logo,
                 theme.accentColor,
                 theme.baseColor
@@ -95,6 +101,7 @@ class BubbleMenu(private val context: Context,
     companion object
     {
         const val ADD_TAB = "add_tab"
-        const val BROWSE_ITEMS_TAB = "browse_items_tab"
+        const val HOME_TAB = "browse_items_tab"
+        const val LIBRARY_TAB = "library_tab"
     }
 }

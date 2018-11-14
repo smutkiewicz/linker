@@ -17,7 +17,7 @@ interface LibraryContract
         fun setUpSearchBox()
         fun setUpLinksRecyclerView()
 
-        fun startDetailView(link: Link)
+        fun startClickCardAction(link: Link)
         fun startShareView(link: Link)
     }
 

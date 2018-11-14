@@ -39,6 +39,7 @@ class LinkAdapter(private val listener: OnLibraryItemClickListener) : RecyclerVi
             this.link = link
             id = link.id
             titleTv.text = link.title
+            categoryTv.text = link.category
             domainTv.text = link.domain
             changeFavourite(link.isFavorite)
         }
@@ -56,6 +57,7 @@ class LinkAdapter(private val listener: OnLibraryItemClickListener) : RecyclerVi
 
         var id: Int = 0
         val titleTv: TextView = itemView.findViewById(R.id.titleTv)
+        val categoryTv: TextView = itemView.findViewById(R.id.categoryTv)
         val domainTv: TextView = itemView.findViewById(R.id.domainTv)
         val isFavouriteIb: ImageButton = itemView.findViewById(R.id.favouriteIb)
         val shareIb: ImageButton = itemView.findViewById(R.id.shareIb)

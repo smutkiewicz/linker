@@ -40,6 +40,11 @@
     <string name="title_error">You need to enter the title.</string>
     <string name="url_error">You need to enter a valid URL.</string>
     <string name="title_activity_edit">EditActivity</string>
+    <string name="add_edit_blank_tag_error">You can\'t add blank tag!</string>
+    <string name="library_confirm_exit">Remove item</string>
+    <string name="library_message_confirm_exit">Are you sure you want to remove this item?</string>
+    <string name="library_delete">Delete</string>
+    <string name="library_dont_delete">Save</string>
 
     <!-- New stuff, for refactor -->
 

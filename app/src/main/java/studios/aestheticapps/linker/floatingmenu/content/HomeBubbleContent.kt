@@ -19,9 +19,9 @@ import studios.aestheticapps.linker.content.home.HomeContract
 import studios.aestheticapps.linker.content.home.HomePresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 
-class BrowseItemsBubbleContent(context: Context,
-                               application: Application,
-                               private val callback: BubbleContentCallback) : FrameLayout(context), Content, HomeContract.View
+class HomeBubbleContent(context: Context,
+                        application: Application,
+                        private val callback: BubbleContentCallback) : FrameLayout(context), Content, HomeContract.View
 {
     override var presenter: HomeContract.Presenter = HomePresenter(this)
 

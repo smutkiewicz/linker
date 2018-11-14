@@ -45,7 +45,7 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
         repository.update(link)
     }
 
-    override fun onItemClicked(link: Link) = view.startDetailView(link)
+    override fun onItemClicked(link: Link) = view.startClickCardAction(link)
 
     override fun onFavourite(link: Link) = setItemFavourite(link)
 

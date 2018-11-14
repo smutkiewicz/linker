@@ -1,5 +1,6 @@
 package studios.aestheticapps.linker.content.addedit
 
+import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,6 +8,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.content_add_edit.*
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
@@ -20,22 +22,34 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
 
     private lateinit var callback: AddEditCallback
     private lateinit var tagAdapter: TagAdapter
-    private var model: Link? = null //in EDIT_MODE
+    private var model: Link? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
-        = inflater.inflate(R.layout.content_add_edit, container, false)
+    {
+        val view = inflater.inflate(R.layout.content_add_edit, container, false)
+        restoreSavedState(savedInstanceState)
+        return view
+    }
 
     override fun onStart()
     {
         super.onStart()
         presenter.start(activity!!.application)
 
-        obtainModelAndMode()
+        obtainInfoFromArguments()
 
         createFab()
         createTagBtn()
+        createCategoriesSpinner()
         createTagRecyclerView()
         createViewFromModel()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle)
+    {
+        super.onSaveInstanceState(outState)
+        outState.putInt(MODE, mode)
+        outState.putParcelable(PARCEL_LINK, buildItem())
     }
 
     override fun onDestroyView()
@@ -51,10 +65,26 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         callback = context as AddEditCallback
     }
 
-    override fun obtainModelAndMode()
+    override fun obtainInfoFromArguments()
     {
-        mode = activity!!.intent.extras.getInt(MODE, MODE_ADD)
-        if (mode == MODE_EDIT) model = activity!!.intent.extras.getParcelable(PARCEL_LINK)
+        mode = arguments!!.getInt(MODE, MODE_ADD)
+
+        if (mode == MODE_EDIT)
+        {
+            model = arguments!!.getParcelable(PARCEL_LINK)
+        }
+    }
+
+    override fun createViewFromModel()
+    {
+        when (mode)
+        {
+            MODE_EDIT -> callback.prepareEditView()
+            MODE_ADD -> callback.prepareAddView()
+        }
+
+        if (model != null)
+            mapModelToView()
     }
 
     override fun createFab()
@@ -62,8 +92,11 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         saveLinkFab.setOnClickListener {
             if (isLinkValid())
             {
-                if (mode == MODE_EDIT) presenter.updateItem(buildItem())
-                else presenter.saveItem(buildItem())
+                when (mode)
+                {
+                    MODE_EDIT -> presenter.updateItem(buildItem())
+                    MODE_ADD -> presenter.saveItem(buildItem())
+                }
 
                 cleanView()
                 callback.returnToMainView()
@@ -73,11 +106,18 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         }
     }
 
-    override fun cleanView()
+    override fun createTagRecyclerView()
     {
-        addEditLinkTitleEt.text.clear()
-        addEditUrlEt.text.clear()
-        addEditDescriptionEt.text.clear()
+        tagAdapter = TagAdapter(true)
+        tagAdapter.elements = mutableListOf()
+
+        tagRecyclerView.apply {
+            adapter = tagAdapter
+            layoutManager = StaggeredGridLayoutManager(
+                resources.getInteger(R.integer.tags_column_count),
+                StaggeredGridLayoutManager.VERTICAL
+            )
+        }
     }
 
     override fun createTagBtn()
@@ -87,15 +127,40 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         }
     }
 
-    override fun createViewFromModel()
+    override fun createCategoriesSpinner()
     {
-        if (mode == MODE_EDIT)
-        {
-            addEditLinkTitleEt.setText(model!!.title)
-            addEditUrlEt.setText(model!!.url)
-            addEditDescriptionEt.setText(model!!.description)
-            tagAdapter.elements = model!!.stringToListOfTags()
-        }
+        val adapter = ArrayAdapter.createFromResource(
+            context,
+            R.array.categories,
+            android.R.layout.simple_spinner_item
+        )
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+    }
+
+    override fun mapModelToView()
+    {
+        addEditLinkTitleEt.setText(model!!.title)
+        addEditUrlEt.setText(model!!.url)
+        addEditDescriptionEt.setText(model!!.description)
+        tagAdapter.elements = model!!.stringToListOfTags()
+
+        spinner.setSelection((spinner.adapter as ArrayAdapter<String>)
+            .getPosition(model!!.category))
+    }
+
+    override fun cleanView()
+    {
+        val args = Bundle()
+        args.putInt(MODE, MODE_ADD)
+        arguments = args
+
+        addEditLinkTitleEt.text.clear()
+        addEditUrlEt.text.clear()
+        addEditDescriptionEt.text.clear()
+        tagAdapter.elements.clear()
+        spinner.setSelection(0)
     }
 
     override fun addTag()
@@ -105,27 +170,37 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
             tagAdapter.addItem(newTagEt.text.toString())
             newTagEt.text.clear()
         }
+        else
+        {
+            newTagEt.error = getString(R.string.add_edit_blank_tag_error)
+        }
     }
 
     override fun buildItem() = Link(
         id = model?.id ?: 0,
         title = addEditLinkTitleEt.text.toString(),
+        category = spinner.selectedItem.toString(),
         url = addEditUrlEt.text.toString(),
         domain = presenter.parseDomain(addEditUrlEt.text.toString()),
         description = addEditDescriptionEt.text.toString(),
         tags = presenter.tagsToString(tagAdapter.elements)
     )
 
-    override fun createTagRecyclerView()
+    override fun buildSampleItemFromClipboardContent()
     {
-        tagAdapter = TagAdapter(true)
-        tagAdapter.elements = mutableListOf()
+        val clipboard = context!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        tagRecyclerView.adapter = tagAdapter
-        tagRecyclerView.layoutManager = StaggeredGridLayoutManager(
-            resources.getInteger(R.integer.tags_column_count),
-            StaggeredGridLayoutManager.VERTICAL
-        )
+        //TODO build item in presenter
+        addEditUrlEt.setText(clipboard.text)
+    }
+
+    private fun restoreSavedState(state: Bundle?)
+    {
+        if (state != null)
+        {
+            mode = state.getInt(MODE)
+            model = state.getParcelable(PARCEL_LINK)
+        }
     }
 
     private fun isLinkValid(): Boolean
@@ -134,13 +209,13 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
 
         if (addEditLinkTitleEt.text.isBlank())
         {
-            addEditLinkTitleEt.error = resources.getString(R.string.title_error)
+            addEditLinkTitleEt.error = getString(R.string.title_error)
             isValid = false
         }
 
         if (addEditUrlEt.text.isBlank())
         {
-            addEditUrlEt.error = resources.getString(R.string.url_error)
+            addEditUrlEt.error = getString(R.string.url_error)
             isValid = false
         }
 
@@ -150,6 +225,8 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
     interface AddEditCallback
     {
         fun returnToMainView()
+        fun prepareEditView()
+        fun prepareAddView()
     }
 
     companion object

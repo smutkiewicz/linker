@@ -26,6 +26,12 @@ interface LinkDao
     @Query("SELECT * from link_table WHERE id = :id")
     fun searchById(id: Int): Link
 
+    @Query("SELECT * from link_table WHERE isFavorite = 1")
+    fun getFavourites(): Link
+
+    @Query("SELECT * FROM link_table ORDER BY date(lastUsed) DESC Limit 1")
+    fun getRecent(): Link
+
     @Update
     fun update(link: Link)
 

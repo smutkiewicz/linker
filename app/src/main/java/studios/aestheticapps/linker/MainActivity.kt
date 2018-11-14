@@ -8,10 +8,11 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity(),
     AddEditFragment.AddEditCallback
 {
     override var presenter: MainContract.Presenter = MainPresenter(this)
+    var menuState = SHOW_MENU
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -57,6 +59,13 @@ class MainActivity : AppCompatActivity(),
     override fun onCreateOptionsMenu(menu: Menu): Boolean
     {
         menuInflater.inflate(R.menu.menu_main, menu)
+
+        if (menuState == HIDE_MENU)
+        {
+            for (i in 0 until menu.size())
+                menu.getItem(i).isVisible = false
+        }
+
         return true
     }
 
@@ -110,8 +119,9 @@ class MainActivity : AppCompatActivity(),
     {
         val adapter = ScreenSlidePagerAdapter(supportFragmentManager)
         viewPager.adapter = adapter
-        goToEditViewIfNeeded()
         viewPager.pagingEnabled = false
+        viewPager.currentItem = getLastVisitedPage()
+        goToEditViewIfNeeded()
     }
 
     override fun setUpBottomNavigation()
@@ -150,7 +160,22 @@ class MainActivity : AppCompatActivity(),
 
     override fun returnToMainView()
     {
+        menuState = SHOW_MENU
+        invalidateOptionsMenu()
+        bottomNavigation.visibility = VISIBLE
         viewPager.currentItem = HOME
+    }
+
+    override fun prepareEditView()
+    {
+        menuState = HIDE_MENU
+        invalidateOptionsMenu()
+        bottomNavigation.visibility = GONE
+    }
+
+    override fun prepareAddView()
+    {
+        bottomNavigation.visibility = VISIBLE
     }
 
     override fun goToEditViewIfNeeded()
@@ -186,18 +211,15 @@ class MainActivity : AppCompatActivity(),
         return false
     }
 
-    private fun buildExitDialogAndConfirmDelete(requestedPage: Int)
+    private fun setPageAsLastVisited(currentPage: Int)
     {
-        val builder = AlertDialog.Builder(this).apply {
-            setTitle(R.string.addedit_confirm_exit)
-            setMessage(R.string.addedit_message_confirm_exit)
-            setNegativeButton(R.string.addedit_dont_exit_button, null)
-            setPositiveButton(R.string.addedit_delete_button) { _, _ -> viewPager.currentItem = requestedPage }
-        }
-
-        builder.create()
-        builder.show()
+        getPreferences(Context.MODE_PRIVATE)
+            .edit()
+            .putInt(LAST_PAGE, currentPage)
+            .apply()
     }
+
+    private fun getLastVisitedPage() = getPreferences(Context.MODE_PRIVATE).getInt(LAST_PAGE, HOME)
 
     private inner class ScreenSlidePagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm)
     {
@@ -205,6 +227,8 @@ class MainActivity : AppCompatActivity(),
 
         override fun getItem(position: Int): Fragment?
         {
+            setPageAsLastVisited(position)
+
             return when (position)
             {
                 ADD_EDIT -> createViewFromModel()
@@ -218,10 +242,16 @@ class MainActivity : AppCompatActivity(),
     companion object
     {
         private const val TAG = "MainActivity"
+        private const val LAST_PAGE = "last_visited_page"
+
         private const val ADD_EDIT = 0
         private const val HOME = 1
         private const val LIBRARY = 2
         private const val PAGES_COUNT = 3
+
+        private const val SHOW_MENU = 4
+        private const val HIDE_MENU = 5
+
         const val MY_PERMISSIONS_REQUEST_DRAW_OVERLAY = 0
     }
 }
