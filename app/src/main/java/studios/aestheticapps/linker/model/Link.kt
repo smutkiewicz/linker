@@ -49,7 +49,9 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
     fun stringToListOfTags(): MutableList<String>
     {
         val list = mutableListOf<String>()
-        list.addAll(tags.split(DELIMITER))
+        if (tags.isNotBlank())
+            list.addAll(tags.split(DELIMITER))
+
         return list
     }
 

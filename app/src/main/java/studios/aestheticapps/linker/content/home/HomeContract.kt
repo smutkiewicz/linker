@@ -14,6 +14,7 @@ interface HomeContract
         fun hideKeyboardFrom(view: android.view.View)
 
         fun setUpRecentRecyclerView()
+        fun setUpFavoritesRecyclerView()
     }
 
     interface Presenter : BasePresenter
@@ -21,5 +22,6 @@ interface HomeContract
         fun start(application: Application)
 
         fun getRecentItems(): LinkedList<Link>
+        fun getFavoriteItems(): LinkedList<Link>
     }
 }

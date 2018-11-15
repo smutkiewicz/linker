@@ -183,6 +183,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
         url = addEditUrlEt.text.toString(),
         domain = presenter.parseDomain(addEditUrlEt.text.toString()),
         description = addEditDescriptionEt.text.toString(),
+        lastUsed = presenter.getCurrentDateTimeStamp(),
         tags = presenter.tagsToString(tagAdapter.elements)
     )
 

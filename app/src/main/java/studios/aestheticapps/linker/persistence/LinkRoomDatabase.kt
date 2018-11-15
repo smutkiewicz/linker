@@ -5,7 +5,6 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
-import android.os.AsyncTask
 import studios.aestheticapps.linker.model.Link
 
 @Database(entities = [Link::class], version = 1)
@@ -46,28 +45,6 @@ abstract class LinkRoomDatabase : RoomDatabase()
             override fun onOpen(db: SupportSQLiteDatabase)
             {
                 super.onOpen(db)
-                //PopulateDbAsync(INSTANCE!!).execute()
-            }
-        }
-
-        private class PopulateDbAsync internal constructor(db: LinkRoomDatabase) : AsyncTask<Void, Void, Void>()
-        {
-            private val dao: LinkDao = db.linkDao()
-
-            override fun doInBackground(vararg params: Void): Void?
-            {
-                dao.apply {
-                    insert(Link(title = "First link", domain = "github.com", url = "https://github.com/smutkiewicz"))
-                    insert(Link(title = "Github", domain = "github.com", url = "https://github.com/smutkiewicz"))
-                    insert(Link(title = "sth else", domain = "github.com", url = "https://github.com/smutkiewicz"))
-                    insert(Link(title = "woooooooooooww", domain = "github.com", url = "https://github.com/smutkiewicz"))
-                    insert(Link(title = "a loooooot of text", domain = "github.com", url = "https://github.com/smutkiewicz"))
-                    insert(Link(title = "it works", domain = "github.com", url = "https://github.com/smutkiewicz"))
-                    insert(Link(title = "nice try mate", domain = "github.com", url = "https://github.com/smutkiewicz"))
-                    insert(Link(title = "Nice.", domain = "github.com", url = "https://github.com/smutkiewicz"))
-                }
-
-                return null
             }
         }
     }

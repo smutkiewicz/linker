@@ -20,6 +20,7 @@ interface LinkDao
         "WHERE title LIKE '%' || :phrase || '%' " +
         "OR domain LIKE '%' || :phrase || '%' " +
         "OR url LIKE '%' || :phrase || '%' " +
+        "OR tags LIKE '%' || :phrase || '%' " +
         "ORDER BY title")
     fun search(phrase: String): List<Link>
 
@@ -27,10 +28,10 @@ interface LinkDao
     fun searchById(id: Int): Link
 
     @Query("SELECT * from link_table WHERE isFavorite = 1")
-    fun getFavourites(): Link
+    fun getFavourites(): List<Link>
 
-    @Query("SELECT * FROM link_table ORDER BY date(lastUsed) DESC Limit 1")
-    fun getRecent(): Link
+    @Query("SELECT * from link_table ORDER BY lastUsed DESC LIMIT 1")
+    fun getRecent(): List<Link>
 
     @Update
     fun update(link: Link)

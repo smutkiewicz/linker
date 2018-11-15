@@ -4,6 +4,7 @@ import android.app.Application
 import studios.aestheticapps.linker.adapters.LinkAdapter
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.ALL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,7 +26,7 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
 
     override fun stop() {}
 
-    override fun getAllItems(): LinkedList<Link> = repository.getAll()
+    override fun getAllItems(): LinkedList<Link> = repository.getListOf(ALL)
 
     override fun searchForItem(phrase: String) = repository.search(phrase)
 

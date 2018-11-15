@@ -45,6 +45,8 @@
     <string name="library_message_confirm_exit">Are you sure you want to remove this item?</string>
     <string name="library_delete">Delete</string>
     <string name="library_dont_delete">Save</string>
+    <string name="recent">Recent</string>
+    <string name="favorites">Favorites</string>
 
     <!-- New stuff, for refactor -->
 

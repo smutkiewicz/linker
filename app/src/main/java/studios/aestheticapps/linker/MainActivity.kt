@@ -95,18 +95,21 @@ class MainActivity : AppCompatActivity(),
         {
             R.id.action_add ->
             {
+                setPageAsLastVisited(ADD_EDIT)
                 viewPager.currentItem = ADD_EDIT
                 return true
             }
 
             R.id.action_home ->
             {
+                setPageAsLastVisited(HOME)
                 viewPager.currentItem = HOME
                 return true
             }
 
             R.id.action_library ->
             {
+                setPageAsLastVisited(LIBRARY)
                 viewPager.currentItem = LIBRARY
                 return true
             }
@@ -121,7 +124,6 @@ class MainActivity : AppCompatActivity(),
         viewPager.adapter = adapter
         viewPager.pagingEnabled = false
         viewPager.currentItem = getLastVisitedPage()
-        goToEditViewIfNeeded()
     }
 
     override fun setUpBottomNavigation()
@@ -227,8 +229,6 @@ class MainActivity : AppCompatActivity(),
 
         override fun getItem(position: Int): Fragment?
         {
-            setPageAsLastVisited(position)
-
             return when (position)
             {
                 ADD_EDIT -> createViewFromModel()

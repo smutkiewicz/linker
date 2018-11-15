@@ -74,4 +74,9 @@ class HomeBubbleContent(context: Context,
         val imm = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
+    override fun setUpFavoritesRecyclerView()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

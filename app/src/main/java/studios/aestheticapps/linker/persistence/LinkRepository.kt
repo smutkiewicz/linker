@@ -15,7 +15,16 @@ class LinkRepository internal constructor(application: Application)
         linkDao = db.linkDao()
     }
 
-    fun getAll() = LinkedList(SearchAsyncTask(linkDao).execute(EMPTY).get())
+    fun getListOf(category: Int): LinkedList<Link>
+    {
+        return when(category)
+        {
+            ALL -> getAll()
+            FAVORITES -> getFavorites()
+            RECENT -> getRecent()
+            else -> getAll()
+        }
+    }
 
     fun search(phrase: String) = LinkedList(SearchAsyncTask(linkDao).execute(phrase).get())
 
@@ -33,6 +42,12 @@ class LinkRepository internal constructor(application: Application)
     {
         DeleteAsyncTask(linkDao).execute(id)
     }
+
+    private fun getAll() = LinkedList(SearchAsyncTask(linkDao).execute(EMPTY).get())
+
+    private fun getFavorites() = LinkedList(GetFavoritesAsyncTask(linkDao).execute().get())
+
+    private fun getRecent() = LinkedList(GetRecentAsyncTask(linkDao).execute().get())
 
     private class InsertAsyncTask internal constructor(private val asyncTaskDao: LinkDao) : AsyncTask<Link, Void, Void>()
     {
@@ -66,8 +81,22 @@ class LinkRepository internal constructor(application: Application)
         override fun doInBackground(vararg params: String?): List<Link> = asyncTaskDao.search(params[0]!!)
     }
 
-    private companion object
+    private class GetFavoritesAsyncTask internal constructor(private val asyncTaskDao: LinkDao) : AsyncTask<Void, Void, List<Link>>()
     {
-        const val EMPTY = ""
+        override fun doInBackground(vararg params: Void?): List<Link> = asyncTaskDao.getFavourites()
+    }
+
+    private class GetRecentAsyncTask internal constructor(private val asyncTaskDao: LinkDao) : AsyncTask<Void, Void, List<Link>>()
+    {
+        override fun doInBackground(vararg params: Void?): List<Link> = asyncTaskDao.getRecent()
+    }
+
+    companion object
+    {
+        private const val EMPTY = ""
+
+        const val ALL = 0
+        const val FAVORITES = 1
+        const val RECENT = 2
     }
 }
