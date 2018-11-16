@@ -10,7 +10,8 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
 import java.util.*
 
-class FavoritesAdapter(private val listener: OnItemClickListener) : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>(), MyAdapter
+class FavoritesAdapter(private val callback: OnItemClickListener)
+    : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>(), MyAdapter
 {
     override var elements: MutableList<Link> = LinkedList()
         set(value)
@@ -59,25 +60,17 @@ class FavoritesAdapter(private val listener: OnItemClickListener) : RecyclerView
         init
         {
             itemView.setOnClickListener{
-                listener.onItemClicked(link)
+                callback.onItemClicked(link)
             }
 
             itemView.setOnLongClickListener{
-                listener.onItemLongClicked(link)
+                callback.onItemLongClicked(link)
                 true
             }
 
             shareIb.setOnClickListener{
-                listener.onShare(link)
+                callback.onShare(link)
             }
         }
-    }
-
-    //TODO one interface for all adapters
-    interface OnItemClickListener
-    {
-        fun onItemLongClicked(link: Link)
-        fun onItemClicked(link: Link)
-        fun onShare(link: Link)
     }
 }

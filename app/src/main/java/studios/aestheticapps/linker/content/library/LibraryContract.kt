@@ -10,6 +10,8 @@ interface LibraryContract
 {
     interface View : BaseView<Presenter>
     {
+        fun populateViewAdaptersWithContent()
+
         fun hideBubbles()
         fun hideKeyboardFrom(view: android.view.View)
 
@@ -17,8 +19,9 @@ interface LibraryContract
         fun setUpSearchBox()
         fun setUpLinksRecyclerView()
 
-        fun startClickCardAction(link: Link)
+        fun startInternetAction(link: Link)
         fun startShareView(link: Link)
+        fun startDetailsAction(link: Link)
     }
 
     interface Presenter : BasePresenter

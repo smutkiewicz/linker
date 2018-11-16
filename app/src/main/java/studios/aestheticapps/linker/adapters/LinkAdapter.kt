@@ -10,7 +10,8 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
 import java.util.*
 
-class LinkAdapter(private val listener: OnLibraryItemClickListener) : RecyclerView.Adapter<LinkAdapter.ViewHolder>(), MyAdapter
+class LinkAdapter(private val callback: OnItemClickListener)
+    : RecyclerView.Adapter<LinkAdapter.ViewHolder>(), MyAdapter
 {
     override var elements: MutableList<Link> = LinkedList()
         set(value)
@@ -65,17 +66,22 @@ class LinkAdapter(private val listener: OnLibraryItemClickListener) : RecyclerVi
         init
         {
             itemView.setOnClickListener{
-                listener.onItemClicked(link)
+                callback.onItemClicked(link)
+            }
+
+            itemView.setOnLongClickListener{
+                callback.onItemLongClicked(link)
+                true
             }
 
             isFavouriteIb.setOnClickListener{
                 val newValue = !link.isFavorite
                 changeFavourite(newValue)
-                listener.onFavourite(link)
+                callback.onFavourite(link)
             }
 
             shareIb.setOnClickListener{
-                listener.onShare(link)
+                callback.onShare(link)
             }
         }
 
@@ -90,12 +96,5 @@ class LinkAdapter(private val listener: OnLibraryItemClickListener) : RecyclerVi
 
             isFavouriteIb.setImageDrawable(imageDrawable)
         }
-    }
-
-    interface OnLibraryItemClickListener
-    {
-        fun onItemClicked(link: Link)
-        fun onFavourite(link: Link)
-        fun onShare(link: Link)
     }
 }

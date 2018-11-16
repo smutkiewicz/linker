@@ -11,7 +11,8 @@ import android.widget.TextView
 import studios.aestheticapps.linker.R
 import java.util.*
 
-class TagAdapter(val isMenuEnabled: Boolean = false) : RecyclerView.Adapter<TagAdapter.ViewHolder>(), View.OnCreateContextMenuListener
+class TagAdapter(val isMenuEnabled: Boolean = false)
+    : RecyclerView.Adapter<TagAdapter.ViewHolder>(), View.OnCreateContextMenuListener
 {
     var elements: MutableList<String> = LinkedList()
     var position: Int = 0

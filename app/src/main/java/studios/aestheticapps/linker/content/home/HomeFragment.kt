@@ -15,11 +15,13 @@ import kotlinx.android.synthetic.main.content_home.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.FavoritesAdapter
+import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.adapters.RecentLinkAdapter
+import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 
-class HomeFragment : Fragment(), HomeContract.View, FavoritesAdapter.OnItemClickListener
+class HomeFragment : Fragment(), HomeContract.View
 {
     override var presenter: HomeContract.Presenter = HomePresenter(this)
 
@@ -36,12 +38,19 @@ class HomeFragment : Fragment(), HomeContract.View, FavoritesAdapter.OnItemClick
 
         setUpRecentRecyclerView()
         setUpFavoritesRecyclerView()
+        populateViewAdaptersWithContent()
     }
 
     override fun onDestroy()
     {
         super.onDestroy()
         presenter.stop()
+    }
+
+    override fun populateViewAdaptersWithContent()
+    {
+        recentLinkAdapter.elements = presenter.getRecentItems()
+        favLinkAdapter.elements = presenter.getFavoriteItems()
     }
 
     override fun hideBubbles()
@@ -61,9 +70,7 @@ class HomeFragment : Fragment(), HomeContract.View, FavoritesAdapter.OnItemClick
             false
         )
 
-        recentLinkAdapter = RecentLinkAdapter()
-        recentLinkAdapter.elements = presenter.getRecentItems()
-
+        recentLinkAdapter = RecentLinkAdapter(presenter as OnItemClickListener)
         recentRecyclerView.apply {
             layoutManager = horizontalLayoutManager
             adapter = recentLinkAdapter
@@ -72,8 +79,7 @@ class HomeFragment : Fragment(), HomeContract.View, FavoritesAdapter.OnItemClick
 
     override fun setUpFavoritesRecyclerView()
     {
-        favLinkAdapter = FavoritesAdapter(this)
-        favLinkAdapter.elements = presenter.getFavoriteItems()
+        favLinkAdapter = FavoritesAdapter(presenter as OnItemClickListener)
 
         favRecyclerView.apply {
             adapter = favLinkAdapter
@@ -91,18 +97,9 @@ class HomeFragment : Fragment(), HomeContract.View, FavoritesAdapter.OnItemClick
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    override fun onItemClicked(link: Link)
-    {
-        //TODO Fire browser
-    }
+    override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
 
-    override fun onItemLongClicked(link: Link)
-    {
-        //TODO Fire DetailsView
-    }
+    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(context!!, link)
 
-    override fun onShare(link: Link)
-    {
-        //TODO Share
-    }
+    override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 }

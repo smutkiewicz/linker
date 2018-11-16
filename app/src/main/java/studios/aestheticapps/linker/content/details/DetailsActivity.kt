@@ -12,8 +12,6 @@ import kotlinx.android.synthetic.main.content_details.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
-import studios.aestheticapps.linker.content.addedit.DetailsContract
-import studios.aestheticapps.linker.content.addedit.DetailsPresenter
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 

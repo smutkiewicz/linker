@@ -4,9 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -19,6 +17,8 @@ import kotlinx.android.synthetic.main.content_library.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
+import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.library.LibraryContract
 import studios.aestheticapps.linker.content.library.LibraryPresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
@@ -61,7 +61,7 @@ class LibraryBubbleContent(context: Context,
 
     override fun setUpLinksRecyclerView()
     {
-        linkAdapter = LinkAdapter(presenter as LinkAdapter.OnLibraryItemClickListener)
+        linkAdapter = LinkAdapter(presenter as OnItemClickListener)
         linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
 
         linksRecyclerView.apply {
@@ -116,22 +116,20 @@ class LibraryBubbleContent(context: Context,
         }
     }
 
-    override fun startClickCardAction(link: Link)
-    {
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(link.url)
-        startActivity(context, i, null)
-        callback.collapseBubble()
-    }
-
-    override fun startShareView(link: Link)
-    {
-        //TODO Share
-    }
-
     override fun hideKeyboardFrom(view: View)
     {
         val imm = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
+    override fun populateViewAdaptersWithContent()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
+
+    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(context!!, link)
+
+    override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 }

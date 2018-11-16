@@ -14,10 +14,13 @@ import io.mattcarroll.hover.Content
 import kotlinx.android.synthetic.main.content_home.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
+import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.adapters.RecentLinkAdapter
+import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.home.HomeContract
 import studios.aestheticapps.linker.content.home.HomePresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
+import studios.aestheticapps.linker.model.Link
 
 class HomeBubbleContent(context: Context,
                         application: Application,
@@ -60,7 +63,7 @@ class HomeBubbleContent(context: Context,
             false
         )
 
-        recentLinkAdapter = RecentLinkAdapter()
+        recentLinkAdapter = RecentLinkAdapter(presenter as OnItemClickListener)
         recentLinkAdapter.elements = presenter.getRecentItems()
 
         recentRecyclerView.apply {
@@ -79,4 +82,15 @@ class HomeBubbleContent(context: Context,
     {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun populateViewAdaptersWithContent()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
+
+    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(context!!, link)
+
+    override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 }

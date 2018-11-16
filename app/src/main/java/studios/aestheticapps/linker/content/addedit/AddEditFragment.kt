@@ -85,6 +85,8 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View
 
         if (model != null)
             mapModelToView()
+        else
+            buildSampleItemFromClipboardContent()
     }
 
     override fun createFab()

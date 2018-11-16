@@ -1,14 +1,14 @@
 package studios.aestheticapps.linker.content.library
 
 import android.app.Application
-import studios.aestheticapps.linker.adapters.LinkAdapter
+import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.ALL
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Presenter, LinkAdapter.OnLibraryItemClickListener
+class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Presenter, OnItemClickListener
 {
     private lateinit var repository: LinkRepository
 
@@ -21,10 +21,6 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
     {
         repository = LinkRepository(application)
     }
-
-    override fun start() {}
-
-    override fun stop() {}
 
     override fun getAllItems(): LinkedList<Link> = repository.getListOf(ALL)
 
@@ -46,7 +42,13 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
         repository.update(link)
     }
 
-    override fun onItemClicked(link: Link) = view.startClickCardAction(link)
+    override fun onItemClicked(link: Link)
+    {
+        setItemRecent(link)
+        view.startInternetAction(link)
+    }
+
+    override fun onItemLongClicked(link: Link) = view.startDetailsAction(link)
 
     override fun onFavourite(link: Link) = setItemFavourite(link)
 

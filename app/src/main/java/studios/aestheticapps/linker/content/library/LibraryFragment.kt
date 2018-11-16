@@ -17,10 +17,10 @@ import kotlinx.android.synthetic.main.content_library.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
-import studios.aestheticapps.linker.content.details.DetailsActivity
+import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
 class LibraryFragment : Fragment(), LibraryContract.View
 {
@@ -38,12 +38,18 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
         setUpSearchBox()
         setUpLinksRecyclerView()
+        populateViewAdaptersWithContent()
     }
 
     override fun onDestroy()
     {
         super.onDestroy()
         presenter.stop()
+    }
+
+    override fun populateViewAdaptersWithContent()
+    {
+        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
     }
 
     override fun hideBubbles()
@@ -57,8 +63,7 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
     override fun setUpLinksRecyclerView()
     {
-        linkAdapter = LinkAdapter(presenter as LinkAdapter.OnLibraryItemClickListener)
-        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
+        linkAdapter = LinkAdapter(presenter as OnItemClickListener)
 
         linksRecyclerView.apply {
             adapter = linkAdapter
@@ -110,35 +115,33 @@ class LibraryFragment : Fragment(), LibraryContract.View
         }
     }
 
-    override fun startClickCardAction(link: Link)
-    {
-        val intent = Intent(context, DetailsActivity::class.java)
-        intent.putExtra(PARCEL_LINK, link)
-        startActivity(intent)
-    }
-
-    override fun startShareView(link: Link)
-    {
-        //TODO Facebook Share
-    }
-
     override fun hideKeyboardFrom(view: View)
     {
         val imm = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
+
+    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(context!!, link)
+
+    override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
+
     private fun buildExitDialogAndConfirmDelete(id: Int, adapterPosition: Int)
     {
-        val builder = AlertDialog.Builder(context!!).apply {
-            setTitle(R.string.library_confirm_exit)
-            setMessage(R.string.library_message_confirm_exit)
-            setNegativeButton(R.string.library_dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
-            setPositiveButton(R.string.library_delete) { _, _ -> deleteItemPermanently(id, adapterPosition) }
-        }
+        val builder = AlertDialog
+            .Builder(context!!)
+            .apply {
+                setTitle(R.string.library_confirm_exit)
+                setMessage(R.string.library_message_confirm_exit)
+                setNegativeButton(R.string.library_dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
+                setPositiveButton(R.string.library_delete) { _, _ -> deleteItemPermanently(id, adapterPosition) }
+            }
 
-        builder.create()
-        builder.show()
+        builder.apply {
+            create()
+            show()
+        }
     }
 
     private fun deleteItemPermanently(id: Int, adapterPosition: Int)

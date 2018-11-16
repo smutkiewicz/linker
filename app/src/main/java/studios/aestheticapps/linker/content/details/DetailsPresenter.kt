@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.content.addedit
+package studios.aestheticapps.linker.content.details
 
 import studios.aestheticapps.linker.persistence.LinkRepository
 
