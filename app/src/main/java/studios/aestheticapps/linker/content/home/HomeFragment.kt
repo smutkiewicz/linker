@@ -99,7 +99,7 @@ class HomeFragment : Fragment(), HomeContract.View
 
     override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
 
-    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(context!!, link)
+    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, link)
 
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 }
