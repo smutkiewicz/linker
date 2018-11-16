@@ -96,10 +96,9 @@ class LibraryFragment : Fragment(), LibraryContract.View
     override fun setUpSearchBox()
     {
         searchBox.apply {
-            isActivated = true
+            isActivated = false
             isIconified = false
 
-            onActionViewExpanded()
             clearFocus()
 
             setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener
@@ -133,6 +132,7 @@ class LibraryFragment : Fragment(), LibraryContract.View
             .Builder(context!!)
             .apply {
                 setTitle(R.string.library_confirm_exit)
+                setIcon(R.mipmap.ic_launcher)
                 setMessage(R.string.library_message_confirm_exit)
                 setNegativeButton(R.string.library_dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
                 setPositiveButton(R.string.library_delete) { _, _ -> deleteItemPermanently(id, adapterPosition) }

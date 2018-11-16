@@ -47,6 +47,7 @@
     <string name="library_dont_delete">Save</string>
     <string name="recent">Quick Share</string>
     <string name="favorites">Favorites</string>
+    <string name="no_description">No description</string>
 
     <!-- New stuff, for refactor -->
 

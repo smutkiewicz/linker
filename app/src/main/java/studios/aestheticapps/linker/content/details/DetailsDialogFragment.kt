@@ -10,6 +10,7 @@ import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
+import android.widget.GridLayout.VERTICAL
 import android.widget.TextView
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.OnItemClickListener
@@ -72,10 +73,16 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View
             findViewById<TextView>(R.id.detailsTitleTv).text = model.title
             findViewById<TextView>(R.id.detailsCategoryTv).text = model.category
             findViewById<TextView>(R.id.detailsUrlTv).text = model.url
-            findViewById<TextView>(R.id.detailsDescrTv).text = model.description
             findViewById<CardView>(R.id.detailsGoToUrlCv).setOnClickListener {
                 callback.onItemClicked(model)
             }
+        }
+
+        val descrTv = view.findViewById<TextView>(R.id.detailsDescrTv)
+        descrTv.text = when
+        {
+            model.description.isBlank() -> getString(R.string.no_description)
+            else -> model.description
         }
     }
 
@@ -86,10 +93,10 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View
         val rv = view.findViewById<RecyclerView>(R.id.detailsTagRv)
         rv.apply {
             adapter = tagAdapter
-            isNestedScrollingEnabled = true
+            isNestedScrollingEnabled = false
             layoutManager = StaggeredGridLayoutManager(
                 resources.getInteger(R.integer.tags_details_column_count),
-                StaggeredGridLayoutManager.VERTICAL
+                VERTICAL
             )
         }
     }

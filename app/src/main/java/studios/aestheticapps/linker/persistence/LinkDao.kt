@@ -16,12 +16,12 @@ interface LinkDao
     @Insert(onConflict = REPLACE)
     fun insert(link: Link)
 
-    @Query("SELECT * from link_table " +
+    @Query("SELECT * FROM link_table " +
         "WHERE title LIKE '%' || :phrase || '%' " +
         "OR domain LIKE '%' || :phrase || '%' " +
         "OR url LIKE '%' || :phrase || '%' " +
         "OR tags LIKE '%' || :phrase || '%' " +
-        "ORDER BY title")
+        "ORDER BY title ASC")
     fun search(phrase: String): List<Link>
 
     @Query("SELECT * from link_table WHERE id = :id")
