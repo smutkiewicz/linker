@@ -30,7 +30,7 @@ interface LinkDao
     @Query("SELECT * from link_table WHERE isFavorite = 1")
     fun getFavourites(): List<Link>
 
-    @Query("SELECT * from link_table ORDER BY lastUsed DESC LIMIT 1")
+    @Query("SELECT * from link_table ORDER BY lastUsed DESC")
     fun getRecent(): List<Link>
 
     @Update

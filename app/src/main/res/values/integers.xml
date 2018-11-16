@@ -2,4 +2,5 @@
 <resources>
     <integer name="tags_column_count">3</integer>
     <integer name="favs_column_count">2</integer>
+    <integer name="tags_details_column_count">2</integer>
 </resources>

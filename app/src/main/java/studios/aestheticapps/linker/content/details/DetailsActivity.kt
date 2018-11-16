@@ -7,13 +7,12 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.android.synthetic.main.content_details.*
-import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
 class DetailsActivity : AppCompatActivity(), DetailsContract.View
 {
@@ -28,10 +27,6 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.View
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
-
-        createViewFromModel()
-        createTagRecyclerView()
-        createFab()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
@@ -46,7 +41,6 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.View
         {
             R.id.action_edit ->
             {
-                openEdit()
                 true
             }
 
@@ -54,7 +48,7 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.View
         }
     }
 
-    override fun createViewFromModel()
+    override fun createViewFromModel(view: View)
     {
         model = intent.getParcelableExtra(Link.PARCEL_LINK)
 
@@ -66,7 +60,7 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.View
         }
     }
 
-    override fun createTagRecyclerView()
+    override fun createTagRecyclerView(view: View)
     {
         val tagAdapter = TagAdapter(false)
         tagAdapter.elements = model.stringToListOfTags()
@@ -78,19 +72,20 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.View
         )
     }
 
-    override fun createFab()
+    override fun createFab(view: View)
     {
         shareFab.setOnClickListener{
             //TODO Sharer
         }
     }
 
-    override fun openEdit()
-    {
-        val intent = Intent(applicationContext, MainActivity::class.java)
-        intent.putExtra(PARCEL_LINK, model)
-        startActivity(intent)
-    }
+    override fun populateViewAdaptersWithContent() {}
+
+    override fun startInternetAction(link: Link) {}
+
+    override fun startDetailsAction(link: Link) {}
+
+    override fun startShareView(link: Link) {}
 
     private fun createInternetIntent()
     {
