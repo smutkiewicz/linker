@@ -48,6 +48,10 @@
     <string name="recent">Quick Share</string>
     <string name="favorites">Favorites</string>
     <string name="no_description">No description</string>
+    <string name="edit_confirm_exit">Confirm exit</string>
+    <string name="edit_message_confirm_exit">Are you sure you want to abort your changes?</string>
+    <string name="edit_save">Save</string>
+    <string name="edit_abort">Abort</string>
 
     <!-- New stuff, for refactor -->
 

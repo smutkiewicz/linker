@@ -162,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     app:srcCompat="@drawable/ic_edit"
-                    android:id="@+id/floatingActionButton"
+                    android:id="@+id/editFab"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"

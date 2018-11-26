@@ -16,6 +16,8 @@ interface AddEditTaskContract
         fun createCategoriesSpinner()
         fun createViewFromModel()
         fun createTagRecyclerView()
+        fun createEditTexts()
+        fun createSpinner()
         fun addTag()
         fun buildItem(): Link
         fun mapModelToView()

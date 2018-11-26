@@ -8,4 +8,6 @@ interface OnItemClickListener
     fun onItemClicked(link: Link)
     fun onShare(link: Link)
     fun onFavourite(link: Link)
+
+    fun onEdit(link: Link) {} //not necessary for some Views
 }

@@ -103,9 +103,14 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View
 
     override fun createFab(view: View)
     {
-        val fab = view.findViewById<FloatingActionButton>(R.id.shareFab)
-        fab.setOnClickListener{
+        val shareFab = view.findViewById<FloatingActionButton>(R.id.shareFab)
+        shareFab.setOnClickListener{
             callback.onShare(model)
+        }
+
+        val editFab = view.findViewById<FloatingActionButton>(R.id.editFab)
+        editFab.setOnClickListener{
+            callback.onEdit(model)
         }
     }
 
@@ -119,6 +124,8 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View
     override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, link)
 
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
+
+    override fun startEditView(link: Link) = IntentActionHelper.startEditView(context!!, link)
 
     private fun inflateAndReturnDetailsView()
         = activity!!.layoutInflater.inflate(R.layout.content_details, null)

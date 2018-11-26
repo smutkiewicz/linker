@@ -49,6 +49,11 @@ class DetailsPresenter(val view: DetailsContract.View) : DetailsContract.Present
         view.startShareView(link)
     }
 
+    override fun onEdit(link: Link)
+    {
+        view.startEditView(link)
+    }
+
     private fun getCurrentTime(): String
     {
         val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")

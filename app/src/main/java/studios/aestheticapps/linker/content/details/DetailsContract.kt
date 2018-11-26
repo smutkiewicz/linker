@@ -17,6 +17,7 @@ interface DetailsContract
         fun startInternetAction(link: Link)
         fun startDetailsAction(link: Link)
         fun startShareView(link: Link)
+        fun startEditView(link: Link)
     }
 
     interface Presenter : BasePresenter

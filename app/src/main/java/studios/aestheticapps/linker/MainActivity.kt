@@ -11,8 +11,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
@@ -36,7 +34,6 @@ class MainActivity : AppCompatActivity(),
     AddEditFragment.AddEditCallback
 {
     override var presenter: MainContract.Presenter = MainPresenter(this)
-    var menuState = SHOW_MENU
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -44,7 +41,6 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
 
         setUpBottomNavigation()
         setUpViewPager()
@@ -59,13 +55,6 @@ class MainActivity : AppCompatActivity(),
     override fun onCreateOptionsMenu(menu: Menu): Boolean
     {
         menuInflater.inflate(R.menu.menu_main, menu)
-
-        if (menuState == HIDE_MENU)
-        {
-            for (i in 0 until menu.size())
-                menu.getItem(i).isVisible = false
-        }
-
         return true
     }
 
@@ -160,26 +149,6 @@ class MainActivity : AppCompatActivity(),
         BubbleThemeManager.init(defaultTheme)
     }
 
-    override fun returnToMainView()
-    {
-        menuState = SHOW_MENU
-        invalidateOptionsMenu()
-        bottomNavigation.visibility = VISIBLE
-        viewPager.currentItem = HOME
-    }
-
-    override fun prepareEditView()
-    {
-        menuState = HIDE_MENU
-        invalidateOptionsMenu()
-        bottomNavigation.visibility = GONE
-    }
-
-    override fun prepareAddView()
-    {
-        bottomNavigation.visibility = VISIBLE
-    }
-
     override fun goToEditViewIfNeeded()
     {
         if (intent.hasExtra(PARCEL_LINK)) viewPager.currentItem = ADD_EDIT
@@ -200,6 +169,11 @@ class MainActivity : AppCompatActivity(),
         {
             AddEditFragment.newInstance(MODE_ADD)
         }
+    }
+
+    override fun returnToMainView()
+    {
+        viewPager.currentItem = LIBRARY
     }
 
     private fun isBubbleServiceRunning(): Boolean
