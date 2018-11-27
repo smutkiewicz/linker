@@ -10,8 +10,8 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
 import java.util.*
 
-class LinkAdapter(private val callback: OnItemClickListener)
-    : RecyclerView.Adapter<LinkAdapter.ViewHolder>(), MyAdapter
+class FavoritesAdapter(private val callback: OnItemClickListener)
+    : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>(), MyAdapter
 {
     override var elements: MutableList<Link> = LinkedList()
         set(value)
@@ -25,7 +25,7 @@ class LinkAdapter(private val callback: OnItemClickListener)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
     {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.list_item,
+            R.layout.fav_list_item,
             parent,
             false
         )
@@ -40,9 +40,6 @@ class LinkAdapter(private val callback: OnItemClickListener)
             this.link = link
             id = link.id
             titleTv.text = link.title
-            categoryTv.text = link.category
-            domainTv.text = link.domain
-            changeFavourite(link.isFavorite)
         }
     }
 
@@ -58,9 +55,6 @@ class LinkAdapter(private val callback: OnItemClickListener)
 
         var id: Int = 0
         val titleTv: TextView = itemView.findViewById(R.id.titleTv)
-        val categoryTv: TextView = itemView.findViewById(R.id.categoryTv)
-        val domainTv: TextView = itemView.findViewById(R.id.domainTv)
-        val isFavouriteIb: ImageButton = itemView.findViewById(R.id.favouriteIb)
         val shareIb: ImageButton = itemView.findViewById(R.id.shareIb)
 
         init
@@ -74,27 +68,9 @@ class LinkAdapter(private val callback: OnItemClickListener)
                 true
             }
 
-            isFavouriteIb.setOnClickListener{
-                val newValue = !link.isFavorite
-                changeFavourite(newValue)
-                callback.onFavourite(link)
-            }
-
             shareIb.setOnClickListener{
                 callback.onShare(link)
             }
-        }
-
-        fun changeFavourite(newValue: Boolean)
-        {
-            val view = isFavouriteIb.rootView
-            val imageDrawable = when
-            {
-                newValue -> view.resources.getDrawable(R.drawable.ic_starred)
-                else -> view.resources.getDrawable(R.drawable.ic_unstarred)
-            }
-
-            isFavouriteIb.setImageDrawable(imageDrawable)
         }
     }
 }

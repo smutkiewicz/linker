@@ -22,12 +22,15 @@
                 android:id="@+id/titleTv"
                 android:text="@string/sample_title_of_a_link"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/miniatureIb"
                 android:layout_marginStart="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/favouriteIb" android:layout_marginEnd="8dp"/>
+                app:layout_constraintEnd_toStartOf="@+id/favouriteIb"
+                android:layout_marginEnd="8dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/domainTv" android:maxLines="3" android:textAllCaps="false" android:typeface="sans"/>
 
         <ImageView
                 android:id="@+id/miniatureIb"
@@ -61,7 +64,7 @@
                 android:id="@+id/domainTv"
                 android:text="@string/sample_link"
                 android:layout_width="0dp"
-                android:layout_height="43dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/miniatureIb"
                 android:layout_marginStart="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -69,7 +72,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/favouriteIb"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp" android:textColor="@color/colorPrimary"/>
 
         <ImageButton
                 android:layout_width="42dp"
@@ -87,6 +90,21 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"/>
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/categoryTv"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/miniatureIb"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/domainTv"
+                android:layout_marginEnd="8dp"
+                android:textStyle="italic"
+                android:textSize="12sp"
+                android:textAlignment="center"/>
 
     </android.support.constraint.ConstraintLayout>
 

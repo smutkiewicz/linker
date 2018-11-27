@@ -1,56 +1,54 @@
-package studios.aestheticapps.linker.content.library
+package studios.aestheticapps.linker.floatingmenu.content
 
 import android.app.Activity
+import android.app.Application
+import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import kotlinx.android.synthetic.main.content_library.*
+import android.widget.FrameLayout
+import io.mattcarroll.hover.Content
+import kotlinx.android.synthetic.main.content_library.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
 import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.content.IntentActionHelper
+import studios.aestheticapps.linker.content.library.LibraryContract
+import studios.aestheticapps.linker.content.library.LibraryPresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 
-class LibraryFragment : Fragment(), LibraryContract.View
+class LibraryBubbleContent(context: Context,
+                           application: Application,
+                           private val callback: BubbleContentCallback) : FrameLayout(context), Content, LibraryContract.View
 {
     override var presenter: LibraryContract.Presenter = LibraryPresenter(this)
 
     private lateinit var linkAdapter: LinkAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
-        = inflater.inflate(R.layout.content_library, container, false)
-
-    override fun onStart()
+    init
     {
-        super.onStart()
-        presenter.start(activity!!.application)
+        LayoutInflater.from(context).inflate(R.layout.content_library, this, true)
+
+        presenter.start(application)
 
         setUpSearchBox()
         setUpLinksRecyclerView()
-        populateViewAdaptersWithContent()
     }
 
-    override fun onDestroy()
-    {
-        super.onDestroy()
-        presenter.stop()
-    }
+    override fun getView() = this
 
-    override fun populateViewAdaptersWithContent()
-    {
-        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
-    }
+    override fun isFullscreen() = true
+
+    override fun onShown() {}
+
+    override fun onHidden() {}
 
     override fun hideBubbles()
     {
@@ -64,6 +62,7 @@ class LibraryFragment : Fragment(), LibraryContract.View
     override fun setUpLinksRecyclerView()
     {
         linkAdapter = LinkAdapter(presenter as OnItemClickListener)
+        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
 
         linksRecyclerView.apply {
             adapter = linkAdapter
@@ -78,17 +77,19 @@ class LibraryFragment : Fragment(), LibraryContract.View
     {
         val helper = ItemTouchHelper(
             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
-        {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
             {
-                val holder = viewHolder as LinkAdapter.ViewHolder
-                buildExitDialogAndConfirmDelete(holder.id, viewHolder.adapterPosition)
-            }
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
+                {
+                    val holder = viewHolder as LinkAdapter.ViewHolder
 
-            override fun onMove(rv: RecyclerView?,
-                                h: RecyclerView.ViewHolder?,
-                                t: RecyclerView.ViewHolder?): Boolean { return false }
-        })
+                    presenter.removeItem(holder.id)
+                    linkAdapter.removeItem(viewHolder.adapterPosition)
+                }
+
+                override fun onMove(rv: RecyclerView?,
+                                    h: RecyclerView.ViewHolder?,
+                                    t: RecyclerView.ViewHolder?): Boolean { return false }
+            })
 
         helper.attachToRecyclerView(linksRecyclerView)
     }
@@ -96,9 +97,10 @@ class LibraryFragment : Fragment(), LibraryContract.View
     override fun setUpSearchBox()
     {
         searchBox.apply {
-            isActivated = false
+            isActivated = true
             isIconified = false
 
+            onActionViewExpanded()
             clearFocus()
 
             setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener
@@ -120,33 +122,14 @@ class LibraryFragment : Fragment(), LibraryContract.View
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    override fun populateViewAdaptersWithContent()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
 
-    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, link)
+    override fun startDetailsAction(link: Link) {}
 
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
-
-    private fun buildExitDialogAndConfirmDelete(id: Int, adapterPosition: Int)
-    {
-        val builder = AlertDialog
-            .Builder(context!!)
-            .apply {
-                setTitle(R.string.library_confirm_exit)
-                setIcon(R.mipmap.ic_launcher)
-                setMessage(R.string.library_message_confirm_exit)
-                setNegativeButton(R.string.library_dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
-                setPositiveButton(R.string.library_delete) { _, _ -> deleteItemPermanently(id, adapterPosition) }
-            }
-
-        builder.apply {
-            create()
-            show()
-        }
-    }
-
-    private fun deleteItemPermanently(id: Int, adapterPosition: Int)
-    {
-        presenter.removeItem(id)
-        linkAdapter.removeItem(adapterPosition)
-    }
 }

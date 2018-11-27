@@ -14,6 +14,8 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
+import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_ADD
+import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_EDIT
 import studios.aestheticapps.linker.content.home.HomeFragment
 import studios.aestheticapps.linker.content.library.LibraryFragment
 import studios.aestheticapps.linker.content.main.MainContract
@@ -23,6 +25,8 @@ import studios.aestheticapps.linker.extensions.createDrawOverlayPermissionsInten
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleThemeManager
+import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
 class MainActivity : AppCompatActivity(),
     MainContract.View,
@@ -80,18 +84,21 @@ class MainActivity : AppCompatActivity(),
         {
             R.id.action_add ->
             {
+                setPageAsLastVisited(ADD_EDIT)
                 viewPager.currentItem = ADD_EDIT
                 return true
             }
 
             R.id.action_home ->
             {
+                setPageAsLastVisited(HOME)
                 viewPager.currentItem = HOME
                 return true
             }
 
             R.id.action_library ->
             {
+                setPageAsLastVisited(LIBRARY)
                 viewPager.currentItem = LIBRARY
                 return true
             }
@@ -104,8 +111,8 @@ class MainActivity : AppCompatActivity(),
     {
         val adapter = ScreenSlidePagerAdapter(supportFragmentManager)
         viewPager.adapter = adapter
-        viewPager.currentItem = HOME
         viewPager.pagingEnabled = false
+        viewPager.currentItem = getLastVisitedPage()
     }
 
     override fun setUpBottomNavigation()
@@ -142,9 +149,31 @@ class MainActivity : AppCompatActivity(),
         BubbleThemeManager.init(defaultTheme)
     }
 
+    override fun goToEditViewIfNeeded()
+    {
+        if (intent.hasExtra(PARCEL_LINK)) viewPager.currentItem = ADD_EDIT
+        else viewPager.currentItem = HOME
+    }
+
+    override fun createViewFromModel(): AddEditFragment
+    {
+        return if (intent.hasExtra(PARCEL_LINK))
+        {
+            val model = intent.getParcelableExtra<Link>(PARCEL_LINK)
+            val myFragment = AddEditFragment.newInstance(MODE_EDIT)
+            myFragment.arguments!!.putParcelable(PARCEL_LINK, model)
+
+            myFragment
+        }
+        else
+        {
+            AddEditFragment.newInstance(MODE_ADD)
+        }
+    }
+
     override fun returnToMainView()
     {
-        viewPager.currentItem = HOME
+        viewPager.currentItem = LIBRARY
     }
 
     private fun isBubbleServiceRunning(): Boolean
@@ -158,6 +187,16 @@ class MainActivity : AppCompatActivity(),
         return false
     }
 
+    private fun setPageAsLastVisited(currentPage: Int)
+    {
+        getPreferences(Context.MODE_PRIVATE)
+            .edit()
+            .putInt(LAST_PAGE, currentPage)
+            .apply()
+    }
+
+    private fun getLastVisitedPage() = getPreferences(Context.MODE_PRIVATE).getInt(LAST_PAGE, HOME)
+
     private inner class ScreenSlidePagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm)
     {
         override fun getCount(): Int = PAGES_COUNT
@@ -166,9 +205,9 @@ class MainActivity : AppCompatActivity(),
         {
             return when (position)
             {
-                0 -> AddEditFragment()
-                1 -> HomeFragment()
-                2 -> LibraryFragment()
+                ADD_EDIT -> createViewFromModel()
+                HOME -> HomeFragment()
+                LIBRARY -> LibraryFragment()
                 else -> null
             }
         }
@@ -177,10 +216,16 @@ class MainActivity : AppCompatActivity(),
     companion object
     {
         private const val TAG = "MainActivity"
+        private const val LAST_PAGE = "last_visited_page"
+
         private const val ADD_EDIT = 0
         private const val HOME = 1
         private const val LIBRARY = 2
         private const val PAGES_COUNT = 3
+
+        private const val SHOW_MENU = 4
+        private const val HIDE_MENU = 5
+
         const val MY_PERMISSIONS_REQUEST_DRAW_OVERLAY = 0
     }
 }

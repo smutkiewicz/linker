@@ -3,6 +3,8 @@ package studios.aestheticapps.linker.content.addedit
 import android.app.Application
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract.Presenter
 {
@@ -24,22 +26,22 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
 
     override fun saveItem(link: Link) = repository.insert(link)
 
+    override fun updateItem(link: Link) = repository.update(link)
+
     override fun parseDomain(url: String) = "github.com"
 
-    override fun tagsToString(elements: MutableList<String>): String
-    {
-        var tagString = ""
-        elements.forEach{
-            tagString = "$tagString;$it"
-        }
+    override fun tagsToString(elements: MutableList<String>) = Link.listOfTagsToString(elements)
 
-        return tagString
+    override fun getCurrentDateTimeStamp(): String
+    {
+        val formatter = SimpleDateFormat(DATE_TIME_FORMAT)
+        val date = Date()
+
+        return formatter.format(date)
     }
 
-    override fun stringToTags(tagString: String): MutableList<String>
+    private companion object
     {
-        val list = mutableListOf<String>()
-        list.addAll(tagString.split(";"))
-        return list
+        const val DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss"
     }
 }

@@ -10,10 +10,17 @@ interface HomeContract
 {
     interface View : BaseView<Presenter>
     {
+        fun populateViewAdaptersWithContent()
+
         fun hideBubbles()
         fun hideKeyboardFrom(view: android.view.View)
 
         fun setUpRecentRecyclerView()
+        fun setUpFavoritesRecyclerView()
+
+        fun startInternetAction(link: Link)
+        fun startDetailsAction(link: Link)
+        fun startShareView(link: Link)
     }
 
     interface Presenter : BasePresenter
@@ -21,5 +28,8 @@ interface HomeContract
         fun start(application: Application)
 
         fun getRecentItems(): LinkedList<Link>
+        fun getFavoriteItems(): LinkedList<Link>
+        fun setItemFavourite(link: Link)
+        fun setItemRecent(link: Link)
     }
 }

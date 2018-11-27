@@ -14,14 +14,17 @@ import io.mattcarroll.hover.Content
 import kotlinx.android.synthetic.main.content_home.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
+import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.adapters.RecentLinkAdapter
+import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.home.HomeContract
 import studios.aestheticapps.linker.content.home.HomePresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
+import studios.aestheticapps.linker.model.Link
 
-class BrowseItemsBubbleContent(context: Context,
-                               application: Application,
-                               private val callback: BubbleContentCallback) : FrameLayout(context), Content, HomeContract.View
+class HomeBubbleContent(context: Context,
+                        application: Application,
+                        private val callback: BubbleContentCallback) : FrameLayout(context), Content, HomeContract.View
 {
     override var presenter: HomeContract.Presenter = HomePresenter(this)
 
@@ -60,7 +63,7 @@ class BrowseItemsBubbleContent(context: Context,
             false
         )
 
-        recentLinkAdapter = RecentLinkAdapter()
+        recentLinkAdapter = RecentLinkAdapter(presenter as OnItemClickListener)
         recentLinkAdapter.elements = presenter.getRecentItems()
 
         recentRecyclerView.apply {
@@ -74,4 +77,20 @@ class BrowseItemsBubbleContent(context: Context,
         val imm = context!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
+    override fun setUpFavoritesRecyclerView()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun populateViewAdaptersWithContent()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
+
+    override fun startDetailsAction(link: Link) {}
+
+    override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 }

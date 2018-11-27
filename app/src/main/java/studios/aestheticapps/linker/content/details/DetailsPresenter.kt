@@ -1,15 +1,13 @@
-package studios.aestheticapps.linker.content.home
+package studios.aestheticapps.linker.content.details
 
 import android.app.Application
 import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.FAVORITES
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.RECENT
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnItemClickListener
+class DetailsPresenter(val view: DetailsContract.View) : DetailsContract.Presenter, OnItemClickListener
 {
     private lateinit var repository: LinkRepository
 
@@ -22,10 +20,6 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
     {
         repository = LinkRepository(application)
     }
-
-    override fun getRecentItems() = repository.getListOf(RECENT)
-
-    override fun getFavoriteItems() = repository.getListOf(FAVORITES)
 
     override fun setItemFavourite(link: Link)
     {
@@ -53,6 +47,11 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
     {
         setItemRecent(link)
         view.startShareView(link)
+    }
+
+    override fun onEdit(link: Link)
+    {
+        view.startEditView(link)
     }
 
     private fun getCurrentTime(): String
