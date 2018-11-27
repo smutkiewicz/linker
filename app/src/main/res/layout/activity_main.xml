@@ -25,9 +25,7 @@
 
     <include android:id="@+id/layout"
              layout="@layout/content_main"
-             app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
-             android:layout_marginBottom="56dp"
-             android:layout_marginTop="56dp"/>
+             app:layout_constraintBottom_toTopOf="@id/bottomNavigation"/>
 
     <android.support.design.widget.BottomNavigationView
             android:id="@+id/bottomNavigation"
