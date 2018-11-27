@@ -2,6 +2,7 @@ package studios.aestheticapps.linker.content.addedit
 
 import android.app.Application
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.LinkValidator
 import studios.aestheticapps.linker.persistence.LinkRepository
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,6 +39,21 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
         val date = Date()
 
         return formatter.format(date)
+    }
+
+    override fun buildItemFromUrl(url: String): Link
+    {
+        val modelUrl = LinkValidator.provideValidUrlOrEmpty(url)
+        val host = LinkValidator.obtainHost(url)
+
+        return Link(
+            title = host,
+            url = modelUrl,
+            domain = host,
+            lastUsed = getCurrentDateTimeStamp(),
+            tags = host,
+            isFavorite = false
+        )
     }
 
     private companion object

@@ -2,8 +2,10 @@ package studios.aestheticapps.linker.model
 
 import java.net.URL
 
-class LinkValidator
+object LinkValidator
 {
+    private const val EMPTY_URL = ""
+
     fun provideValidUrlOrEmpty(url: String): String
     {
         var processedUrl = url
@@ -15,8 +17,13 @@ class LinkValidator
         }
         else
         {
-            //czy wystepuja spacje, usun jesli tak
-            //czy wystepuja kropki
+            if (!processedUrl.contains("."))
+            {
+                //it won't be possible to repair link here
+                return EMPTY_URL
+            }
+
+            processedUrl.replace(" ", "")
 
             processedUrl = if (beginsWithValidWww(url))
             {
@@ -48,34 +55,19 @@ class LinkValidator
         }
     }
 
-    private fun beginsWithValidProtocol(url: String): Boolean
+    fun obtainHost(url: String): String
     {
-        return url.startsWith("https://") or url.startsWith("http://")
+        return if (isValid(url))
+            URL(url).toURI().host
+        else
+            EMPTY_URL
     }
 
-    private fun beginsWithValidWww(url: String): Boolean
-    {
-        return url.startsWith("www.")
-    }
+    private fun beginsWithValidWww(url: String) = url.startsWith("www.")
 
-    private fun addProtocolPrefixAndWww(url: String): String
-    {
-        var processedUrl = url
+    private fun beginsWithValidProtocol(url: String) = url.startsWith("https://") or url.startsWith("http://")
 
-        processedUrl = "http://www.$processedUrl"
-        return processedUrl
-    }
+    private fun addProtocolPrefixAndWww(url: String) = "http://www.$url"
 
-    private fun addProtocolPrefix(url: String): String
-    {
-        var processedUrl = url
-
-        processedUrl = "http://$processedUrl"
-        return processedUrl
-    }
-
-    private companion object
-    {
-        const val EMPTY_URL = ""
-    }
+    private fun addProtocolPrefix(url: String) = "http://$url"
 }

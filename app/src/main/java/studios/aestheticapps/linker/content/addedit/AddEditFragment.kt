@@ -54,6 +54,24 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         createEditTexts()
     }
 
+    override fun onResume()
+    {
+        super.onResume()
+
+        when (mode)
+        {
+            MODE_ADD ->
+            {
+                if (clipboardHelper.containsNewContent(model!!.url))
+                {
+                    val newContent = clipboardHelper.obtainClipboardContent()
+                    model = presenter.buildItemFromUrl(newContent)
+                    mapModelToView()
+                }
+            }
+        }
+    }
+
     override fun onAttach(context: Context?)
     {
         super.onAttach(context)
@@ -88,14 +106,12 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
 
     override fun createViewFromModel()
     {
-        if (model != null)
-        {
-            mapModelToView()
-        }
-        else
+        if (model == null)
         {
             buildSampleItemFromClipboardContent()
         }
+
+        mapModelToView()
     }
 
     override fun createFab()
@@ -216,7 +232,8 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
 
     override fun buildSampleItemFromClipboardContent()
     {
-        addEditUrlEt.setText(clipboardHelper.obtainClipboardContent())
+        val newContent = clipboardHelper.obtainClipboardContent()
+        model = presenter.buildItemFromUrl(newContent)
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = callback.onEdited()
@@ -244,7 +261,8 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
                 {
                     if (clipboardHelper.containsNewContent(savedModel.url))
                     {
-                        //TODO Link processing
+                        val newContent = clipboardHelper.obtainClipboardContent()
+                        model = presenter.buildItemFromUrl(newContent)
                     }
                     else
                     {

@@ -33,5 +33,6 @@ interface AddEditTaskContract
 
         fun tagsToString(elements: MutableList<String>): String
         fun getCurrentDateTimeStamp(): String
+        fun buildItemFromUrl(url: String): Link
     }
 }
