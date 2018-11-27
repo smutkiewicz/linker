@@ -1,10 +1,40 @@
 package studios.aestheticapps.linker.model
 
 import java.net.URL
-import java.util.regex.Pattern
 
 class LinkValidator
 {
+    fun provideValidUrlOrEmpty(url: String): String
+    {
+        var processedUrl = url
+
+        //check if repairs are necessary
+        if (isValid(url))
+        {
+            return url
+        }
+        else
+        {
+            //czy wystepuja spacje, usun jesli tak
+            //czy wystepuja kropki
+
+            processedUrl = if (beginsWithValidWww(url))
+            {
+                addProtocolPrefix(processedUrl)
+            }
+            else
+            {
+                addProtocolPrefixAndWww(processedUrl)
+            }
+        }
+
+        //check again AFTER repairs
+        return if (isValid(processedUrl))
+            processedUrl
+        else
+            EMPTY_URL
+    }
+
     fun isValid(url: String): Boolean
     {
         return try
@@ -18,34 +48,6 @@ class LinkValidator
         }
     }
 
-    fun provideValidUrlOrEmpty(url: String): String
-    {
-        var processedUrl = url
-
-        if (isValid(url))
-        {
-            return url
-        }
-        else
-        {
-            if (!beginsWithValidProtocol(url))
-            {
-                if (beginsWithValidWww(url))
-                {
-                    processedUrl = addProtocolPrefix(url)
-                    return processedUrl
-                }
-                else
-                {
-                    processedUrl = addProtocolPrefixAndWww(url)
-                    return processedUrl
-                }
-            }
-        }
-
-        return EMPTY_URL
-    }
-
     private fun beginsWithValidProtocol(url: String): Boolean
     {
         return url.startsWith("https://") or url.startsWith("http://")
@@ -56,23 +58,20 @@ class LinkValidator
         return url.startsWith("www.")
     }
 
+    private fun addProtocolPrefixAndWww(url: String): String
+    {
+        var processedUrl = url
+
+        processedUrl = "http://www.$processedUrl"
+        return processedUrl
+    }
+
     private fun addProtocolPrefix(url: String): String
     {
         var processedUrl = url
 
-        val p = Pattern.compile("www")
-        val m = p.matcher(processedUrl)
-
-        if (m.find())
-        {
-            val i = m.start()
-            processedUrl = processedUrl.substring(i)
-            processedUrl = "http://$processedUrl"
-
-            return processedUrl
-        }
-
-        return url
+        processedUrl = "http://$processedUrl"
+        return processedUrl
     }
 
     private companion object
