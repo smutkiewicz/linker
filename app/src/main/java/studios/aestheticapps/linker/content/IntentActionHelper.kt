@@ -12,6 +12,8 @@ import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
 object IntentActionHelper
 {
+    private const val SHARE_INTENT_TITLE = "Share Link to..."
+
     fun startInternetAction(context: Context, model: Link)
     {
         val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -27,7 +29,6 @@ object IntentActionHelper
         val args = Bundle()
         args.putParcelable(PARCEL_LINK, model)
 
-
         detailsDialog.apply {
             arguments = args
             show(manager, "Details")
@@ -36,7 +37,16 @@ object IntentActionHelper
 
     fun startShareView(context: Context, model: Link)
     {
-        //TODO Facebook Share
+        val intent = Intent(android.content.Intent.ACTION_SEND)
+        intent.apply {
+            type = "text/plain"
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+
+            putExtra(Intent.EXTRA_SUBJECT, model.title)
+            putExtra(Intent.EXTRA_TEXT, model.url)
+        }
+
+        context.startActivity(Intent.createChooser(intent, SHARE_INTENT_TITLE))
     }
 
     fun startEditView(context: Context, model: Link)

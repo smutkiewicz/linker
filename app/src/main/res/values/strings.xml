@@ -52,6 +52,7 @@
     <string name="edit_message_confirm_exit">Are you sure you want to abort your changes?</string>
     <string name="edit_save">Save</string>
     <string name="edit_abort">Abort</string>
+    <string name="tags_cloud">Tags Cloud</string>
 
     <!-- New stuff, for refactor -->
 

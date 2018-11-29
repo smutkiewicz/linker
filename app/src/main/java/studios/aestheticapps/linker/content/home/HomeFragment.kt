@@ -17,6 +17,7 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.FavoritesAdapter
 import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.adapters.RecentLinkAdapter
+import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
@@ -27,6 +28,7 @@ class HomeFragment : Fragment(), HomeContract.View
 
     private lateinit var recentLinkAdapter: RecentLinkAdapter
     private lateinit var favLinkAdapter: FavoritesAdapter
+    private lateinit var tagCloudAdapter: TagAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
         = inflater.inflate(R.layout.content_home, container, false)
@@ -38,6 +40,7 @@ class HomeFragment : Fragment(), HomeContract.View
 
         setUpRecentRecyclerView()
         setUpFavoritesRecyclerView()
+        setUpTagsCloudRecyclerView()
         populateViewAdaptersWithContent()
     }
 
@@ -51,6 +54,7 @@ class HomeFragment : Fragment(), HomeContract.View
     {
         recentLinkAdapter.elements = presenter.getRecentItems()
         favLinkAdapter.elements = presenter.getFavoriteItems()
+        tagCloudAdapter.elements = presenter.getTagsCloudItems()
     }
 
     override fun hideBubbles()
@@ -87,6 +91,20 @@ class HomeFragment : Fragment(), HomeContract.View
             layoutManager = GridLayoutManager(
                 context,
                 resources.getInteger(R.integer.favs_column_count)
+            )
+        }
+    }
+
+    override fun setUpTagsCloudRecyclerView()
+    {
+        tagCloudAdapter = TagAdapter(false)
+
+        tagsCloudRecyclerView.apply {
+            adapter = tagCloudAdapter
+            isNestedScrollingEnabled = false
+            layoutManager = GridLayoutManager(
+                context,
+                resources.getInteger(R.integer.tags_column_count)
             )
         }
     }

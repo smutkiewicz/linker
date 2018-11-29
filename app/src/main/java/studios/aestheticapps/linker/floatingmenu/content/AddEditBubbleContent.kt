@@ -53,7 +53,7 @@ class AddEditBubbleContent (context: Context,
 
     override fun isFullscreen() = true
 
-    override fun obtainInfoFromArguments() {}
+    override fun obtainModelFromArguments() {}
 
     override fun createViewFromModel()
     {
@@ -153,7 +153,7 @@ class AddEditBubbleContent (context: Context,
         BubbleMenuService.destroyFloatingMenu(context)
     }
 
-    override fun buildSampleItemFromClipboardContent()
+    override fun buildSampleModelFromClipboardContent()
     {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

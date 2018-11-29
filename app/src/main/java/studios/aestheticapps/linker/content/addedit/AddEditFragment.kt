@@ -41,16 +41,24 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         return view
     }
 
+    override fun onDestroyView()
+    {
+        addEditLinkTitleEt.clearFocus()
+        addEditUrlEt.clearFocus()
+        super.onDestroyView()
+    }
+
     override fun onStart()
     {
         super.onStart()
         presenter.start(activity!!.application)
 
-        createFab()
-        createTagBtn()
         createCategoriesSpinner()
         createTagRecyclerView()
         createViewFromModel()
+
+        createFab()
+        createTagBtn()
         createEditTexts()
     }
 
@@ -64,8 +72,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
             {
                 if (clipboardHelper.containsNewContent(model!!.url))
                 {
-                    val newContent = clipboardHelper.obtainClipboardContent()
-                    model = presenter.buildItemFromUrl(newContent)
+                    buildSampleModelFromClipboardContent()
                     mapModelToView()
                 }
             }
@@ -87,14 +94,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         }
     }
 
-    override fun onDestroyView()
-    {
-        addEditLinkTitleEt.clearFocus()
-        addEditUrlEt.clearFocus()
-        super.onDestroyView()
-    }
-
-    override fun obtainInfoFromArguments()
+    override fun obtainModelFromArguments()
     {
         mode = arguments!!.getInt(MODE, MODE_ADD)
 
@@ -108,7 +108,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
     {
         if (model == null)
         {
-            buildSampleItemFromClipboardContent()
+            buildSampleModelFromClipboardContent()
         }
 
         mapModelToView()
@@ -117,8 +117,10 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
     override fun createFab()
     {
         saveLinkFab.setOnClickListener {
-            if (isLinkValid())
+            if (isUserLinkValid())
             {
+                //TODO Presenter checks and repairs with LinkValidator
+
                 when (mode)
                 {
                     MODE_EDIT -> presenter.updateItem(buildItem())
@@ -230,7 +232,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         tags = presenter.tagsToString(tagAdapter.elements)
     )
 
-    override fun buildSampleItemFromClipboardContent()
+    override fun buildSampleModelFromClipboardContent()
     {
         val newContent = clipboardHelper.obtainClipboardContent()
         model = presenter.buildItemFromUrl(newContent)
@@ -250,8 +252,8 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
     {
         if (state != null)
         {
-            mode = state.getInt(MODE)
             val savedModel = state.getParcelable<Link>(PARCEL_LINK)
+            mode = state.getInt(MODE)
 
             when (mode)
             {
@@ -260,24 +262,19 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
                 MODE_ADD ->
                 {
                     if (clipboardHelper.containsNewContent(savedModel.url))
-                    {
-                        val newContent = clipboardHelper.obtainClipboardContent()
-                        model = presenter.buildItemFromUrl(newContent)
-                    }
+                        buildSampleModelFromClipboardContent()
                     else
-                    {
                         model = savedModel
-                    }
                 }
             }
         }
         else
         {
-            obtainInfoFromArguments()
+            obtainModelFromArguments()
         }
     }
 
-    private fun isLinkValid(): Boolean
+    private fun isUserLinkValid(): Boolean
     {
         var isValid = true
 
@@ -287,11 +284,14 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
             isValid = false
         }
 
-        if (addEditUrlEt.text.isBlank())
+        val url = addEditUrlEt.text.toString()
+        if (url.isBlank())
         {
             addEditUrlEt.error = getString(R.string.url_error)
             isValid = false
         }
+
+        //TODO presenter logic with LinkValidator
 
         return isValid
     }

@@ -9,7 +9,7 @@ interface AddEditTaskContract
 {
     interface View : BaseView<Presenter>
     {
-        fun obtainInfoFromArguments()
+        fun obtainModelFromArguments()
         fun createFab()
         fun cleanView()
         fun createTagBtn()
@@ -21,7 +21,7 @@ interface AddEditTaskContract
         fun addTag()
         fun buildItem(): Link
         fun mapModelToView()
-        fun buildSampleItemFromClipboardContent()
+        fun buildSampleModelFromClipboardContent()
     }
 
     interface Presenter : BasePresenter

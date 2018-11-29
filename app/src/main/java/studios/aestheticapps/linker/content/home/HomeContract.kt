@@ -17,6 +17,7 @@ interface HomeContract
 
         fun setUpRecentRecyclerView()
         fun setUpFavoritesRecyclerView()
+        fun setUpTagsCloudRecyclerView()
 
         fun startInternetAction(link: Link)
         fun startDetailsAction(link: Link)
@@ -29,6 +30,7 @@ interface HomeContract
 
         fun getRecentItems(): LinkedList<Link>
         fun getFavoriteItems(): LinkedList<Link>
+        fun getTagsCloudItems(): LinkedList<String>
         fun setItemFavourite(link: Link)
         fun setItemRecent(link: Link)
     }

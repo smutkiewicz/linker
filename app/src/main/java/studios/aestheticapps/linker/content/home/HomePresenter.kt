@@ -27,6 +27,30 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
 
     override fun getFavoriteItems() = repository.getListOf(FAVORITES)
 
+    override fun getTagsCloudItems(): LinkedList<String>
+    {
+        val tagCloudItems = LinkedList<String>()
+        val recentList = repository.getListOf(RECENT)
+        val recentLastIndex = recentList.lastIndex
+        recentList.shuffle()
+
+        val max = when
+        {
+            recentLastIndex < MAX_TAGS -> recentLastIndex
+            else -> MAX_TAGS
+        }
+
+        for (index in 0..max)
+        {
+            val chosenItem = recentList[index]
+            val itemsTags = chosenItem.stringToListOfTags()
+
+            tagCloudItems.addAll(itemsTags)
+        }
+
+        return tagCloudItems
+    }
+
     override fun setItemFavourite(link: Link)
     {
         link.isFavorite = !link.isFavorite
@@ -59,5 +83,10 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
     {
         val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         return formatter.format(Date())
+    }
+
+    private companion object
+    {
+        const val MAX_TAGS = 6
     }
 }
