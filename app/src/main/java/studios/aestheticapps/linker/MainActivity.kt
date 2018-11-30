@@ -2,12 +2,14 @@ package studios.aestheticapps.linker
 
 import android.app.ActivityManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.PagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -18,6 +20,7 @@ import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MO
 import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_EDIT
 import studios.aestheticapps.linker.content.home.HomeFragment
 import studios.aestheticapps.linker.content.library.LibraryFragment
+import studios.aestheticapps.linker.content.library.LibraryFragment.Companion.TAG_PHRASE
 import studios.aestheticapps.linker.content.main.MainContract
 import studios.aestheticapps.linker.content.main.MainPresenter
 import studios.aestheticapps.linker.extensions.checkForDrawOverlaysPermissions
@@ -31,9 +34,12 @@ import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 class MainActivity : AppCompatActivity(),
     MainContract.View,
     BottomNavigationView.OnNavigationItemSelectedListener,
-    AddEditFragment.AddEditCallback
+    AddEditFragment.AddEditCallback,
+    HomeFragment.HomeCallback
 {
     override var presenter: MainContract.Presenter = MainPresenter(this)
+    private lateinit var viewPagerAdapter: ScreenSlidePagerAdapter
+    private var tagPhrase: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -44,6 +50,17 @@ class MainActivity : AppCompatActivity(),
 
         setUpBottomNavigation()
         setUpViewPager()
+
+        when
+        {
+            intent?.action == Intent.ACTION_SEND ->
+            {
+                if ("text/plain" == intent.type) handleSendText(intent)
+            }
+
+            else -> {}
+        }
+
     }
 
     override fun onResume()
@@ -109,8 +126,8 @@ class MainActivity : AppCompatActivity(),
 
     override fun setUpViewPager()
     {
-        val adapter = ScreenSlidePagerAdapter(supportFragmentManager)
-        viewPager.adapter = adapter
+        viewPagerAdapter = ScreenSlidePagerAdapter(supportFragmentManager)
+        viewPager.adapter = viewPagerAdapter
         viewPager.pagingEnabled = false
         viewPager.currentItem = getLastVisitedPage()
     }
@@ -171,9 +188,42 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    override fun createLibraryView(): LibraryFragment
+    {
+        val libraryView = LibraryFragment()
+
+        return if (tagPhrase.isNotBlank())
+        {
+            libraryView.arguments = Bundle()
+            libraryView.arguments!!.putString(TAG_PHRASE, tagPhrase)
+            tagPhrase = ""
+
+            libraryView
+        }
+        else
+        {
+            libraryView
+        }
+    }
+
     override fun returnToMainView()
     {
         viewPager.currentItem = LIBRARY
+    }
+
+    override fun onOpenSearchView(phrase: String)
+    {
+        tagPhrase = phrase
+        viewPagerAdapter.notifyDataSetChanged()
+
+        viewPager.setCurrentItem(LIBRARY, true)
+    }
+
+    private fun handleSendText(intent: Intent)
+    {
+        intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+            //TODO LinkValidators
+        }
     }
 
     private fun isBubbleServiceRunning(): Boolean
@@ -207,10 +257,12 @@ class MainActivity : AppCompatActivity(),
             {
                 ADD_EDIT -> createViewFromModel()
                 HOME -> HomeFragment()
-                LIBRARY -> LibraryFragment()
+                LIBRARY -> createLibraryView()
                 else -> null
             }
         }
+
+        override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE
     }
 
     companion object

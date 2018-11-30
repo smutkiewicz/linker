@@ -5,6 +5,8 @@ import android.arch.persistence.room.PrimaryKey
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.TextUtils
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Entity(tableName = "link_table")
 data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -15,7 +17,7 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
                 var isFavorite: Boolean = false,
                 var description: String = "",
                 var tags: String = "",
-                var lastUsed: String = "NEVER") : Parcelable
+                var lastUsed: String = SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date())) : Parcelable
 {
     constructor(parcel: Parcel) : this(
         id = parcel.readInt(),
@@ -53,6 +55,12 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
             list.addAll(tags.split(DELIMITER))
 
         return list
+    }
+
+    fun getCurrentTime(): String
+    {
+        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+        return formatter.format(Date())
     }
 
     companion object CREATOR : Parcelable.Creator<Link>

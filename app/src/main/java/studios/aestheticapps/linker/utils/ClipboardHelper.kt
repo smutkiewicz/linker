@@ -7,7 +7,7 @@ class ClipboardHelper(val context: Context)
 {
     private val clipboardManager: ClipboardManager = obtainClipboardManager()
 
-    fun obtainClipboardContent() = clipboardManager.text.toString()
+    fun obtainClipboardContent() = clipboardManager.text?.toString() ?: ""
 
     fun containsNewContent(savedText: String): Boolean
     {

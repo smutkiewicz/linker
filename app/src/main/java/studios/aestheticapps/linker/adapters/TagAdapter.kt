@@ -11,9 +11,10 @@ import android.widget.TextView
 import studios.aestheticapps.linker.R
 import java.util.*
 
-class TagAdapter(val isMenuEnabled: Boolean = false)
+class TagAdapter(private val isMenuEnabled: Boolean = false)
     : RecyclerView.Adapter<TagAdapter.ViewHolder>(), View.OnCreateContextMenuListener
 {
+    var onTagClickedListener: OnTagClickedListener? = null
     var elements: MutableList<String> = LinkedList()
     var position: Int = 0
 
@@ -35,6 +36,10 @@ class TagAdapter(val isMenuEnabled: Boolean = false)
         val tag = elements[position]
         holder.apply {
             titleTextView.text = "#$tag"
+        }
+
+        holder.itemView.setOnClickListener {
+            onTagClickedListener?.onSearchTag(tag)
         }
 
         if (isMenuEnabled)
@@ -76,6 +81,11 @@ class TagAdapter(val isMenuEnabled: Boolean = false)
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
         val titleTextView: TextView = itemView.findViewById<TextView>(R.id.tagTitle)
+    }
+
+    interface OnTagClickedListener
+    {
+        fun onSearchTag(tag: String)
     }
 
     private companion object

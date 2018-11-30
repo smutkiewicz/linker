@@ -22,6 +22,7 @@ interface LibraryContract
         fun startInternetAction(link: Link)
         fun startShareView(link: Link)
         fun startDetailsAction(link: Link)
+        fun obtainQueryFromArguments()
     }
 
     interface Presenter : BasePresenter

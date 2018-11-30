@@ -21,10 +21,6 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
         repository = LinkRepository(application)
     }
 
-    override fun start() {}
-
-    override fun stop() {}
-
     override fun saveItem(link: Link) = repository.insert(link)
 
     override fun updateItem(link: Link) = repository.update(link)
@@ -41,19 +37,13 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
         return formatter.format(date)
     }
 
-    override fun buildItemFromUrl(url: String): Link
+    /**
+     * Guarantee a valid model, or null.
+     */
+    override fun buildItemFromUrl(url: String): Link?
     {
-        val modelUrl = LinkValidator.provideValidUrlOrEmpty(url)
-        val host = LinkValidator.obtainHost(url)
-
-        return Link(
-            title = host,
-            url = modelUrl,
-            domain = host,
-            lastUsed = getCurrentDateTimeStamp(),
-            tags = host,
-            isFavorite = false
-        )
+        val validator = LinkValidator(url)
+        return validator.build()
     }
 
     private companion object

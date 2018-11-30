@@ -2,48 +2,34 @@ package studios.aestheticapps.linker.model
 
 import java.net.URL
 
-object LinkValidator
+class LinkValidator(private var url: String)
 {
-    private const val EMPTY_URL = ""
-
-    fun provideValidUrlOrEmpty(url: String): String
+    fun build(): Link?
     {
-        var processedUrl = url
-
-        //check if repairs are necessary
-        if (isValid(url))
+        if (isValid())
         {
-            return url
+            return makeModel()
         }
         else
         {
-            if (!processedUrl.contains("."))
-            {
-                //it won't be possible to repair link here
-                return EMPTY_URL
-            }
+            url = repair(url)
 
-            processedUrl.replace(" ", "")
-
-            processedUrl = if (beginsWithValidWww(url))
+            return if (isValid())
             {
-                addProtocolPrefix(processedUrl)
+                makeModel()
             }
             else
             {
-                addProtocolPrefixAndWww(processedUrl)
+                null
             }
         }
-
-        //check again AFTER repairs
-        return if (isValid(processedUrl))
-            processedUrl
-        else
-            EMPTY_URL
     }
 
-    fun isValid(url: String): Boolean
+    private fun isValid(): Boolean
     {
+        if (url == EMPTY_URL)
+            return false
+
         return try
         {
             URL(url).toURI()
@@ -55,19 +41,48 @@ object LinkValidator
         }
     }
 
-    fun obtainHost(url: String): String
+    private fun repair(url: String): String
     {
-        return if (isValid(url))
-            URL(url).toURI().host
+        var repairedUrl = url
+
+        if (repairedUrl.indexOf(" ") >= 0)
+            repairedUrl.replace(" ", "")
+
+        if (beginsWithValidProtocol(repairedUrl))
+        {
+            return repairedUrl
+        }
         else
-            EMPTY_URL
+        {
+            return if (containsCharacteristicChars(repairedUrl))
+                "http://$repairedUrl"
+            else
+                EMPTY_URL
+        }
+    }
+
+    private fun makeModel(): Link
+    {
+        val href = URL(url)
+        val domain = href.host
+
+        return Link(
+            title = domain,
+            category = "Unknown",
+            url = url,
+            domain = domain,
+            tags = ""
+        )
     }
 
     private fun beginsWithValidWww(url: String) = url.startsWith("www.")
 
-    private fun beginsWithValidProtocol(url: String) = url.startsWith("https://") or url.startsWith("http://")
+    private fun beginsWithValidProtocol(url: String) = url.startsWith("http://") or url.startsWith("https://")
 
-    private fun addProtocolPrefixAndWww(url: String) = "http://www.$url"
+    private fun containsCharacteristicChars(url: String) = (url.indexOf(".") >= 0) or (url.indexOf(":") >= 0)
 
-    private fun addProtocolPrefix(url: String) = "http://$url"
+    companion object
+    {
+        const val EMPTY_URL = ""
+    }
 }

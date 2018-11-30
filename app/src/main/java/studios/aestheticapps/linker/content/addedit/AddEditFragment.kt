@@ -70,7 +70,12 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         {
             MODE_ADD ->
             {
-                if (clipboardHelper.containsNewContent(model!!.url))
+                if (model == null)
+                {
+                    buildSampleModelFromClipboardContent()
+                    mapModelToView()
+                }
+                else if (clipboardHelper.containsNewContent(model!!.url))
                 {
                     buildSampleModelFromClipboardContent()
                     mapModelToView()
@@ -119,7 +124,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         saveLinkFab.setOnClickListener {
             if (isUserLinkValid())
             {
-                //TODO Presenter checks and repairs with LinkValidator
+                //TODO Presenter checks and repairs with LinkValidators
 
                 when (mode)
                 {
@@ -155,7 +160,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
 
     override fun createTagBtn()
     {
-        addTagBtn.setOnClickListener{
+        addTagBtn.setOnClickListener {
             addTag()
         }
     }
@@ -186,13 +191,15 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
 
     override fun mapModelToView()
     {
-        addEditLinkTitleEt.setText(model!!.title)
-        addEditUrlEt.setText(model!!.url)
-        addEditDescriptionEt.setText(model!!.description)
-        tagAdapter.elements = model!!.stringToListOfTags()
+        model?.let {
+            addEditLinkTitleEt.setText(it.title)
+            addEditUrlEt.setText(it.url)
+            addEditDescriptionEt.setText(it.description)
+            tagAdapter.elements = it.stringToListOfTags()
 
-        spinner.setSelection((spinner.adapter as ArrayAdapter<String>)
-            .getPosition(model!!.category))
+            spinner.setSelection((spinner.adapter as ArrayAdapter<String>)
+                .getPosition(it.category))
+        }
     }
 
     override fun cleanView()
@@ -220,17 +227,18 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         }
     }
 
-    override fun buildItem() = Link(
-        id = model?.id ?: 0,
-        title = addEditLinkTitleEt.text.toString(),
-        category = spinner.selectedItem.toString(),
-        url = addEditUrlEt.text.toString(),
-        domain = presenter.parseDomain(addEditUrlEt.text.toString()),
-        description = addEditDescriptionEt.text.toString(),
-        lastUsed = presenter.getCurrentDateTimeStamp(),
-        isFavorite = model?.isFavorite ?: false,
-        tags = presenter.tagsToString(tagAdapter.elements)
-    )
+    override fun buildItem(): Link
+    {
+        val userItem = buildUserItem()
+
+        /*val validator = LinkValidator(userItem)
+        val validModel = validator.buildFromUserModel()
+
+        if (validModel.url != EMPTY_URL)
+            return validModel*/
+
+        return userItem
+    }
 
     override fun buildSampleModelFromClipboardContent()
     {
@@ -291,10 +299,22 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
             isValid = false
         }
 
-        //TODO presenter logic with LinkValidator
+        //TODO presenter logic with LinkValidators
 
         return isValid
     }
+
+    private fun buildUserItem() = Link(
+        id = model?.id ?: 0,
+        title = addEditLinkTitleEt.text.toString(),
+        category = spinner.selectedItem?.toString() ?: "Unknown",
+        url = addEditUrlEt.text.toString(),
+        domain = presenter.parseDomain(addEditUrlEt.text.toString()),
+        description = addEditDescriptionEt.text.toString(),
+        lastUsed = presenter.getCurrentDateTimeStamp(),
+        isFavorite = model?.isFavorite ?: false,
+        tags = presenter.tagsToString(tagAdapter.elements)
+    )
 
     interface AddEditCallback
     {

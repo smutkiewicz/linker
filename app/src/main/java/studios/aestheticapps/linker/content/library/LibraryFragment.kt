@@ -52,6 +52,16 @@ class LibraryFragment : Fragment(), LibraryContract.View
         linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
     }
 
+    override fun obtainQueryFromArguments()
+    {
+        arguments?.let {
+            val query = arguments!!.getString(TAG_PHRASE, "")
+            searchBox.setQuery(query, true)
+        }
+
+        arguments = null
+    }
+
     override fun hideBubbles()
     {
         val intent = Intent(context, MainActivity::class.java)
@@ -99,6 +109,7 @@ class LibraryFragment : Fragment(), LibraryContract.View
             isActivated = false
             isIconified = false
 
+            obtainQueryFromArguments()
             clearFocus()
 
             setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener
@@ -148,5 +159,10 @@ class LibraryFragment : Fragment(), LibraryContract.View
     {
         presenter.removeItem(id)
         linkAdapter.removeItem(adapterPosition)
+    }
+
+    companion object
+    {
+        const val TAG_PHRASE = "tag_phrase"
     }
 }

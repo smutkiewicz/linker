@@ -1,12 +1,15 @@
 package studios.aestheticapps.linker.content.home
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.StaggeredGridLayoutManager
+import android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,9 +25,10 @@ import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 
-class HomeFragment : Fragment(), HomeContract.View
+class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListener
 {
     override var presenter: HomeContract.Presenter = HomePresenter(this)
+    private lateinit var callback: HomeCallback
 
     private lateinit var recentLinkAdapter: RecentLinkAdapter
     private lateinit var favLinkAdapter: FavoritesAdapter
@@ -48,6 +52,12 @@ class HomeFragment : Fragment(), HomeContract.View
     {
         super.onDestroy()
         presenter.stop()
+    }
+
+    override fun onAttach(context: Context?)
+    {
+        super.onAttach(context)
+        callback = context as HomeCallback
     }
 
     override fun populateViewAdaptersWithContent()
@@ -98,13 +108,14 @@ class HomeFragment : Fragment(), HomeContract.View
     override fun setUpTagsCloudRecyclerView()
     {
         tagCloudAdapter = TagAdapter(false)
+        tagCloudAdapter.onTagClickedListener = this
 
         tagsCloudRecyclerView.apply {
             adapter = tagCloudAdapter
             isNestedScrollingEnabled = false
-            layoutManager = GridLayoutManager(
-                context,
-                resources.getInteger(R.integer.tags_column_count)
+            layoutManager = StaggeredGridLayoutManager(
+                resources.getInteger(R.integer.tags_column_count),
+                VERTICAL
             )
         }
     }
@@ -120,4 +131,14 @@ class HomeFragment : Fragment(), HomeContract.View
     override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, link)
 
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
+
+    override fun onSearchTag(tag: String)
+    {
+        callback.onOpenSearchView(tag)
+    }
+
+    interface HomeCallback
+    {
+        fun onOpenSearchView(phrase: String)
+    }
 }

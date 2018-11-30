@@ -3,6 +3,7 @@ package studios.aestheticapps.linker.content.main
 import studios.aestheticapps.linker.BasePresenter
 import studios.aestheticapps.linker.BaseView
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
+import studios.aestheticapps.linker.content.library.LibraryFragment
 
 interface MainContract
 {
@@ -17,6 +18,7 @@ interface MainContract
         fun closeBubbles()
 
         fun initThemeManager()
+        fun createLibraryView(): LibraryFragment
     }
 
     interface Presenter : BasePresenter

@@ -132,4 +132,6 @@ class LibraryBubbleContent(context: Context,
     override fun startDetailsAction(link: Link) {}
 
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
+
+    override fun obtainQueryFromArguments() {}
 }
