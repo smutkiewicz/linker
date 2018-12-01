@@ -16,13 +16,17 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
+import studios.aestheticapps.linker.content.SearchCallback
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.utils.ClipboardHelper
 
-class DetailsDialogFragment : DialogFragment(), DetailsContract.View
+class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter.OnTagClickedListener
 {
     override var presenter: DetailsContract.Presenter = DetailsPresenter(this)
 
-    private lateinit var callback: OnItemClickListener
+    private lateinit var onItemClickCallback: OnItemClickListener
+    private lateinit var searchCallback: SearchCallback
+
     private lateinit var tagAdapter: TagAdapter
     private lateinit var model: Link
 
@@ -56,7 +60,8 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View
     override fun onAttach(context: Context)
     {
         super.onAttach(context)
-        callback = presenter as OnItemClickListener
+        onItemClickCallback = presenter as OnItemClickListener
+        searchCallback = context as SearchCallback
     }
 
     override fun onSaveInstanceState(outState: Bundle)
@@ -74,7 +79,7 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View
             findViewById<TextView>(R.id.detailsCategoryTv).text = model.category
             findViewById<TextView>(R.id.detailsUrlTv).text = model.url
             findViewById<CardView>(R.id.detailsGoToUrlCv).setOnClickListener {
-                callback.onItemClicked(model)
+                onItemClickCallback.onItemClicked(model)
             }
         }
 
@@ -89,6 +94,7 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View
     override fun createTagRecyclerView(view: View)
     {
         tagAdapter = TagAdapter(false)
+        tagAdapter.onTagClickedListener = this
 
         val rv = view.findViewById<RecyclerView>(R.id.detailsTagRv)
         rv.apply {
@@ -104,13 +110,18 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View
     override fun createFab(view: View)
     {
         val shareFab = view.findViewById<FloatingActionButton>(R.id.shareFab)
-        shareFab.setOnClickListener{
-            callback.onShare(model)
+        shareFab.setOnClickListener {
+            onItemClickCallback.onShare(model)
         }
 
         val editFab = view.findViewById<FloatingActionButton>(R.id.editFab)
-        editFab.setOnClickListener{
-            callback.onEdit(model)
+        editFab.setOnClickListener {
+            onItemClickCallback.onEdit(model)
+        }
+
+        val copyFab = view.findViewById<FloatingActionButton>(R.id.copyFab)
+        copyFab.setOnClickListener {
+            copyToClipboard()
         }
     }
 
@@ -127,6 +138,12 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View
 
     override fun startEditView(link: Link) = IntentActionHelper.startEditView(context!!, link)
 
+    override fun onSearchTag(tag: String)
+    {
+        dismiss()
+        searchCallback.onOpenSearchView(tag)
+    }
+
     private fun inflateAndReturnDetailsView()
         = activity!!.layoutInflater.inflate(R.layout.content_details, null)
 
@@ -134,5 +151,11 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View
     {
         if (state != null)
             model = state.getParcelable(Link.PARCEL_LINK)
+    }
+
+    private fun copyToClipboard()
+    {
+        val clipboardHelper = ClipboardHelper(context!!)
+        clipboardHelper.copyToCliboard(model.url)
     }
 }

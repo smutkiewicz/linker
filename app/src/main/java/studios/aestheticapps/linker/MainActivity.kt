@@ -15,6 +15,7 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import studios.aestheticapps.linker.content.SearchCallback
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
 import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_ADD
 import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_EDIT
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity(),
     MainContract.View,
     BottomNavigationView.OnNavigationItemSelectedListener,
     AddEditFragment.AddEditCallback,
-    HomeFragment.HomeCallback
+    SearchCallback
 {
     override var presenter: MainContract.Presenter = MainPresenter(this)
     private lateinit var viewPagerAdapter: ScreenSlidePagerAdapter

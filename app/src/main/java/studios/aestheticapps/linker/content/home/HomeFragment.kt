@@ -22,13 +22,14 @@ import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.adapters.RecentLinkAdapter
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
+import studios.aestheticapps.linker.content.SearchCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 
 class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListener
 {
     override var presenter: HomeContract.Presenter = HomePresenter(this)
-    private lateinit var callback: HomeCallback
+    private lateinit var callback: SearchCallback
 
     private lateinit var recentLinkAdapter: RecentLinkAdapter
     private lateinit var favLinkAdapter: FavoritesAdapter
@@ -57,7 +58,7 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     override fun onAttach(context: Context?)
     {
         super.onAttach(context)
-        callback = context as HomeCallback
+        callback = context as SearchCallback
     }
 
     override fun populateViewAdaptersWithContent()
@@ -132,10 +133,7 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
 
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 
-    override fun onSearchTag(tag: String)
-    {
-        callback.onOpenSearchView(tag)
-    }
+    override fun onSearchTag(tag: String) = callback.onOpenSearchView(tag)
 
     interface HomeCallback
     {
