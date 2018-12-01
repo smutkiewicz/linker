@@ -49,8 +49,14 @@ dependencies {
         "com.facebook.android:facebook-share:[4,5)"
     )
 
+    /**Authentication**/
+    implementation(
+        "com.google.firebase:firebase-core:$firebaseCore",
+        "com.google.firebase:firebase-auth:$firebaseAuth",
+        "com.google.android.gms:play-services-auth:$playServicesAuth"
+    )
+
     /**Testing**/
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation(
         "junit:junit:$junitAndroid"
     )
@@ -62,9 +68,6 @@ dependencies {
     )
 
     kapt "android.arch.persistence.room:compiler:$roomVersion"
-
-    implementation 'com.google.firebase:firebase-auth:16.0.5'
-    implementation 'com.google.android.gms:play-services-auth:16.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
