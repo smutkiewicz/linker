@@ -32,8 +32,10 @@
     <string name="sample_title_of_a_link">Title of a link</string>
     <string name="sample_link">github.com</string>
     <string name="sample_recent_item">Example Item</string>
-    <string name="sample_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet
-        tellus. Phasellus pharetra nulla ac diam. Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus, sed posuere libero dui id orci. Nam congue,
+    <string name="sample_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a,
+        scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet
+        tellus. Phasellus pharetra nulla ac diam. Quisque semper justo at risus.
+        Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus, sed posuere libero dui id orci. Nam congue,
         pede vitae dapibus aliquet, elit magna vulputate arcu, vel tempus metus leo non est.
     </string>
     <string name="sample_enormously_long_tag">#Enormously Long Tag</string>
@@ -56,4 +58,8 @@
 
     <!-- New stuff, for refactor -->
 
+    <!-- LoginActivity -->
+    <string name="signin_success">Successfully signed in!</string>
+    <string name="something_went_wrong">Something went extremely wrong while trying to sign in.
+        We\'re trying our best, but make sure your internet connection is alive and your credentails are correct.</string>
 </resources>

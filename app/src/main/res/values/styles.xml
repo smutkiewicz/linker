@@ -23,4 +23,9 @@
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
+    <!-- Splash Screen theme. -->
+    <style name="LoginTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
 </resources>
