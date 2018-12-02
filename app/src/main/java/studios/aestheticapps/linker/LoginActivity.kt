@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestIdToken(getString(R.string.request_id_token))
             .requestEmail()
             .build()
 
@@ -115,7 +115,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener
 
         // Google sign out
         googleSignInClient.signOut().addOnCompleteListener(this) {
-            //updateUI(null)
+            updateUI(null)
         }
     }
 
@@ -147,6 +147,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener
     {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        signOut()
         finish()
     }
 
