@@ -16,32 +16,10 @@
             android:layout_marginTop="32dp"
             app:layout_constraintTop_toBottomOf="@+id/signInTv"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"/>
-
-    <Button
-            android:id="@+id/signOutButton"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="sign_out"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/signInButton"
+            android:layout_marginStart="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" android:visibility="gone"/>
+            android:layout_marginEnd="8dp"/>
 
-    <Button
-            android:id="@+id/disconnectButton"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="disconnect"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/signOutButton"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp" android:visibility="gone"/>
     <ImageView
             android:layout_width="0dp"
             android:layout_height="150dp"
@@ -50,9 +28,12 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp" app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="64dp"/>
+            android:layout_marginEnd="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="64dp"/>
+
     <TextView
-            android:text="Sign In to Linker with Google."
+            android:text="@string/sign_in_to_linker_with_google"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/signInTv"
@@ -62,16 +43,23 @@
             android:layout_marginEnd="8dp"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat" android:textColor="@color/white" android:textSize="18sp" android:textAlignment="center"/>
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textAlignment="center"/>
+
     <TextView
-            android:text="(C) Aesthetic Apps Studios 2018-19"
+            android:text="@string/copyright"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/aasTv"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="16dp" android:textAlignment="center"/>
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="16dp"
+            android:textAlignment="center"/>
 
     <ProgressBar
             android:layout_width="wrap_content"
@@ -87,7 +75,7 @@
             android:visibility="gone"/>
 
     <TextView
-            android:text="Signing in...."
+            android:text="@string/signing_in"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/signingInfoTv"
@@ -97,21 +85,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" android:textAlignment="center" android:visibility="gone"/>
+            android:layout_marginStart="8dp"
+            android:textAlignment="center"
+            android:visibility="gone"/>
 
     <TextView
-            android:text="Let us organize links to the people, places and things you love."
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/sloganTv"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/aasTv"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0" android:layout_marginStart="24dp" android:textSize="18sp" android:textColor="@color/white" android:textAlignment="center"/>
-    <TextView
-            android:text="Something went extremely wrong while trying to sign in. We're trying our best, but make sure your internet connection is alive and your credentails are correct."
+            android:text="@string/something_went_wrong"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/errorTv"
@@ -119,8 +98,24 @@
             android:layout_marginStart="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="24dp"
+            android:visibility="gone"
+            app:layout_constraintHorizontal_bias="1.0"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/signInButton"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:textAlignment="center"
-            app:layout_constraintTop_toTopOf="@+id/disconnectButton"
-            android:layout_marginTop="8dp" android:textColor="@color/white" android:visibility="gone"/>
+            android:textColor="@color/white"/>
+
+    <ImageView
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/motto"
+            android:id="@+id/mottoIv"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/aasTv"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"/>
 
 </android.support.constraint.ConstraintLayout>

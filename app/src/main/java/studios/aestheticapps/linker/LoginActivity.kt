@@ -98,6 +98,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener
                 {
                     updateUI(null)
                     hideProgressView()
+                    showErrorView()
                 }
             }
     }
@@ -115,7 +116,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener
 
         // Google sign out
         googleSignInClient.signOut().addOnCompleteListener(this) {
-            updateUI(null)
+            //updateUI(null)
         }
     }
 
@@ -126,7 +127,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener
 
         // Google revoke access
         googleSignInClient.revokeAccess().addOnCompleteListener(this) {
-            updateUI(null)
+            //updateUI(null)
         }
     }
 
@@ -147,8 +148,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener
     {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        signOut()
         finish()
+        signOut()
     }
 
     private fun showProgressView()
@@ -168,8 +169,15 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener
     private fun showSuccessView()
     {
         loggingPb.visibility = VISIBLE
+        errorTv.visibility = GONE
         signingInfoTv.text = getString(R.string.signin_success)
         signingInfoTv.visibility = VISIBLE
+    }
+
+    private fun showErrorView()
+    {
+        signInButton.visibility = VISIBLE
+        errorTv.visibility = VISIBLE
     }
 
     companion object
