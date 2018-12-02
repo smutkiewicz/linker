@@ -65,7 +65,7 @@ class AddEditBubbleContent (context: Context,
         saveLinkFab.setOnClickListener {
             if (isLinkValid())
             {
-                presenter.saveItem(buildItem())
+                presenter.saveItem(buildItemFromView())
 
                 cleanView()
                 callback.collapseBubble()
@@ -98,11 +98,11 @@ class AddEditBubbleContent (context: Context,
         }
     }
 
-    override fun buildItem() = Link(
+    override fun buildItemFromView() = Link(
         id = 0,
         title = addEditLinkTitleEt.text.toString(),
         url = addEditUrlEt.text.toString(),
-        domain = presenter.parseDomain(addEditUrlEt.text.toString()),
+        domain = "",
         description = addEditDescriptionEt.text.toString(),
         tags = presenter.tagsToString(tagAdapter.elements)
     )

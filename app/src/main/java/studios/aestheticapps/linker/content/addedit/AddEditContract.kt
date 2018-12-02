@@ -19,7 +19,7 @@ interface AddEditTaskContract
         fun createEditTexts()
         fun createSpinner()
         fun addTag()
-        fun buildItem(): Link
+        fun buildItemFromView(): Link
         fun mapModelToView()
         fun buildSampleModelFromClipboardContent()
     }
@@ -27,12 +27,12 @@ interface AddEditTaskContract
     interface Presenter : BasePresenter
     {
         fun start(application: Application)
-        fun parseDomain(url: String): String
-        fun saveItem(link: Link)
-        fun updateItem(link: Link)
+        fun saveItem(model: Link)
+        fun updateItem(model: Link)
 
         fun tagsToString(elements: MutableList<String>): String
         fun getCurrentDateTimeStamp(): String
         fun buildItemFromUrl(url: String): Link?
+        fun provideValidUrl(url: String): String
     }
 }

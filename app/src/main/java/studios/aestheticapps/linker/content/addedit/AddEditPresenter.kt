@@ -21,11 +21,13 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
         repository = LinkRepository(application)
     }
 
-    override fun saveItem(link: Link) = repository.insert(link)
+    override fun saveItem(model: Link)
+    {
+        // TODO adding metadata to model
+        repository.insert(model)
+    }
 
-    override fun updateItem(link: Link) = repository.update(link)
-
-    override fun parseDomain(url: String) = "github.com"
+    override fun updateItem(model: Link) = repository.update(model)
 
     override fun tagsToString(elements: MutableList<String>) = Link.listOfTagsToString(elements)
 
@@ -44,6 +46,12 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
     {
         val validator = LinkValidator(url)
         return validator.build()
+    }
+
+    override fun provideValidUrl(url: String): String
+    {
+        val validator = LinkValidator(url)
+        return validator.repair(url)
     }
 
     private companion object

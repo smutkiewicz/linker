@@ -17,6 +17,7 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
+import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.utils.ClipboardHelper
 
 class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnItemSelectedListener
@@ -95,7 +96,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         super.onSaveInstanceState(outState)
         outState.apply {
             putInt(MODE, mode)
-            putParcelable(PARCEL_LINK, buildItem())
+            putParcelable(PARCEL_LINK, buildItemFromView())
         }
     }
 
@@ -124,15 +125,13 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         saveLinkFab.setOnClickListener {
             if (isUserLinkValid())
             {
-                //TODO Presenter checks and repairs with LinkValidators
-
                 when (mode)
                 {
-                    MODE_EDIT -> presenter.updateItem(buildItem())
+                    MODE_EDIT -> presenter.updateItem(buildItemFromView())
 
                     MODE_ADD ->
                     {
-                        presenter.saveItem(buildItem())
+                        presenter.saveItem(buildItemFromView())
                         cleanView()
                     }
                 }
@@ -227,18 +226,20 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         }
     }
 
-    override fun buildItem(): Link
-    {
-        val userItem = buildUserItem()
-
-        /*val validator = LinkValidator(userItem)
-        val validModel = validator.buildFromUserModel()
-
-        if (validModel.url != EMPTY_URL)
-            return validModel*/
-
-        return userItem
-    }
+    /**
+     * Only needed fields, Presenter will fill blank parts of the model (such as domain).
+     */
+    override fun buildItemFromView() = Link(
+        id = model?.id ?: 0,
+        title = addEditLinkTitleEt.text.toString(),
+        category = spinner.selectedItem?.toString() ?: "Unknown",
+        description = addEditDescriptionEt.text.toString(),
+        url = addEditUrlEt.text.toString(),
+        lastUsed = presenter.getCurrentDateTimeStamp(),
+        isFavorite = model?.isFavorite ?: false,
+        tags = presenter.tagsToString(tagAdapter.elements),
+        domain = model?.domain ?: ""
+    )
 
     override fun buildSampleModelFromClipboardContent()
     {
@@ -286,40 +287,34 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
     {
         var isValid = true
 
+        // Check fields validity
         if (addEditLinkTitleEt.text.isBlank())
         {
             addEditLinkTitleEt.error = getString(R.string.title_error)
             isValid = false
         }
 
+        // Check URL validity on view level and provide valid url on logical level
         val url = addEditUrlEt.text.toString()
-        if (url.isBlank())
+        val validLink = presenter.provideValidUrl(url)
+
+        if (url.isBlank() || validLink == EMPTY_URL)
         {
             addEditUrlEt.error = getString(R.string.url_error)
             isValid = false
         }
-
-        //TODO presenter logic with LinkValidators
+        else
+        {
+            addEditUrlEt.setText(validLink)
+        }
 
         return isValid
     }
 
-    private fun buildUserItem() = Link(
-        id = model?.id ?: 0,
-        title = addEditLinkTitleEt.text.toString(),
-        category = spinner.selectedItem?.toString() ?: "Unknown",
-        url = addEditUrlEt.text.toString(),
-        domain = presenter.parseDomain(addEditUrlEt.text.toString()),
-        description = addEditDescriptionEt.text.toString(),
-        lastUsed = presenter.getCurrentDateTimeStamp(),
-        isFavorite = model?.isFavorite ?: false,
-        tags = presenter.tagsToString(tagAdapter.elements)
-    )
-
     interface AddEditCallback
     {
-        fun returnToMainView() {} //not necessary for some Views
-        fun onEdited() {} //not necessary for some Views
+        fun returnToMainView() {} // not necessary for some Views
+        fun onEdited() {} // not necessary for some Views
     }
 
     companion object

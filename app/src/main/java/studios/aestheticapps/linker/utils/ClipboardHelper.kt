@@ -4,8 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 
-
-
 class ClipboardHelper(val context: Context)
 {
     private val clipboardManager: ClipboardManager = obtainClipboardManager()

@@ -25,7 +25,7 @@ class LinkValidator(private var url: String)
         }
     }
 
-    private fun isValid(): Boolean
+    fun isValid(): Boolean
     {
         if (url == EMPTY_URL)
             return false
@@ -41,7 +41,7 @@ class LinkValidator(private var url: String)
         }
     }
 
-    private fun repair(url: String): String
+    fun repair(url: String): String
     {
         var repairedUrl = url
 

@@ -39,6 +39,7 @@ class RecentLinkAdapter(private val callback: OnItemClickListener)
             this.link = link
             id = link.id
             titleTextView.text = link.title
+            domainTextView.text = link.domain
         }
     }
 
@@ -47,6 +48,7 @@ class RecentLinkAdapter(private val callback: OnItemClickListener)
         lateinit var link: Link
         var id: Int = 0
         val titleTextView: TextView = itemView.findViewById<TextView>(R.id.titleTv)
+        val domainTextView: TextView = itemView.findViewById<TextView>(R.id.domainTv)
 
         init
         {
