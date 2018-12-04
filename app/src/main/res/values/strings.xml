@@ -61,10 +61,20 @@
     <!-- LoginActivity -->
     <string name="signin_success">Successfully signed in, loading…</string>
     <string name="something_went_wrong">Something went extremely wrong while trying to sign in.
-        We\'re trying our best, but make sure your internet connection is alive and your credentials are correct.</string>
+        We\'re trying our best, but make sure your internet connection is alive and your credentials are correct.
+    </string>
     <string name="signing_in">Signing in…</string>
     <string name="copyright">&#169; Aesthetic Apps Studios 2018–19</string>
     <string name="sign_in_to_linker_with_google">Sign In to Linker with Google.</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_account">Account</string>
+    <string name="log_out">Log out</string>
+    <string name="settings">Settings</string>
 
     <!-- New stuff, for refactor -->
 </resources>

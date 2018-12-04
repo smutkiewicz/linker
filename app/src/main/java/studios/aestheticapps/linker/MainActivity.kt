@@ -5,16 +5,25 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.GravityCompat
 import android.support.v4.view.PagerAdapter
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.nav_header.view.*
 import studios.aestheticapps.linker.content.SearchCallback
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
 import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_ADD
@@ -35,11 +44,16 @@ import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 class MainActivity : AppCompatActivity(),
     MainContract.View,
     BottomNavigationView.OnNavigationItemSelectedListener,
+    NavigationView.OnNavigationItemSelectedListener,
     AddEditFragment.AddEditCallback,
     SearchCallback
 {
     override var presenter: MainContract.Presenter = MainPresenter(this)
+
     private lateinit var viewPagerAdapter: ScreenSlidePagerAdapter
+    private lateinit var auth: FirebaseAuth
+
+    private var currentUser: FirebaseUser? = null
     private var tagPhrase: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -51,6 +65,9 @@ class MainActivity : AppCompatActivity(),
 
         setUpBottomNavigation()
         setUpViewPager()
+        setUpDrawer()
+
+        authenticateUserAndFetchAccountSettings()
 
         when
         {
@@ -68,6 +85,18 @@ class MainActivity : AppCompatActivity(),
     {
         super.onResume()
         if(isBubbleServiceRunning()) closeBubbles()
+    }
+
+    override fun onBackPressed()
+    {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+        {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+        else
+        {
+            super.onBackPressed()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
@@ -89,6 +118,12 @@ class MainActivity : AppCompatActivity(),
             R.id.action_search ->
             {
                 viewPager.currentItem = LIBRARY
+                true
+            }
+
+            android.R.id.home ->
+            {
+                drawerLayout.openDrawer(GravityCompat.START)
                 true
             }
 
@@ -120,6 +155,21 @@ class MainActivity : AppCompatActivity(),
                 viewPager.currentItem = LIBRARY
                 return true
             }
+
+            R.id.nav_settings ->
+            {
+                item.isChecked = true
+                drawerLayout.closeDrawer(GravityCompat.START)
+                return true
+            }
+
+            R.id.nav_logout ->
+            {
+                item.isChecked = true
+                drawerLayout.closeDrawer(GravityCompat.START)
+                signOut()
+                return true
+            }
         }
 
         return false
@@ -136,6 +186,16 @@ class MainActivity : AppCompatActivity(),
     override fun setUpBottomNavigation()
     {
         bottomNavigation.setOnNavigationItemSelectedListener(this)
+    }
+
+    override fun setUpDrawer()
+    {
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navView.setNavigationItemSelectedListener(this)
     }
 
     override fun openBubbles()
@@ -220,6 +280,40 @@ class MainActivity : AppCompatActivity(),
         viewPager.setCurrentItem(LIBRARY, true)
     }
 
+    private fun authenticateUserAndFetchAccountSettings()
+    {
+        auth = FirebaseAuth.getInstance()
+        val headerView = navView.getHeaderView(0)
+
+        currentUser = auth.currentUser
+        currentUser?.let {
+            headerView.usernameTv.text = currentUser!!.displayName
+            headerView.userEmailTv.text = currentUser!!.email
+
+            Picasso.get()
+                .load(currentUser!!.photoUrl)
+                .resize(200, 200)
+                .into(headerView.userIv)
+        }
+    }
+
+    private fun signOut()
+    {
+        // Firebase sign out
+        auth.signOut()
+
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(this, gso)
+        googleSignInClient.signOut().addOnCompleteListener(this) {
+            launchLoginActivity()
+        }
+    }
+
     private fun handleSendText(intent: Intent)
     {
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
@@ -248,6 +342,13 @@ class MainActivity : AppCompatActivity(),
 
     private fun getLastVisitedPage() = getPreferences(Context.MODE_PRIVATE).getInt(LAST_PAGE, HOME)
 
+    private fun launchLoginActivity()
+    {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
     private inner class ScreenSlidePagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm)
     {
         override fun getCount(): Int = PAGES_COUNT
@@ -275,9 +376,6 @@ class MainActivity : AppCompatActivity(),
         private const val HOME = 1
         private const val LIBRARY = 2
         private const val PAGES_COUNT = 3
-
-        private const val SHOW_MENU = 4
-        private const val HIDE_MENU = 5
 
         const val MY_PERMISSIONS_REQUEST_DRAW_OVERLAY = 0
     }

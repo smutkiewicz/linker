@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.request_id_token))
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 

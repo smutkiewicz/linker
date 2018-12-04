@@ -2,6 +2,7 @@ package studios.aestheticapps.linker.content.addedit
 
 import android.app.Application
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import studios.aestheticapps.linker.model.LinkValidator
 import studios.aestheticapps.linker.persistence.LinkRepository
 import java.text.SimpleDateFormat
@@ -23,8 +24,10 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
 
     override fun saveItem(model: Link)
     {
-        // TODO adding metadata to model
-        repository.insert(model)
+        val formatter = LinkMetadataFormatter(model)
+        val modelWithMetadata = formatter.obtainMetadata()
+
+        repository.insert(modelWithMetadata)
     }
 
     override fun updateItem(model: Link) = repository.update(model)

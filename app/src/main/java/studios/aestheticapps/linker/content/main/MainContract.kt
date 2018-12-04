@@ -11,6 +11,7 @@ interface MainContract
     {
         fun setUpViewPager()
         fun setUpBottomNavigation()
+        fun setUpDrawer()
         fun goToEditViewIfNeeded()
         fun createViewFromModel(): AddEditFragment
 

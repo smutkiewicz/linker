@@ -1,5 +1,6 @@
 package studios.aestheticapps.linker.model
 
+import org.apache.commons.validator.routines.UrlValidator
 import java.net.URL
 
 class LinkValidator(private var url: String)
@@ -30,15 +31,8 @@ class LinkValidator(private var url: String)
         if (url == EMPTY_URL)
             return false
 
-        return try
-        {
-            URL(url).toURI()
-            true
-        }
-        catch (e: Exception)
-        {
-            false
-        }
+        val urlValidator = UrlValidator()
+        return urlValidator.isValid(url)
     }
 
     fun repair(url: String): String
@@ -46,7 +40,7 @@ class LinkValidator(private var url: String)
         var repairedUrl = url
 
         if (repairedUrl.indexOf(" ") >= 0)
-            repairedUrl.replace(" ", "")
+            repairedUrl = repairedUrl.replace(" ", "")
 
         if (beginsWithValidProtocol(repairedUrl))
         {

@@ -21,7 +21,7 @@ interface LinkDao
         "OR domain LIKE '%' || :phrase || '%' " +
         "OR url LIKE '%' || :phrase || '%' " +
         "OR tags LIKE '%' || :phrase || '%' " +
-        "ORDER BY title ASC")
+        "ORDER BY title")
     fun search(phrase: String): List<Link>
 
     @Query("SELECT * from link_table WHERE id = :id")

@@ -46,7 +46,8 @@ dependencies {
         "io.mattcarroll.hover:hover:$hover",
         "android.arch.persistence.room:runtime:$roomVersion",
         "android.arch.lifecycle:extensions:$archLifecycleVersion",
-        "com.facebook.android:facebook-share:[4,5)"
+        "commons-validator:commons-validator:$commonsValidator",
+        "com.squareup.picasso:picasso:$picasso"
     )
 
     /**Authentication**/
