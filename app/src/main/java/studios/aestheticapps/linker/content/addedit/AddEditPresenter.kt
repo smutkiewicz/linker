@@ -5,8 +5,6 @@ import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import studios.aestheticapps.linker.model.LinkValidator
 import studios.aestheticapps.linker.persistence.LinkRepository
-import java.text.SimpleDateFormat
-import java.util.*
 
 class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract.Presenter
 {
@@ -24,8 +22,8 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
 
     override fun saveItem(model: Link)
     {
-        val formatter = LinkMetadataFormatter(model)
-        val modelWithMetadata = formatter.obtainMetadata()
+        val formatter = LinkMetadataFormatter()
+        val modelWithMetadata = formatter.obtainMetadata(model)
 
         repository.insert(modelWithMetadata)
     }
@@ -33,14 +31,6 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
     override fun updateItem(model: Link) = repository.update(model)
 
     override fun tagsToString(elements: MutableList<String>) = Link.listOfTagsToString(elements)
-
-    override fun getCurrentDateTimeStamp(): String
-    {
-        val formatter = SimpleDateFormat(DATE_TIME_FORMAT)
-        val date = Date()
-
-        return formatter.format(date)
-    }
 
     /**
      * Guarantee a valid model, or null.
@@ -55,10 +45,5 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
     {
         val validator = LinkValidator(url)
         return validator.repair(url)
-    }
-
-    private companion object
-    {
-        const val DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss"
     }
 }

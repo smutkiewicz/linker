@@ -35,6 +35,7 @@ class LinkValidator(private var url: String)
         return urlValidator.isValid(url)
     }
 
+
     fun repair(url: String): String
     {
         var repairedUrl = url

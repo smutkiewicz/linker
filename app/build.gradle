@@ -47,7 +47,8 @@ dependencies {
         "android.arch.persistence.room:runtime:$roomVersion",
         "android.arch.lifecycle:extensions:$archLifecycleVersion",
         "commons-validator:commons-validator:$commonsValidator",
-        "com.squareup.picasso:picasso:$picasso"
+        "com.squareup.picasso:picasso:$picasso",
+        "org.jsoup:jsoup:$jsoup"
     )
 
     /**Authentication**/

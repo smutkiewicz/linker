@@ -4,8 +4,7 @@ import android.app.Application
 import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
-import java.text.SimpleDateFormat
-import java.util.*
+import studios.aestheticapps.linker.utils.DateTimeHelper
 
 class DetailsPresenter(val view: DetailsContract.View) : DetailsContract.Presenter, OnItemClickListener
 {
@@ -29,7 +28,7 @@ class DetailsPresenter(val view: DetailsContract.View) : DetailsContract.Present
 
     override fun setItemRecent(link: Link)
     {
-        link.lastUsed = getCurrentTime()
+        link.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
         repository.update(link)
     }
 
@@ -52,11 +51,5 @@ class DetailsPresenter(val view: DetailsContract.View) : DetailsContract.Present
     override fun onEdit(link: Link)
     {
         view.startEditView(link)
-    }
-
-    private fun getCurrentTime(): String
-    {
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-        return formatter.format(Date())
     }
 }

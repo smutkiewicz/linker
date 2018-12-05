@@ -134,9 +134,4 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 
     override fun onSearchTag(tag: String) = callback.onOpenSearchView(tag)
-
-    interface HomeCallback
-    {
-        fun onOpenSearchView(phrase: String)
-    }
 }

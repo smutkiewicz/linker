@@ -31,7 +31,6 @@ interface AddEditTaskContract
         fun updateItem(model: Link)
 
         fun tagsToString(elements: MutableList<String>): String
-        fun getCurrentDateTimeStamp(): String
         fun buildItemFromUrl(url: String): Link?
         fun provideValidUrl(url: String): String
     }

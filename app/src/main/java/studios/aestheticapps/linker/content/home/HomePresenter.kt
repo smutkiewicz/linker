@@ -6,7 +6,7 @@ import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.FAVORITES
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.RECENT
-import java.text.SimpleDateFormat
+import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
 class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnItemClickListener
@@ -59,7 +59,7 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
 
     override fun setItemRecent(link: Link)
     {
-        link.lastUsed = getCurrentTime()
+        link.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
         repository.update(link)
     }
 
@@ -77,12 +77,6 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
     {
         setItemRecent(link)
         view.startShareView(link)
-    }
-
-    private fun getCurrentTime(): String
-    {
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-        return formatter.format(Date())
     }
 
     private companion object

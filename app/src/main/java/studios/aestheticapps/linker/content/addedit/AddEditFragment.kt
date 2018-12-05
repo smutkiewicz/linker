@@ -19,6 +19,7 @@ import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.utils.ClipboardHelper
+import studios.aestheticapps.linker.utils.DateTimeHelper
 
 class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnItemSelectedListener
 {
@@ -235,7 +236,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         category = spinner.selectedItem?.toString() ?: "Unknown",
         description = addEditDescriptionEt.text.toString(),
         url = addEditUrlEt.text.toString(),
-        lastUsed = presenter.getCurrentDateTimeStamp(),
+        lastUsed = DateTimeHelper.getCurrentDateTimeStamp(),
         isFavorite = model?.isFavorite ?: false,
         tags = presenter.tagsToString(tagAdapter.elements),
         domain = model?.domain ?: ""

@@ -5,7 +5,7 @@ import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.ALL
-import java.text.SimpleDateFormat
+import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
 class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Presenter, OnItemClickListener
@@ -38,7 +38,7 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
 
     override fun setItemRecent(link: Link)
     {
-        link.lastUsed = getCurrentTime()
+        link.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
         repository.update(link)
     }
 
@@ -56,11 +56,5 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
     {
         setItemRecent(link)
         view.startShareView(link)
-    }
-
-    private fun getCurrentTime(): String
-    {
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-        return formatter.format(Date())
     }
 }

@@ -4,6 +4,7 @@ import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
+import android.arch.persistence.room.migration.Migration
 import android.content.Context
 import studios.aestheticapps.linker.model.Link
 
@@ -45,6 +46,14 @@ abstract class LinkRoomDatabase : RoomDatabase()
             override fun onOpen(db: SupportSQLiteDatabase)
             {
                 super.onOpen(db)
+            }
+        }
+
+        private val MIGRATION_1_2: Migration = object : Migration(1, 2)
+        {
+            override fun migrate(database: SupportSQLiteDatabase)
+            {
+                database.execSQL("ALTER TABLE link_table " + "ADD COLUMN imageUrl TEXT")
             }
         }
     }
