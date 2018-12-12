@@ -9,6 +9,7 @@ import studios.aestheticapps.linker.persistence.LinkRepository
 class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract.Presenter
 {
     private lateinit var repository: LinkRepository
+    private val formatter = LinkMetadataFormatter()
 
     init
     {
@@ -22,10 +23,8 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
 
     override fun saveItem(model: Link)
     {
-        val formatter = LinkMetadataFormatter()
-        val modelWithMetadata = formatter.obtainMetadata(model)
-
-        repository.insert(modelWithMetadata)
+        val modelWithMetadata = formatter.obtainMetadataFromAsync(model)
+        repository.insert(modelWithMetadata?: model)
     }
 
     override fun updateItem(model: Link) = repository.update(model)
@@ -38,12 +37,14 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
     override fun buildItemFromUrl(url: String): Link?
     {
         val validator = LinkValidator(url)
-        return validator.build()
+        val validUrl = validator.build()
+
+        return formatter.obtainMetadataFromAsync(validUrl)
     }
 
     override fun provideValidUrl(url: String): String
     {
         val validator = LinkValidator(url)
-        return validator.repair(url)
+        return validator.build()
     }
 }

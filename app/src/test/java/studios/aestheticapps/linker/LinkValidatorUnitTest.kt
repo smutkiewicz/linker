@@ -45,7 +45,7 @@ class LinkValidatorUnitTest
     @Test
     fun shouldBeUnableToRepairUrl()
     {
-        val validator = LinkValidator("http://link pretending its correct com. ")
+        val validator = LinkValidator("http://model pretending its correct com. ")
         val model = validator.build()
 
         assertEquals(null, model)

@@ -72,12 +72,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         {
             MODE_ADD ->
             {
-                if (model == null)
-                {
-                    buildSampleModelFromClipboardContent()
-                    mapModelToView()
-                }
-                else if (clipboardHelper.containsNewContent(model!!.url))
+                if (model == null || (model != null && clipboardHelper.containsNewContent(model!!.url)))
                 {
                     buildSampleModelFromClipboardContent()
                     mapModelToView()

@@ -87,6 +87,8 @@
 
                     <TextView
                             android:text="@string/sample_title_of_a_link"
+                            android:ellipsize="end"
+                            android:maxLines="3"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:id="@+id/detailsTitleTv"

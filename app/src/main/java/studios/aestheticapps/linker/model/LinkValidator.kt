@@ -1,15 +1,17 @@
 package studios.aestheticapps.linker.model
 
 import org.apache.commons.validator.routines.UrlValidator
-import java.net.URL
 
+/**
+ * Provides vaild urls for model.
+ */
 class LinkValidator(private var url: String)
 {
-    fun build(): Link?
+    fun build(): String
     {
         if (isValid())
         {
-            return makeModel()
+            return url
         }
         else
         {
@@ -17,16 +19,16 @@ class LinkValidator(private var url: String)
 
             return if (isValid())
             {
-                makeModel()
+                url
             }
             else
             {
-                null
+                EMPTY_URL
             }
         }
     }
 
-    fun isValid(): Boolean
+    private fun isValid(): Boolean
     {
         if (url == EMPTY_URL)
             return false
@@ -36,7 +38,7 @@ class LinkValidator(private var url: String)
     }
 
 
-    fun repair(url: String): String
+    private fun repair(url: String): String
     {
         var repairedUrl = url
 
@@ -54,20 +56,6 @@ class LinkValidator(private var url: String)
             else
                 EMPTY_URL
         }
-    }
-
-    private fun makeModel(): Link
-    {
-        val href = URL(url)
-        val domain = href.host
-
-        return Link(
-            title = domain,
-            category = "Unknown",
-            url = url,
-            domain = domain,
-            tags = ""
-        )
     }
 
     private fun beginsWithValidWww(url: String) = url.startsWith("www.")

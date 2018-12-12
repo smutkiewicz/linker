@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
+import com.squareup.picasso.Picasso
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
 import java.util.*
@@ -35,11 +37,15 @@ class FavoritesAdapter(private val callback: OnItemClickListener)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int)
     {
-        val link = elements[position]
+        val model = elements[position]
         holder.apply {
-            this.link = link
-            id = link.id
-            titleTv.text = link.title
+            this.model = model
+            id = model.id
+            titleTv.text = model.title
+
+            Picasso.get()
+                .load(model.imageUrl)
+                .into(miniatureIv)
         }
     }
 
@@ -51,25 +57,26 @@ class FavoritesAdapter(private val callback: OnItemClickListener)
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
-        lateinit var link: Link
+        lateinit var model: Link
 
         var id: Int = 0
         val titleTv: TextView = itemView.findViewById(R.id.titleTv)
+        val miniatureIv: ImageView = itemView.findViewById(R.id.miniatureIv)
         val shareIb: ImageButton = itemView.findViewById(R.id.shareIb)
 
         init
         {
             itemView.setOnClickListener{
-                callback.onItemClicked(link)
+                callback.onItemClicked(model)
             }
 
             itemView.setOnLongClickListener{
-                callback.onItemLongClicked(link)
+                callback.onItemLongClicked(model)
                 true
             }
 
             shareIb.setOnClickListener{
-                callback.onShare(link)
+                callback.onShare(model)
             }
         }
     }

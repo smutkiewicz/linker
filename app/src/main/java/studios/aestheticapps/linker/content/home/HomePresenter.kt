@@ -42,6 +42,7 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
 
         for (index in 0..max)
         {
+            //TODO uniqueness
             val chosenItem = recentList[index]
             val itemsTags = chosenItem.stringToListOfTags()
 
