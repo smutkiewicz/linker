@@ -17,11 +17,16 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
+import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.utils.ClipboardHelper
 import studios.aestheticapps.linker.utils.DateTimeHelper
 
-class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnItemSelectedListener
+class AddEditFragment : Fragment(),
+    AddEditTaskContract.View,
+    TextWatcher,
+    OnItemSelectedListener,
+    LinkMetadataFormatter.BuildModelCallback
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
@@ -75,7 +80,6 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
                 if (model == null || (model != null && clipboardHelper.containsNewContent(model!!.url)))
                 {
                     buildSampleModelFromClipboardContent()
-                    mapModelToView()
                 }
             }
         }
@@ -197,6 +201,25 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         }
     }
 
+    override fun mapModelToView(model: Link?)
+    {
+        model?.let {
+            addEditLinkTitleEt.setText(it.title)
+            addEditUrlEt.setText(it.url)
+            addEditDescriptionEt.setText(it.description)
+            tagAdapter.elements = it.stringToListOfTags()
+
+            spinner
+                .setSelection((spinner.adapter as ArrayAdapter<String>)
+                .getPosition(it.category))
+        }
+    }
+
+    override fun setNewModel(modelFetchedAsync: Link?)
+    {
+        this.model = modelFetchedAsync
+    }
+
     override fun cleanView()
     {
         callback.returnToMainView()
@@ -240,7 +263,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
     override fun buildSampleModelFromClipboardContent()
     {
         val newContent = clipboardHelper.obtainClipboardContent()
-        model = presenter.buildItemFromUrl(newContent)
+        presenter.buildItemFromUrl(newContent)
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = callback.onEdited()

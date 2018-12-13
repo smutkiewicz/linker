@@ -18,10 +18,14 @@ import studios.aestheticapps.linker.content.addedit.AddEditPresenter
 import studios.aestheticapps.linker.content.addedit.AddEditTaskContract
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.LinkMetadataFormatter
 
-class AddEditBubbleContent (context: Context,
+class AddEditBubbleContent(context: Context,
                             application: Application,
-                            private val callback: BubbleContentCallback) : FrameLayout(context), Content, AddEditTaskContract.View
+                            private val callback: BubbleContentCallback) : FrameLayout(context),
+    Content,
+    AddEditTaskContract.View,
+    LinkMetadataFormatter.BuildModelCallback
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
@@ -177,5 +181,9 @@ class AddEditBubbleContent (context: Context,
     {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun mapModelToView(model: Link?) {}
+
+    override fun setNewModel(modelFetchedAsync: Link?) {}
 }
 

@@ -3,17 +3,30 @@ package studios.aestheticapps.linker.model
 import android.os.AsyncTask
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.net.URL
 
 /**
  * Assumes that gets a VALID url.
  */
-class LinkMetadataFormatter
+class LinkMetadataFormatter(val callback: BuildModelCallback)
 {
-    fun obtainMetadataFromAsync(url: String) = GetFromUrlAsyncTask().execute(url).get()
+    fun obtainMetadataFromAsync(url: String): Link?
+    {
+        return if (url != EMPTY_URL)
+            GetFromUrlAsyncTask().execute(url).get()
+        else
+            null
+    }
 
-    fun obtainMetadataFromAsync(model: Link) = GetFromModelAsyncTask().execute(model).get()
+    fun obtainMetadataFromAsync(model: Link): Link?
+    {
+        return if (model.url != EMPTY_URL)
+            GetFromModelAsyncTask().execute(model).get()
+        else
+            null
+    }
 
     /**
      * Model is edited by user and/or has atributes already parsed by obtainMetadataFrom(url).
@@ -91,7 +104,6 @@ class LinkMetadataFormatter
         return "Science/Education"
     }
 
-    //return "${model.domain};${model.category};"
     private fun getTagsFrom(model: Link): String
     {
         return Link.listOfTagsToString(mutableListOf(
@@ -107,6 +119,13 @@ class LinkMetadataFormatter
             val url = args[0]
             return obtainMetadataFrom(url)
         }
+
+        override fun onPostExecute(result: Link?)
+        {
+            super.onPostExecute(result)
+            callback.mapModelToView(result)
+            callback.setNewModel(result)
+        }
     }
 
     private inner class GetFromModelAsyncTask : AsyncTask<Link, Void, Link?>()
@@ -118,10 +137,16 @@ class LinkMetadataFormatter
         }
     }
 
+    interface BuildModelCallback
+    {
+        fun mapModelToView(model: Link?)
+        fun setNewModel(modelFetchedAsync: Link?)
+    }
+
     private companion object
     {
-        const val UNKNOWN = "Unknown"
         const val EMPTY = ""
+        const val UNKNOWN = "Unknown"
         const val DEFAULT_IMAGE_URL = "https://www.google.com/favicon.ico"
     }
 }
