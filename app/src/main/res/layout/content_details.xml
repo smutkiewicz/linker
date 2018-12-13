@@ -43,16 +43,6 @@
                     android:layout_marginStart="8dp"
                     android:layout_height="wrap_content" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"/>
 
-            <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_category"
-                    android:id="@+id/imageView3"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/detailsGoToUrlCv"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="8dp"/>
-
             <TextView
                     android:id="@+id/detailsUrlTv"
                     android:text="@string/sample_link"
@@ -61,14 +51,12 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="8dp"
                     android:maxLines="3"
-                    android:layout_marginTop="12dp"
-                    app:layout_constraintTop_toBottomOf="@+id/detailsCategoryTv"
-                    app:layout_constraintStart_toEndOf="@+id/imageView2" android:layout_marginStart="8dp"/>
+                    app:layout_constraintStart_toEndOf="@+id/imageView2" android:layout_marginStart="8dp" android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/detailsGoToUrlCv"/>
 
             <android.support.v7.widget.CardView
                     android:id="@+id/detailsGoToUrlCv"
                     android:layout_width="match_parent"
-                    android:layout_height="96dp"
+                    android:layout_height="112dp"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -88,33 +76,33 @@
                     <TextView
                             android:text="@string/sample_title_of_a_link"
                             android:ellipsize="end"
-                            android:maxLines="3"
+                            android:maxLines="2"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:id="@+id/detailsTitleTv"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:layout_marginBottom="8dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginEnd="8dp"
+                            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp" android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/detailsCategoryTv"/>
+
+                    <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            app:srcCompat="@drawable/default_miniature"
+                            android:id="@+id/iconIv"
+                            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp" app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="8dp"/>
+                    <TextView
+                            android:text="TextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/detailsCategoryTv"
+                            android:textAllCaps="true"
                             app:layout_constraintStart_toStartOf="parent"
                             android:layout_marginStart="8dp"
                             app:layout_constraintTop_toTopOf="parent"
-                            android:layout_marginTop="8dp"
-                            app:layout_constraintEnd_toStartOf="@+id/userIv"
-                            android:layout_marginEnd="8dp"
-                            app:layout_constraintHorizontal_bias="1.0"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            android:layout_marginBottom="8dp"
-                            app:layout_constraintVertical_bias="0.0"/>
-
-                    <ImageView
-                            android:layout_width="137dp"
-                            android:layout_height="80dp"
-                            app:srcCompat="@drawable/default_miniature"
-                            android:id="@+id/userIv"
-                            android:layout_marginEnd="8dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:layout_marginTop="8dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            android:layout_marginBottom="8dp"/>
+                            android:layout_marginTop="8dp" app:layout_constraintEnd_toStartOf="@+id/iconIv" android:layout_marginEnd="8dp"/>
 
                 </android.support.constraint.ConstraintLayout>
 
@@ -125,20 +113,9 @@
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_link"
                     android:id="@+id/imageView2"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView3"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="8dp"/>
+                    android:layout_marginStart="8dp" android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/detailsGoToUrlCv"/>
 
-            <TextView
-                    android:text="YouTube"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/detailsCategoryTv"
-                    app:layout_constraintStart_toEndOf="@+id/imageView3"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
-                    app:layout_constraintTop_toBottomOf="@+id/detailsGoToUrlCv"/>
             <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -146,8 +123,7 @@
                     android:id="@+id/imageView5"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/detailsUrlTv"/>
+                    android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/imageView2"/>
             <TextView
                     android:text="@string/sample_lorem_ipsum"
                     android:layout_width="0dp"

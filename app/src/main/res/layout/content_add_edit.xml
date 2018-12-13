@@ -64,7 +64,7 @@
                             android:layout_marginTop="8dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginBottom="8dp"
-                            app:layout_constraintEnd_toStartOf="@+id/userIv"
+                            app:layout_constraintEnd_toStartOf="@+id/iconIv"
                             android:layout_marginEnd="8dp"
                             app:errorEnabled="true">
 
@@ -84,7 +84,7 @@
                             android:layout_width="137dp"
                             android:layout_height="80dp"
                             android:src="@drawable/default_miniature"
-                            android:id="@+id/userIv"
+                            android:id="@+id/iconIv"
                             android:layout_marginEnd="8dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"

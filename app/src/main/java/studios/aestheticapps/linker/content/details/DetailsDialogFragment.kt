@@ -11,7 +11,9 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import android.widget.GridLayout.VERTICAL
+import android.widget.ImageView
 import android.widget.TextView
+import com.squareup.picasso.Picasso
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.OnItemClickListener
 import studios.aestheticapps.linker.adapters.TagAdapter
@@ -81,6 +83,10 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter
             findViewById<CardView>(R.id.detailsGoToUrlCv).setOnClickListener {
                 onItemClickCallback.onItemClicked(model)
             }
+
+            Picasso.get()
+                .load(model.imageUrl)
+                .into(findViewById<ImageView>(R.id.iconIv))
         }
 
         val descrTv = view.findViewById<TextView>(R.id.detailsDescrTv)

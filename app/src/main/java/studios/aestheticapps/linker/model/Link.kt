@@ -5,6 +5,7 @@ import android.arch.persistence.room.PrimaryKey
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.TextUtils
+import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -18,7 +19,8 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
                 var isFavorite: Boolean = false,
                 var description: String = "",
                 var tags: String = "",
-                var lastUsed: String = SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date())) : Parcelable
+                var created: String = DateTimeHelper.getCurrentDateTimeStamp(),
+                var lastUsed: String = DateTimeHelper.getCurrentDateTimeStamp()) : Parcelable
 {
     constructor(parcel: Parcel) : this(
         id = parcel.readInt(),

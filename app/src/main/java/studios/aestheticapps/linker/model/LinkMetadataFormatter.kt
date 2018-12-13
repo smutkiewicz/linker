@@ -42,7 +42,7 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
 
         if (doc != null)
         {
-            if (model.imageUrl.isEmpty()) model.imageUrl = getFaviconUrlFrom(doc)
+            if (model.imageUrl.isEmpty() || model.imageUrl == DEFAULT_IMAGE_URL) model.imageUrl = getFaviconUrlFrom(doc)
         }
 
         return model
@@ -81,10 +81,7 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
 
     private fun getDomainFrom(url: String) = URL(url).host.toString().replace("www.", "")
 
-    private fun getDescriptionFrom(doc: Document): String
-    {
-        return doc.select("meta[name=description]").first()?.attr("content")?: EMPTY
-    }
+    private fun getDescriptionFrom(doc: Document) = doc.select("meta[name=description]").first()?.attr("content")?: EMPTY
 
     private fun getImageUrlFrom(doc: Document): String
     {

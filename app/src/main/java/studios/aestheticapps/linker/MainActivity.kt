@@ -293,7 +293,7 @@ class MainActivity : AppCompatActivity(),
             Picasso.get()
                 .load(currentUser!!.photoUrl)
                 .resize(200, 200)
-                .into(headerView.userIv)
+                .into(headerView.iconIv)
         }
     }
 

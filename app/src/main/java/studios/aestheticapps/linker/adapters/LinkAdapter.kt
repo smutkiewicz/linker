@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
 class LinkAdapter(private val callback: OnItemClickListener)
@@ -44,6 +45,7 @@ class LinkAdapter(private val callback: OnItemClickListener)
             titleTv.text = model.title
             categoryTv.text = model.category
             domainTv.text = model.domain
+            createdTv.text = DateTimeHelper.getMonthAndDay(model.created)
             changeFavourite(model.isFavorite)
 
             Picasso.get()
@@ -69,6 +71,7 @@ class LinkAdapter(private val callback: OnItemClickListener)
         val miniatureIv: ImageView = itemView.findViewById(R.id.miniatureIv)
         val isFavouriteIb: ImageButton = itemView.findViewById(R.id.favouriteIb)
         val shareIb: ImageButton = itemView.findViewById(R.id.shareIb)
+        val createdTv: TextView = itemView.findViewById(R.id.createdTv)
 
         init
         {

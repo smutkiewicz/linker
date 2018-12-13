@@ -35,12 +35,13 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
     /**
      * Guarantee a valid model, or null.
      */
-    override fun buildItemFromUrl(url: String)
+    override fun buildItemFromUrl(url: String, isNetworkAvailable: Boolean)
     {
         val validator = LinkValidator(url)
         val validUrl = validator.build()
 
-        formatter.obtainMetadataFromAsync(validUrl)
+        if (isNetworkAvailable)
+            formatter.obtainMetadataFromAsync(validUrl)
     }
 
     override fun provideValidUrl(url: String): String

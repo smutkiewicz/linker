@@ -1,6 +1,7 @@
 package studios.aestheticapps.linker.content.addedit
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.StaggeredGridLayoutManager
@@ -21,6 +22,8 @@ import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.utils.ClipboardHelper
 import studios.aestheticapps.linker.utils.DateTimeHelper
+
+
 
 class AddEditFragment : Fragment(),
     AddEditTaskContract.View,
@@ -116,8 +119,10 @@ class AddEditFragment : Fragment(),
         {
             buildSampleModelFromClipboardContent()
         }
-
-        mapModelToView()
+        else
+        {
+            mapModelToView()
+        }
     }
 
     override fun createFab()
@@ -263,7 +268,7 @@ class AddEditFragment : Fragment(),
     override fun buildSampleModelFromClipboardContent()
     {
         val newContent = clipboardHelper.obtainClipboardContent()
-        presenter.buildItemFromUrl(newContent)
+        presenter.buildItemFromUrl(newContent, isNetworkAvailable())
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = callback.onEdited()
@@ -328,6 +333,13 @@ class AddEditFragment : Fragment(),
         }
 
         return isValid
+    }
+
+    private fun isNetworkAvailable(): Boolean
+    {
+        val connectivityManager = context!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null
     }
 
     interface AddEditCallback
