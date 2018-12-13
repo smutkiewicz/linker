@@ -182,6 +182,11 @@ class AddEditBubbleContent(context: Context,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun createCopyButtons()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun mapModelToView(model: Link?) {}
 
     override fun setNewModel(modelFetchedAsync: Link?) {}

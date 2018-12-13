@@ -18,6 +18,7 @@ interface AddEditTaskContract
         fun createTagRecyclerView()
         fun createEditTexts()
         fun createSpinner()
+        fun createCopyButtons()
         fun addTag()
         fun buildItemFromView(): Link
         fun mapModelToView()

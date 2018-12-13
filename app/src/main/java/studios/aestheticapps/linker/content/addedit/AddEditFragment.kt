@@ -23,8 +23,6 @@ import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.utils.ClipboardHelper
 import studios.aestheticapps.linker.utils.DateTimeHelper
 
-
-
 class AddEditFragment : Fragment(),
     AddEditTaskContract.View,
     TextWatcher,
@@ -45,7 +43,7 @@ class AddEditFragment : Fragment(),
     {
         val view = inflater.inflate(R.layout.content_add_edit, container, false)
 
-        clipboardHelper = ClipboardHelper(context!!)
+        clipboardHelper = ClipboardHelper(context!!.applicationContext)
         restoreSavedState(savedInstanceState)
 
         return view
@@ -70,6 +68,7 @@ class AddEditFragment : Fragment(),
         createFab()
         createTagBtn()
         createEditTexts()
+        createCopyButtons()
     }
 
     override fun onResume()
@@ -191,6 +190,19 @@ class AddEditFragment : Fragment(),
     override fun createSpinner()
     {
         spinner.onItemSelectedListener = this
+    }
+
+    override fun createCopyButtons()
+    {
+        copyUrlIb.setOnClickListener {
+            val content = addEditUrlEt.text.toString()
+            clipboardHelper.copyToCliboard(content)
+        }
+
+        copyDescrIb.setOnClickListener {
+            val content = addEditDescriptionEt.text.toString()
+            clipboardHelper.copyToCliboard(content)
+        }
     }
 
     override fun mapModelToView()
