@@ -1,7 +1,7 @@
 package studios.aestheticapps.linker.content.home
 
 import android.app.Application
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.FAVORITES
@@ -9,7 +9,7 @@ import studios.aestheticapps.linker.persistence.LinkRepository.Companion.RECENT
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
-class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnItemClickListener
+class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnMyAdapterItemClickListener
 {
     private lateinit var repository: LinkRepository
 
@@ -29,7 +29,7 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
 
     override fun getTagsCloudItems(): LinkedList<String>
     {
-        val tagCloudItems = LinkedList<String>()
+        val tagCloudSet = HashSet<String>()
         val recentList = repository.getListOf(RECENT)
         val recentLastIndex = recentList.lastIndex
         recentList.shuffle()
@@ -42,14 +42,17 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
 
         for (index in 0..max)
         {
-            //TODO uniqueness
             val chosenItem = recentList[index]
             val itemsTags = chosenItem.stringToListOfTags()
 
-            tagCloudItems.addAll(itemsTags)
+            for (tag in itemsTags)
+            {
+                if (!tagCloudSet.contains(tag))
+                    tagCloudSet.add(tag)
+            }
         }
 
-        return tagCloudItems
+        return LinkedList(tagCloudSet)
     }
 
     override fun setItemFavourite(link: Link)
@@ -64,21 +67,23 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
         repository.update(link)
     }
 
-    override fun onItemClicked(link: Link)
+    override fun onItemClicked(model: Link)
     {
-        setItemRecent(link)
-        view.startInternetAction(link)
+        setItemRecent(model)
+        view.startInternetAction(model)
     }
 
-    override fun onItemLongClicked(link: Link) = view.startDetailsAction(link)
+    override fun onItemLongClicked(model: Link) = view.startDetailsAction(model)
 
-    override fun onFavourite(link: Link) = setItemFavourite(link)
+    override fun onFavourite(model: Link) = setItemFavourite(model)
 
-    override fun onShare(link: Link)
+    override fun onShare(model: Link)
     {
-        setItemRecent(link)
-        view.startShareView(link)
+        setItemRecent(model)
+        view.startShareView(model)
     }
+
+    override fun onCopy(content: String) = view.startCopyAction(content)
 
     private companion object
     {

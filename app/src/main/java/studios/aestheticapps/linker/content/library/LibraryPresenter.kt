@@ -1,14 +1,14 @@
 package studios.aestheticapps.linker.content.library
 
 import android.app.Application
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.ALL
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
-class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Presenter, OnItemClickListener
+class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Presenter, OnMyAdapterItemClickListener
 {
     private lateinit var repository: LinkRepository
 
@@ -24,7 +24,7 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
 
     override fun getAllItems(): LinkedList<Link> = repository.getListOf(ALL)
 
-    override fun searchForItem(phrase: String) = repository.search(phrase)
+    override fun searchForItem(phrase: String, orderBy: String) = repository.search(phrase, orderBy)
 
     override fun addItem(link: Link) = repository.insert(link)
 
@@ -42,19 +42,19 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
         repository.update(link)
     }
 
-    override fun onItemClicked(link: Link)
+    override fun onItemClicked(model: Link)
     {
-        setItemRecent(link)
-        view.startInternetAction(link)
+        setItemRecent(model)
+        view.startInternetAction(model)
     }
 
-    override fun onItemLongClicked(link: Link) = view.startDetailsAction(link)
+    override fun onItemLongClicked(model: Link) = view.startDetailsAction(model)
 
-    override fun onFavourite(link: Link) = setItemFavourite(link)
+    override fun onFavourite(model: Link) = setItemFavourite(model)
 
-    override fun onShare(link: Link)
+    override fun onShare(model: Link)
     {
-        setItemRecent(link)
-        view.startShareView(link)
+        setItemRecent(model)
+        view.startShareView(model)
     }
 }

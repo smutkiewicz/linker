@@ -9,7 +9,7 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
 import java.util.*
 
-class RecentLinkAdapter(private val callback: OnItemClickListener)
+class RecentLinkAdapter(private val callback: OnMyAdapterItemClickListener)
     : RecyclerView.Adapter<RecentLinkAdapter.ViewHolder>(), MyAdapter
 {
     override var elements: MutableList<Link> = LinkedList()

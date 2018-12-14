@@ -15,7 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.picasso.Picasso
 import studios.aestheticapps.linker.R
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.SearchCallback
@@ -26,7 +26,7 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter
 {
     override var presenter: DetailsContract.Presenter = DetailsPresenter(this)
 
-    private lateinit var onItemClickCallback: OnItemClickListener
+    private lateinit var onItemClickCallback: OnMyAdapterItemClickListener
     private lateinit var searchCallback: SearchCallback
 
     private lateinit var tagAdapter: TagAdapter
@@ -62,7 +62,7 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter
     override fun onAttach(context: Context)
     {
         super.onAttach(context)
-        onItemClickCallback = presenter as OnItemClickListener
+        onItemClickCallback = presenter as OnMyAdapterItemClickListener
         searchCallback = context as SearchCallback
     }
 

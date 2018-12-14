@@ -13,7 +13,7 @@ import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
-class LinkAdapter(private val callback: OnItemClickListener)
+class LinkAdapter(private val callback: OnMyAdapterItemClickListener)
     : RecyclerView.Adapter<LinkAdapter.ViewHolder>(), MyAdapter
 {
     override var elements: MutableList<Link> = LinkedList()

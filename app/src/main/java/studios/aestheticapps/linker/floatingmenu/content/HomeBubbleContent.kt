@@ -14,7 +14,7 @@ import io.mattcarroll.hover.Content
 import kotlinx.android.synthetic.main.content_home.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.adapters.RecentLinkAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.home.HomeContract
@@ -63,7 +63,7 @@ class HomeBubbleContent(context: Context,
             false
         )
 
-        recentLinkAdapter = RecentLinkAdapter(presenter as OnItemClickListener)
+        recentLinkAdapter = RecentLinkAdapter(presenter as OnMyAdapterItemClickListener)
         recentLinkAdapter.elements = presenter.getRecentItems()
 
         recentRecyclerView.apply {
@@ -95,4 +95,9 @@ class HomeBubbleContent(context: Context,
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 
     override fun setUpTagsCloudRecyclerView() {}
+
+    override fun startCopyAction(content: String)
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

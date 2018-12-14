@@ -22,6 +22,7 @@ interface HomeContract
         fun startInternetAction(link: Link)
         fun startDetailsAction(link: Link)
         fun startShareView(link: Link)
+        fun startCopyAction(content: String)
     }
 
     interface Presenter : BasePresenter

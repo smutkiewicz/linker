@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.content_library.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.library.LibraryContract
 import studios.aestheticapps.linker.content.library.LibraryPresenter
@@ -61,7 +61,7 @@ class LibraryBubbleContent(context: Context,
 
     override fun setUpLinksRecyclerView()
     {
-        linkAdapter = LinkAdapter(presenter as OnItemClickListener)
+        linkAdapter = LinkAdapter(presenter as OnMyAdapterItemClickListener)
         linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
 
         linksRecyclerView.apply {

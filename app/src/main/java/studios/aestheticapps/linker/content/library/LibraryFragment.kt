@@ -17,16 +17,18 @@ import kotlinx.android.synthetic.main.content_library.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.utils.PrefsHelper
 
 class LibraryFragment : Fragment(), LibraryContract.View
 {
     override var presenter: LibraryContract.Presenter = LibraryPresenter(this)
 
     private lateinit var linkAdapter: LinkAdapter
+    private lateinit var orderByColumn: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
         = inflater.inflate(R.layout.content_library, container, false)
@@ -49,7 +51,7 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
     override fun populateViewAdaptersWithContent()
     {
-        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
+        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString(), orderByColumn)
     }
 
     override fun obtainQueryFromArguments()
@@ -73,7 +75,7 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
     override fun setUpLinksRecyclerView()
     {
-        linkAdapter = LinkAdapter(presenter as OnItemClickListener)
+        linkAdapter = LinkAdapter(presenter as OnMyAdapterItemClickListener)
 
         linksRecyclerView.apply {
             adapter = linkAdapter
@@ -105,6 +107,8 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
     override fun setUpSearchBox()
     {
+        orderByColumn = PrefsHelper.obtainOrderByColumn(context!!)
+
         searchBox.apply {
             isActivated = false
             isIconified = false
@@ -118,7 +122,7 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
                 override fun onQueryTextChange(newText: String): Boolean
                 {
-                    linkAdapter.elements = presenter.searchForItem(newText)
+                    linkAdapter.elements = presenter.searchForItem(newText, orderByColumn)
                     return false
                 }
             })

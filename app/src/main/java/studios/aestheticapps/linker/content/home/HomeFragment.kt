@@ -18,13 +18,14 @@ import kotlinx.android.synthetic.main.content_home.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.FavoritesAdapter
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.adapters.RecentLinkAdapter
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.SearchCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.utils.ClipboardHelper
 
 class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListener
 {
@@ -66,6 +67,8 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
         recentLinkAdapter.elements = presenter.getRecentItems()
         favLinkAdapter.elements = presenter.getFavoriteItems()
         tagCloudAdapter.elements = presenter.getTagsCloudItems()
+
+        showEmptyViewIfNeeded()
     }
 
     override fun hideBubbles()
@@ -85,7 +88,7 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
             false
         )
 
-        recentLinkAdapter = RecentLinkAdapter(presenter as OnItemClickListener)
+        recentLinkAdapter = RecentLinkAdapter(presenter as OnMyAdapterItemClickListener)
         recentRecyclerView.apply {
             layoutManager = horizontalLayoutManager
             adapter = recentLinkAdapter
@@ -94,7 +97,7 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
 
     override fun setUpFavoritesRecyclerView()
     {
-        favLinkAdapter = FavoritesAdapter(presenter as OnItemClickListener)
+        favLinkAdapter = FavoritesAdapter(presenter as OnMyAdapterItemClickListener)
 
         favRecyclerView.apply {
             adapter = favLinkAdapter
@@ -134,4 +137,42 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 
     override fun onSearchTag(tag: String) = callback.onOpenSearchView(tag)
+
+    override fun startCopyAction(content: String) = ClipboardHelper(context!!).copyToCliboard(content)
+
+    private fun showEmptyViewIfNeeded()
+    {
+        if (recentLinkAdapter.itemCount == 0)
+        {
+            recentRecyclerView.visibility = View.INVISIBLE
+            emptyShareTv.visibility = View.VISIBLE
+        }
+        else
+        {
+            recentRecyclerView.visibility = View.VISIBLE
+            emptyShareTv.visibility = View.GONE
+        }
+
+        if (favLinkAdapter.itemCount == 0)
+        {
+            favRecyclerView.visibility = View.INVISIBLE
+            emptyFavsTv.visibility = View.VISIBLE
+        }
+        else
+        {
+            favRecyclerView.visibility = View.VISIBLE
+            emptyFavsTv.visibility = View.GONE
+        }
+
+        if (tagCloudAdapter.itemCount == 0)
+        {
+            tagsCloudRecyclerView.visibility = View.INVISIBLE
+            emptyCloudTv.visibility = View.VISIBLE
+        }
+        else
+        {
+            tagsCloudRecyclerView.visibility = View.VISIBLE
+            emptyCloudTv.visibility = View.GONE
+        }
+    }
 }

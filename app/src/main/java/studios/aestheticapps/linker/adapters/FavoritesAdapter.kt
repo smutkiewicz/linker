@@ -12,7 +12,7 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
 import java.util.*
 
-class FavoritesAdapter(private val callback: OnItemClickListener)
+class FavoritesAdapter(private val callback: OnMyAdapterItemClickListener)
     : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>(), MyAdapter
 {
     override var elements: MutableList<Link> = LinkedList()
@@ -41,6 +41,7 @@ class FavoritesAdapter(private val callback: OnItemClickListener)
         holder.apply {
             this.model = model
             id = model.id
+            domainTv.text = model.domain
             titleTv.text = model.title
 
             Picasso.get()
@@ -60,8 +61,10 @@ class FavoritesAdapter(private val callback: OnItemClickListener)
         lateinit var model: Link
 
         var id: Int = 0
+        var domainTv: TextView = itemView.findViewById(R.id.domainTv)
         val titleTv: TextView = itemView.findViewById(R.id.titleTv)
         val miniatureIv: ImageView = itemView.findViewById(R.id.miniatureIv)
+        val copyIb: ImageButton = itemView.findViewById(R.id.copyIb)
         val shareIb: ImageButton = itemView.findViewById(R.id.shareIb)
 
         init
@@ -77,6 +80,10 @@ class FavoritesAdapter(private val callback: OnItemClickListener)
 
             shareIb.setOnClickListener{
                 callback.onShare(model)
+            }
+
+            copyIb.setOnClickListener {
+                callback.onCopy(model.url)
             }
         }
     }

@@ -91,8 +91,19 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
 
     private fun getFaviconUrlFrom(doc: Document): String
     {
-        val icon = doc.head().select("model[href~=.*\\.ico]").first()
-        return icon?.attr("href")?: DEFAULT_IMAGE_URL
+        var iconUrl: String
+
+        val icoElement = doc.head().select("meta[itemprop=image]").first()
+        iconUrl = icoElement?.attr("content")?: DEFAULT_IMAGE_URL
+
+        // Try again for different type of icon
+        if (iconUrl == DEFAULT_IMAGE_URL)
+        {
+            val pngElement = doc.head().select("link[href~=.*\\.(ico|png)]").first()
+            iconUrl = pngElement?.attr("href") ?: DEFAULT_IMAGE_URL
+        }
+
+        return iconUrl
     }
 
     private fun getCategoryByDomain(domain: String): String
