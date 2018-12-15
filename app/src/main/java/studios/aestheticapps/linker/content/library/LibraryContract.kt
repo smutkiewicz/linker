@@ -19,6 +19,7 @@ interface LibraryContract
         fun setUpSwipeGestures()
         fun setUpSearchBox()
         fun setUpLinksRecyclerView()
+        fun setUpSortBySpinner()
 
         fun startInternetAction(link: Link)
         fun startShareView(link: Link)

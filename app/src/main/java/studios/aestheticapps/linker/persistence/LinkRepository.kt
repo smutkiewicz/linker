@@ -110,6 +110,9 @@ class LinkRepository internal constructor(application: Application)
 
         const val TITLE_COLUMN = "title"
         const val CATEGORY_COLUMN = "category"
+        const val DOMAIN_COLUMN = "domain"
+        const val CREATED_COLUMN = "created"
+        const val CREATED_LATEST_COLUMN = "created DESC"
 
         const val ALL = 0
         const val FAVORITES = 1

@@ -17,11 +17,10 @@ interface AddEditTaskContract
         fun createViewFromModel()
         fun createTagRecyclerView()
         fun createEditTexts()
-        fun createSpinner()
         fun createCopyButtons()
         fun addTag()
         fun buildItemFromView(): Link
-        fun mapModelToView()
+        //fun mapModelToView()
         fun buildSampleModelFromClipboardContent()
     }
 

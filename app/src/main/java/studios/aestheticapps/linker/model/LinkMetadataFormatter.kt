@@ -93,8 +93,15 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
     {
         var iconUrl: String
 
-        val icoElement = doc.head().select("meta[itemprop=image]").first()
+        val icoElement = doc.head().select("link[rel=\".(ico|png)\"]").first()
         iconUrl = icoElement?.attr("content")?: DEFAULT_IMAGE_URL
+
+        // Try again for different type of icon
+        if (iconUrl == DEFAULT_IMAGE_URL)
+        {
+            val icoElement = doc.head().select("meta[itemprop=image]").first()
+            iconUrl = icoElement?.attr("content")?: DEFAULT_IMAGE_URL
+        }
 
         // Try again for different type of icon
         if (iconUrl == DEFAULT_IMAGE_URL)

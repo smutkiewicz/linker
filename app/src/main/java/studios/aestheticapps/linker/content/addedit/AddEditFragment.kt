@@ -22,6 +22,7 @@ import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.utils.ClipboardHelper
 import studios.aestheticapps.linker.utils.DateTimeHelper
+import studios.aestheticapps.linker.utils.PrefsHelper
 
 class AddEditFragment : Fragment(),
     AddEditTaskContract.View,
@@ -63,7 +64,6 @@ class AddEditFragment : Fragment(),
 
         createCategoriesSpinner()
         createTagRecyclerView()
-        createViewFromModel()
 
         createFab()
         createTagBtn()
@@ -79,7 +79,8 @@ class AddEditFragment : Fragment(),
         {
             MODE_ADD ->
             {
-                if (model == null || (model != null && clipboardHelper.containsNewContent(model!!.url)))
+                val latestUrl = PrefsHelper.obtainLatestParsedUrl(context!!)
+                if (model == null || (model != null && clipboardHelper.containsNewContent(latestUrl)))
                 {
                     buildSampleModelFromClipboardContent()
                 }
@@ -120,7 +121,7 @@ class AddEditFragment : Fragment(),
         }
         else
         {
-            mapModelToView()
+            mapModelToView(model)
         }
     }
 
@@ -178,6 +179,7 @@ class AddEditFragment : Fragment(),
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
+        spinner.onItemSelectedListener = this
     }
 
     override fun createEditTexts()
@@ -185,11 +187,6 @@ class AddEditFragment : Fragment(),
         addEditLinkTitleEt.addTextChangedListener(this)
         addEditUrlEt.addTextChangedListener(this)
         addEditDescriptionEt.addTextChangedListener(this)
-    }
-
-    override fun createSpinner()
-    {
-        spinner.onItemSelectedListener = this
     }
 
     override fun createCopyButtons()
@@ -205,19 +202,6 @@ class AddEditFragment : Fragment(),
         }
     }
 
-    override fun mapModelToView()
-    {
-        model?.let {
-            addEditLinkTitleEt.setText(it.title)
-            addEditUrlEt.setText(it.url)
-            addEditDescriptionEt.setText(it.description)
-            tagAdapter.elements = it.stringToListOfTags()
-
-            spinner.setSelection((spinner.adapter as ArrayAdapter<String>)
-                .getPosition(it.category))
-        }
-    }
-
     override fun mapModelToView(model: Link?)
     {
         model?.let {
@@ -229,12 +213,17 @@ class AddEditFragment : Fragment(),
             spinner
                 .setSelection((spinner.adapter as ArrayAdapter<String>)
                 .getPosition(it.category))
+
+            PrefsHelper.setLatestParsedUrl(context!!, model.url)
         }
     }
 
     override fun setNewModel(modelFetchedAsync: Link?)
     {
         this.model = modelFetchedAsync
+        modelFetchedAsync?.let {
+            PrefsHelper.setLatestParsedUrl(context!!, modelFetchedAsync.url)
+        }
     }
 
     override fun cleanView()
@@ -289,7 +278,7 @@ class AddEditFragment : Fragment(),
 
     override fun afterTextChanged(s: Editable) {}
 
-    override fun onItemSelected(parentView: AdapterView<*>, selectedItemView: View, position: Int, id: Long) = callback.onEdited()
+    override fun onItemSelected(parentView: AdapterView<*>, view: View?, position: Int, id: Long) = callback.onEdited()
 
     override fun onNothingSelected(parentView: AdapterView<*>) {}
 

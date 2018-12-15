@@ -85,6 +85,7 @@ class MainActivity : AppCompatActivity(),
     {
         super.onResume()
         if(isBubbleServiceRunning()) closeBubbles()
+        viewPagerAdapter?.notifyDataSetChanged()
     }
 
     override fun onBackPressed()
@@ -275,9 +276,8 @@ class MainActivity : AppCompatActivity(),
     override fun onOpenSearchView(phrase: String)
     {
         tagPhrase = phrase
-        viewPagerAdapter.notifyDataSetChanged()
-
         viewPager.setCurrentItem(LIBRARY, true)
+        viewPagerAdapter.notifyDataSetChanged()
     }
 
     private fun authenticateUserAndFetchAccountSettings()

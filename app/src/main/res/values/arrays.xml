@@ -17,4 +17,11 @@
         <item>Travel</item>
         <item>Undefined</item>
     </string-array>
+
+    <string-array name="sort_by_array">
+        <item>Title</item>
+        <item>Category</item>
+        <item>Domain</item>
+        <item>Latest</item>
+    </string-array>
 </resources>

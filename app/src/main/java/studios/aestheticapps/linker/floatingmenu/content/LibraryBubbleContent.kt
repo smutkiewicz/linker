@@ -134,4 +134,9 @@ class LibraryBubbleContent(context: Context,
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 
     override fun obtainQueryFromArguments() {}
+
+    override fun setUpSortBySpinner()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

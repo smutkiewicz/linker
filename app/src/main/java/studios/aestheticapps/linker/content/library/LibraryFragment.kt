@@ -13,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.content_library.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
@@ -21,9 +23,13 @@ import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CATEGORY_COLUMN
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_LATEST_COLUMN
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.DOMAIN_COLUMN
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.TITLE_COLUMN
 import studios.aestheticapps.linker.utils.PrefsHelper
 
-class LibraryFragment : Fragment(), LibraryContract.View
+class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSelectedListener
 {
     override var presenter: LibraryContract.Presenter = LibraryPresenter(this)
 
@@ -40,6 +46,7 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
         setUpSearchBox()
         setUpLinksRecyclerView()
+        setUpSortBySpinner()
         populateViewAdaptersWithContent()
     }
 
@@ -84,6 +91,21 @@ class LibraryFragment : Fragment(), LibraryContract.View
         }
 
         setUpSwipeGestures()
+    }
+
+    override fun setUpSortBySpinner()
+    {
+        val adapter = ArrayAdapter.createFromResource(
+            context,
+            R.array.sort_by_array,
+            android.R.layout.simple_spinner_item
+        )
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sortBySpinner.adapter = adapter
+        sortBySpinner.isSelected = false
+        sortBySpinner.setSelection(0, true)
+        sortBySpinner.onItemSelectedListener = this
     }
 
     override fun setUpSwipeGestures()
@@ -141,6 +163,22 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
 
+    override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long)
+    {
+        val newOrderByColumn = when(pos)
+        {
+            0 -> TITLE_COLUMN
+            1 -> CATEGORY_COLUMN
+            2 -> DOMAIN_COLUMN
+            3 -> CREATED_LATEST_COLUMN
+            else -> TITLE_COLUMN
+        }
+
+        updateOrderByPref(newOrderByColumn)
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>) {}
+
     private fun buildExitDialogAndConfirmDelete(id: Int, adapterPosition: Int)
     {
         val builder = AlertDialog
@@ -163,6 +201,15 @@ class LibraryFragment : Fragment(), LibraryContract.View
     {
         presenter.removeItem(id)
         linkAdapter.removeItem(adapterPosition)
+    }
+
+    private fun updateOrderByPref(column: String)
+    {
+        orderByColumn = column
+        PrefsHelper.setOrderByColumn(context!!, column)
+
+        // reload content
+        populateViewAdaptersWithContent()
     }
 
     companion object
