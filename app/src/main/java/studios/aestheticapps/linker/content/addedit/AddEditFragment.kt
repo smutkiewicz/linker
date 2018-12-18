@@ -67,7 +67,6 @@ class AddEditFragment : Fragment(),
 
         createFab()
         createTagBtn()
-        createEditTexts()
         createCopyButtons()
     }
 
@@ -85,7 +84,11 @@ class AddEditFragment : Fragment(),
                     buildSampleModelFromClipboardContent()
                 }
             }
+
+            MODE_EDIT -> createViewFromModel()
         }
+
+        attachListeners()
     }
 
     override fun onAttach(context: Context?)
@@ -178,15 +181,8 @@ class AddEditFragment : Fragment(),
         )
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
-        spinner.onItemSelectedListener = this
-    }
-
-    override fun createEditTexts()
-    {
-        addEditLinkTitleEt.addTextChangedListener(this)
-        addEditUrlEt.addTextChangedListener(this)
-        addEditDescriptionEt.addTextChangedListener(this)
+        categoriesSpinner.adapter = adapter
+        categoriesSpinner.isSelected = false
     }
 
     override fun createCopyButtons()
@@ -205,16 +201,17 @@ class AddEditFragment : Fragment(),
     override fun mapModelToView(model: Link?)
     {
         model?.let {
+            if (mode == MODE_ADD)
+                PrefsHelper.setLatestParsedUrl(context!!, model.url)
+
             addEditLinkTitleEt.setText(it.title)
             addEditUrlEt.setText(it.url)
             addEditDescriptionEt.setText(it.description)
             tagAdapter.elements = it.stringToListOfTags()
 
-            spinner
-                .setSelection((spinner.adapter as ArrayAdapter<String>)
+            categoriesSpinner
+                .setSelection((categoriesSpinner.adapter as ArrayAdapter<String>)
                 .getPosition(it.category))
-
-            PrefsHelper.setLatestParsedUrl(context!!, model.url)
         }
     }
 
@@ -234,7 +231,7 @@ class AddEditFragment : Fragment(),
         addEditUrlEt.text.clear()
         addEditDescriptionEt.text.clear()
         tagAdapter.elements.clear()
-        spinner.setSelection(0)
+        categoriesSpinner.setSelection(0)
     }
 
     override fun addTag()
@@ -257,10 +254,12 @@ class AddEditFragment : Fragment(),
     override fun buildItemFromView() = Link(
         id = model?.id ?: 0,
         title = addEditLinkTitleEt.text.toString(),
-        category = spinner.selectedItem?.toString() ?: "Unknown",
+        category = categoriesSpinner.selectedItem?.toString() ?: "Unknown",
         description = addEditDescriptionEt.text.toString(),
         url = addEditUrlEt.text.toString(),
+        imageUrl = model?.imageUrl ?: LinkMetadataFormatter.DEFAULT_IMAGE_URL,
         lastUsed = DateTimeHelper.getCurrentDateTimeStamp(),
+        created = model?.created ?: DateTimeHelper.getCurrentDateTimeStamp(),
         isFavorite = model?.isFavorite ?: false,
         tags = presenter.tagsToString(tagAdapter.elements),
         domain = model?.domain ?: ""
@@ -334,6 +333,14 @@ class AddEditFragment : Fragment(),
         }
 
         return isValid
+    }
+
+    private fun attachListeners()
+    {
+        //categoriesSpinner.onItemSelectedListener = this
+        addEditLinkTitleEt.addTextChangedListener(this)
+        addEditUrlEt.addTextChangedListener(this)
+        addEditDescriptionEt.addTextChangedListener(this)
     }
 
     private fun isNetworkAvailable(): Boolean

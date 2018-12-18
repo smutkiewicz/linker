@@ -1,6 +1,7 @@
 package studios.aestheticapps.linker.model
 
 import android.os.AsyncTask
+import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
@@ -34,15 +35,24 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
      */
     private fun obtainMetadataFrom(model: Link): Link?
     {
+        // Info not jsoup-needed in case that HTTP connection will fail
         if (model.domain.isEmpty()) model.domain = getDomainFrom(model.url)
         if (model.category == UNKNOWN) model.category = getCategoryByDomain(model.domain)
 
-        // Connect to the website
-        val doc = Jsoup.connect(model.url).get()
-
-        if (doc != null)
+        try
         {
-            if (model.imageUrl.isEmpty() || model.imageUrl == DEFAULT_IMAGE_URL) model.imageUrl = getFaviconUrlFrom(doc)
+            // Try to connect to the website
+            val doc = Jsoup.connect(model.url).get()
+
+            // jsoup-needed fields
+            if (doc != null)
+            {
+                if (model.imageUrl.isEmpty() || model.imageUrl == DEFAULT_IMAGE_URL) model.imageUrl = getFaviconUrlFrom(doc)
+            }
+        }
+        catch (e: HttpStatusException)
+        {
+            model.imageUrl = DEFAULT_IMAGE_URL
         }
 
         return model
@@ -54,24 +64,31 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
      */
     private fun obtainMetadataFrom(url: String): Link?
     {
-        val model = Link(title = "", url = url, domain = "")
+        val model = Link(title = "", url = url, domain = "", imageUrl = DEFAULT_IMAGE_URL)
 
-        // Connect to the website
-        val doc = Jsoup.connect(url).get()
+        // Info not jsoup-needed in case that HTTP connection will fail
+        model.domain = getDomainFrom(url)
+        model.title = model.domain
+        model.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
+        model.category = getCategoryByDomain(model.domain)
 
-        if (doc != null)
+        try
         {
-            model.title = getTitleFrom(doc)
-            model.domain = getDomainFrom(url)
-            model.description = getDescriptionFrom(doc)
-            model.imageUrl = getFaviconUrlFrom(doc)
-            model.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
-            model.category = getCategoryByDomain(model.domain)
-            model.tags = getTagsFrom(model)
+            // Try to connect to the website
+            val doc = Jsoup.connect(url).get()
+
+            // jsoup-needed fields
+            if (doc != null)
+            {
+                model.title = getTitleFrom(doc)
+                model.description = getDescriptionFrom(doc)
+                model.imageUrl = getFaviconUrlFrom(doc)
+                model.tags = getTagsFrom(model)
+            }
         }
-        else
+        catch (e: Exception)
         {
-            return null
+            return model
         }
 
         return model
@@ -83,18 +100,20 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
 
     private fun getDescriptionFrom(doc: Document) = doc.select("meta[name=description]").first()?.attr("content")?: EMPTY
 
-    private fun getImageUrlFrom(doc: Document): String
+    private fun getGoogleFaviconUrlFrom(url: String) = GOOGLE_FAVICON_GET + url
+
+    private fun getCategoryByDomain(domain: String): String
     {
-        val img = doc.select("img").first()
-        return img.absUrl("src")?: getFaviconUrlFrom(doc)
+        // TODO recognizing categories
+        return "Science/Education"
     }
 
     private fun getFaviconUrlFrom(doc: Document): String
     {
         var iconUrl: String
 
-        val icoElement = doc.head().select("link[rel=\".(ico|png)\"]").first()
-        iconUrl = icoElement?.attr("content")?: DEFAULT_IMAGE_URL
+        val pngElement = doc.head().select("link[href~=.*\\.(ico|png)]").first()
+        iconUrl = pngElement?.attr("href")?: DEFAULT_IMAGE_URL
 
         // Try again for different type of icon
         if (iconUrl == DEFAULT_IMAGE_URL)
@@ -106,17 +125,19 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
         // Try again for different type of icon
         if (iconUrl == DEFAULT_IMAGE_URL)
         {
-            val pngElement = doc.head().select("link[href~=.*\\.(ico|png)]").first()
-            iconUrl = pngElement?.attr("href") ?: DEFAULT_IMAGE_URL
+            val icoElement = doc.head().select("link[rel=\".(ico|png)\"]").first()
+            iconUrl = icoElement?.attr("content")?: DEFAULT_IMAGE_URL
         }
+
+        if (iconUrl == "") iconUrl = DEFAULT_IMAGE_URL
 
         return iconUrl
     }
 
-    private fun getCategoryByDomain(domain: String): String
+    private fun getImageUrlFrom(doc: Document): String
     {
-        // TODO recognizing categories
-        return "Science/Education"
+        val img = doc.select("img").first()
+        return img.absUrl("src")?: getFaviconUrlFrom(doc)
     }
 
     private fun getTagsFrom(model: Link): String
@@ -158,10 +179,14 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
         fun setNewModel(modelFetchedAsync: Link?)
     }
 
-    private companion object
+    companion object
     {
+        private const val UNKNOWN = "Unknown"
+        private const val GOOGLE_FAVICON_GET = "https://s2.googleusercontent.com/s2/favicons?domain_url="
+
         const val EMPTY = ""
-        const val UNKNOWN = "Unknown"
         const val DEFAULT_IMAGE_URL = "https://www.google.com/favicon.ico"
+
+        fun hasCompatibleImageUrl(imageUrl: String) = imageUrl != EMPTY && imageUrl != DEFAULT_IMAGE_URL
     }
 }

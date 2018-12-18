@@ -23,5 +23,6 @@
         <item>Category</item>
         <item>Domain</item>
         <item>Latest</item>
+        <item>Created</item>
     </string-array>
 </resources>

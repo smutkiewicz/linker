@@ -20,6 +20,7 @@ import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.SearchCallback
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import studios.aestheticapps.linker.utils.ClipboardHelper
 
 class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter.OnTagClickedListener
@@ -84,9 +85,12 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter
                 onItemClickCallback.onItemClicked(model)
             }
 
-            Picasso.get()
-                .load(model.imageUrl)
-                .into(findViewById<ImageView>(R.id.iconIv))
+            if (LinkMetadataFormatter.hasCompatibleImageUrl(model.imageUrl))
+            {
+                Picasso.get()
+                    .load(model.imageUrl)
+                    .into(findViewById<ImageView>(R.id.iconIv))
+            }
         }
 
         val descrTv = view.findViewById<TextView>(R.id.detailsDescrTv)

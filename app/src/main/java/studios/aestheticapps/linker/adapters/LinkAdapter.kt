@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
@@ -48,9 +49,12 @@ class LinkAdapter(private val callback: OnMyAdapterItemClickListener)
             createdTv.text = DateTimeHelper.getMonthAndDay(model.created)
             changeFavourite(model.isFavorite)
 
-            Picasso.get()
-                .load(model.imageUrl)
-                .into(miniatureIv)
+            if (LinkMetadataFormatter.hasCompatibleImageUrl(model.imageUrl))
+            {
+                Picasso.get()
+                    .load(model.imageUrl)
+                    .into(miniatureIv)
+            }
         }
     }
 

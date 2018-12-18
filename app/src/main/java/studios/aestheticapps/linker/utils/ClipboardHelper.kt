@@ -13,8 +13,8 @@ class ClipboardHelper(val context: Context)
 
     fun containsNewContent(savedText: String): Boolean
     {
-        val clipboardText = clipboardManager.text.toString()
-        return savedText != clipboardText
+        val clipboardText = clipboardManager.text?.toString() ?: ""
+        return clipboardText != "" && savedText != clipboardText
     }
 
     fun copyToCliboard(content: String)

@@ -24,9 +24,11 @@ import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CATEGORY_COLUMN
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_COLUMN
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_LATEST_COLUMN
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.DOMAIN_COLUMN
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.TITLE_COLUMN
+import studios.aestheticapps.linker.utils.CategoryAdapter
 import studios.aestheticapps.linker.utils.PrefsHelper
 
 class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSelectedListener
@@ -44,6 +46,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         super.onStart()
         presenter.start(activity!!.application)
 
+        setUpOrderBySection()
         setUpSearchBox()
         setUpLinksRecyclerView()
         setUpSortBySpinner()
@@ -129,8 +132,6 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
 
     override fun setUpSearchBox()
     {
-        orderByColumn = PrefsHelper.obtainOrderByColumn(context!!)
-
         searchBox.apply {
             isActivated = false
             isIconified = false
@@ -149,6 +150,14 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
                 }
             })
         }
+    }
+
+    override fun setUpOrderBySection()
+    {
+        orderByColumn = PrefsHelper.obtainOrderByColumn(context!!)
+
+        val columnNameForView = CategoryAdapter.ResAdapter.columnNameToColumnNameForView(context!!, orderByColumn)
+        sortByTv.text = getString(R.string.sort_by_column, columnNameForView)
     }
 
     override fun hideKeyboardFrom(view: View)
@@ -171,10 +180,12 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
             1 -> CATEGORY_COLUMN
             2 -> DOMAIN_COLUMN
             3 -> CREATED_LATEST_COLUMN
+            4 -> CREATED_COLUMN
             else -> TITLE_COLUMN
         }
 
-        updateOrderByPref(newOrderByColumn)
+        val columnNameForView = CategoryAdapter.ResAdapter.arrayIndexToColunmNameForView(context!!, pos)
+        updateOrderByPref(newOrderByColumn, columnNameForView)
     }
 
     override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -203,10 +214,12 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         linkAdapter.removeItem(adapterPosition)
     }
 
-    private fun updateOrderByPref(column: String)
+    private fun updateOrderByPref(column: String, columnNameForView: String)
     {
         orderByColumn = column
         PrefsHelper.setOrderByColumn(context!!, column)
+
+        sortByTv.text = getString(R.string.sort_by_column, columnNameForView)
 
         // reload content
         populateViewAdaptersWithContent()

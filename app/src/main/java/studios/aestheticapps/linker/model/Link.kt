@@ -6,8 +6,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.text.TextUtils
 import studios.aestheticapps.linker.utils.DateTimeHelper
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Entity(tableName = "link_table")
 data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -27,10 +25,12 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
         title = parcel.readString(),
         category = parcel.readString(),
         url = parcel.readString(),
+        imageUrl = parcel.readString(),
         domain = parcel.readString(),
         isFavorite = (parcel.readByte().toInt() != 0),
         description = parcel.readString(),
         tags = parcel.readString(),
+        created = parcel.readString(),
         lastUsed = parcel.readString()
     )
 
@@ -41,10 +41,12 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
             writeString(title)
             writeString(category)
             writeString(url)
+            writeString(imageUrl)
             writeString(domain)
             writeByte((if (isFavorite) 1 else 0).toByte())
             writeString(description)
             writeString(tags)
+            writeString(created)
             writeString(lastUsed)
         }
     }
@@ -58,12 +60,6 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
             list.addAll(tags.split(DELIMITER))
 
         return list
-    }
-
-    fun getCurrentTime(): String
-    {
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-        return formatter.format(Date())
     }
 
     companion object CREATOR : Parcelable.Creator<Link>

@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import java.util.*
 
 class FavoritesAdapter(private val callback: OnMyAdapterItemClickListener)
@@ -44,9 +45,12 @@ class FavoritesAdapter(private val callback: OnMyAdapterItemClickListener)
             domainTv.text = model.domain
             titleTv.text = model.title
 
-            Picasso.get()
-                .load(model.imageUrl)
-                .into(miniatureIv)
+            if (LinkMetadataFormatter.hasCompatibleImageUrl(model.imageUrl))
+            {
+                Picasso.get()
+                    .load(model.imageUrl)
+                    .into(miniatureIv)
+            }
         }
     }
 
