@@ -1,7 +1,6 @@
 package studios.aestheticapps.linker.model
 
 import android.os.AsyncTask
-import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
@@ -35,25 +34,9 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
      */
     private fun obtainMetadataFrom(model: Link): Link?
     {
-        // Info not jsoup-needed in case that HTTP connection will fail
         if (model.domain.isEmpty()) model.domain = getDomainFrom(model.url)
         if (model.category == UNKNOWN) model.category = getCategoryByDomain(model.domain)
-
-        try
-        {
-            // Try to connect to the website
-            val doc = Jsoup.connect(model.url).get()
-
-            // jsoup-needed fields
-            if (doc != null)
-            {
-                if (model.imageUrl.isEmpty() || model.imageUrl == DEFAULT_IMAGE_URL) model.imageUrl = getFaviconUrlFrom(doc)
-            }
-        }
-        catch (e: HttpStatusException)
-        {
-            model.imageUrl = DEFAULT_IMAGE_URL
-        }
+        if (!hasCompatibleImageUrl(model.imageUrl)) model.imageUrl = getGoogleFaviconUrlFrom(model.url)
 
         return model
     }
@@ -69,6 +52,7 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
         // Info not jsoup-needed in case that HTTP connection will fail
         model.domain = getDomainFrom(url)
         model.title = model.domain
+        model.imageUrl = getGoogleFaviconUrlFrom(url)
         model.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
         model.category = getCategoryByDomain(model.domain)
 
@@ -82,7 +66,6 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
             {
                 model.title = getTitleFrom(doc)
                 model.description = getDescriptionFrom(doc)
-                model.imageUrl = getFaviconUrlFrom(doc)
                 model.tags = getTagsFrom(model)
             }
         }
