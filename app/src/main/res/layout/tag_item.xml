@@ -18,10 +18,13 @@
 
     <TextView
             android:id="@+id/tagTitle"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:text="@string/sample_enormously_long_tag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:layout_gravity="center_vertical|center_horizontal" android:textAlignment="center"/>
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:textAlignment="center"/>
 
 </android.support.v7.widget.CardView>

@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="categories">
-        <item>Undefined</item>
-        <item>Articles</item>
+        <item>Animals</item>
+        <item>Books</item>
+        <item>Business</item>
+        <item>Education</item>
+        <item>Food</item>
+        <item>IT</item>
         <item>Music</item>
+        <item>News</item>
+        <item>Religion</item>
+        <item>Science</item>
         <item>Social</item>
-        <item>Videos</item>
+        <item>Sports</item>
+        <item>Technology</item>
+        <item>Travel</item>
+        <item>Undefined</item>
+    </string-array>
+
+    <string-array name="sort_by_array">
+        <item>Title</item>
+        <item>Category</item>
+        <item>Domain</item>
+        <item>Latest</item>
+        <item>Created</item>
     </string-array>
 </resources>

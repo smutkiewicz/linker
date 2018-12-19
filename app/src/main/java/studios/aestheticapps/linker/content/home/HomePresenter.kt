@@ -1,15 +1,15 @@
 package studios.aestheticapps.linker.content.home
 
 import android.app.Application
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.FAVORITES
 import studios.aestheticapps.linker.persistence.LinkRepository.Companion.RECENT
-import java.text.SimpleDateFormat
+import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
-class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnItemClickListener
+class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnMyAdapterItemClickListener
 {
     private lateinit var repository: LinkRepository
 
@@ -27,6 +27,34 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
 
     override fun getFavoriteItems() = repository.getListOf(FAVORITES)
 
+    override fun getTagsCloudItems(): LinkedList<String>
+    {
+        val tagCloudSet = HashSet<String>()
+        val recentList = repository.getListOf(RECENT)
+        val recentLastIndex = recentList.lastIndex
+        recentList.shuffle()
+
+        val max = when
+        {
+            recentLastIndex < MAX_TAGS -> recentLastIndex
+            else -> MAX_TAGS
+        }
+
+        for (index in 0..max)
+        {
+            val chosenItem = recentList[index]
+            val itemsTags = chosenItem.stringToListOfTags()
+
+            for (tag in itemsTags)
+            {
+                if (!tagCloudSet.contains(tag))
+                    tagCloudSet.add(tag)
+            }
+        }
+
+        return LinkedList(tagCloudSet)
+    }
+
     override fun setItemFavourite(link: Link)
     {
         link.isFavorite = !link.isFavorite
@@ -35,29 +63,30 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnIte
 
     override fun setItemRecent(link: Link)
     {
-        link.lastUsed = getCurrentTime()
+        link.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
         repository.update(link)
     }
 
-    override fun onItemClicked(link: Link)
+    override fun onItemClicked(model: Link)
     {
-        setItemRecent(link)
-        view.startInternetAction(link)
+        setItemRecent(model)
+        view.startInternetAction(model)
     }
 
-    override fun onItemLongClicked(link: Link) = view.startDetailsAction(link)
+    override fun onItemLongClicked(model: Link) = view.startDetailsAction(model)
 
-    override fun onFavourite(link: Link) = setItemFavourite(link)
+    override fun onFavourite(model: Link) = setItemFavourite(model)
 
-    override fun onShare(link: Link)
+    override fun onShare(model: Link)
     {
-        setItemRecent(link)
-        view.startShareView(link)
+        setItemRecent(model)
+        view.startShareView(model)
     }
 
-    private fun getCurrentTime(): String
+    override fun onCopy(content: String) = view.startCopyAction(content)
+
+    private companion object
     {
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-        return formatter.format(Date())
+        const val MAX_TAGS = 6
     }
 }

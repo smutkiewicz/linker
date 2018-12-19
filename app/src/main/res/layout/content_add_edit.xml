@@ -18,7 +18,7 @@
                 android:padding="8dp">
 
             <Spinner
-                    android:id="@+id/spinner"
+                    android:id="@+id/categoriesSpinner"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +64,7 @@
                             android:layout_marginTop="8dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginBottom="8dp"
-                            app:layout_constraintEnd_toStartOf="@+id/imageView"
+                            app:layout_constraintEnd_toStartOf="@+id/iconIv"
                             android:layout_marginEnd="8dp"
                             app:errorEnabled="true">
 
@@ -84,7 +84,7 @@
                             android:layout_width="137dp"
                             android:layout_height="80dp"
                             android:src="@drawable/default_miniature"
-                            android:id="@+id/imageView"
+                            android:id="@+id/iconIv"
                             android:layout_marginEnd="8dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -102,7 +102,9 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_link"
                     app:layout_constraintTop_toTopOf="@+id/urlInputLayout"
-                    android:layout_marginTop="20dp" app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"/>
 
             <ImageView
                     android:id="@+id/imageView5"
@@ -125,21 +127,17 @@
                     android:singleLine="false"
                     android:layout_marginTop="8dp"
                     app:layout_constraintTop_toBottomOf="@+id/urlInputLayout"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="8dp"
                     app:layout_constraintStart_toEndOf="@+id/imageView5"
-                    android:layout_marginStart="8dp"/>
+                    android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/copyDescrIb" android:layout_marginEnd="8dp"/>
 
             <android.support.design.widget.TextInputLayout
                     android:id="@+id/urlInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="8dp"
                     android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/spinner"
+                    app:layout_constraintTop_toBottomOf="@+id/categoriesSpinner"
                     app:layout_constraintStart_toEndOf="@+id/imageView2"
-                    android:layout_marginStart="8dp">
+                    android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/copyUrlIb" android:layout_marginEnd="8dp">
 
                 <android.support.design.widget.TextInputEditText
                         android:id="@+id/addEditUrlEt"
@@ -227,6 +225,38 @@
                     android:layout_marginEnd="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginBottom="8dp" app:layout_constraintTop_toBottomOf="@+id/tagRecyclerView"/>
+
+            <ImageButton
+                    android:layout_width="32dp"
+                    android:layout_height="0dp"
+                    app:srcCompat="@drawable/ic_copy_black"
+                    android:id="@+id/copyUrlIb"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/categoriesSpinner"
+                    android:background="@android:color/transparent"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/addEditDescriptionEt"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+            <ImageButton
+                    android:layout_width="32dp"
+                    android:layout_height="0dp"
+                    app:srcCompat="@drawable/ic_copy_black"
+                    android:id="@+id/copyDescrIb"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/cardView2"
+                    android:background="@android:color/transparent"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/urlInputLayout"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"/>
 
         </android.support.constraint.ConstraintLayout>
 

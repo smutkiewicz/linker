@@ -1,6 +1,7 @@
 package studios.aestheticapps.linker.persistence
 
 import android.app.Application
+import android.arch.persistence.db.SimpleSQLiteQuery
 import android.os.AsyncTask
 import studios.aestheticapps.linker.model.Link
 import java.util.*
@@ -26,7 +27,7 @@ class LinkRepository internal constructor(application: Application)
         }
     }
 
-    fun search(phrase: String) = LinkedList(SearchAsyncTask(linkDao).execute(phrase).get())
+    fun search(phrase: String, orderBy: String = TITLE_COLUMN) = LinkedList(SearchAsyncTask(linkDao, orderBy).execute(phrase).get())
 
     fun update(link: Link)
     {
@@ -43,11 +44,21 @@ class LinkRepository internal constructor(application: Application)
         DeleteAsyncTask(linkDao).execute(id)
     }
 
-    private fun getAll() = LinkedList(SearchAsyncTask(linkDao).execute(EMPTY).get())
+    private fun getAll() = LinkedList(SearchAsyncTask(linkDao, "title").execute(EMPTY).get())
 
     private fun getFavorites() = LinkedList(GetFavoritesAsyncTask(linkDao).execute().get())
 
     private fun getRecent() = LinkedList(GetRecentAsyncTask(linkDao).execute().get())
+
+    private fun getRawOrderByQuery(phrase: String, orderBy: String = "title") = SimpleSQLiteQuery(
+        "SELECT * FROM link_table " +
+            "WHERE title LIKE '%' || '$phrase' || '%' " +
+            "OR category LIKE '%' || '$phrase' || '%' " +
+            "OR domain LIKE '%' || '$phrase' || '%' " +
+            "OR url LIKE '%' || '$phrase' || '%' " +
+            "OR tags LIKE '%' || '$phrase' || '%' " +
+            "ORDER BY $orderBy", null
+    )
 
     private class InsertAsyncTask internal constructor(private val asyncTaskDao: LinkDao) : AsyncTask<Link, Void, Void>()
     {
@@ -76,9 +87,11 @@ class LinkRepository internal constructor(application: Application)
         }
     }
 
-    private class SearchAsyncTask internal constructor(private val asyncTaskDao: LinkDao) : AsyncTask<String, Void, List<Link>>()
+    private inner class SearchAsyncTask internal constructor(private val asyncTaskDao: LinkDao,
+                                                             private val orderBy: String) : AsyncTask<String, Void, List<Link>>()
     {
-        override fun doInBackground(vararg params: String?): List<Link> = asyncTaskDao.search(params[0]!!)
+        override fun doInBackground(vararg params: String?): List<Link>
+            = asyncTaskDao.searchRawQuery(getRawOrderByQuery(params[0]!!, orderBy))
     }
 
     private class GetFavoritesAsyncTask internal constructor(private val asyncTaskDao: LinkDao) : AsyncTask<Void, Void, List<Link>>()
@@ -94,6 +107,12 @@ class LinkRepository internal constructor(application: Application)
     companion object
     {
         private const val EMPTY = ""
+
+        const val TITLE_COLUMN = "title"
+        const val CATEGORY_COLUMN = "category"
+        const val DOMAIN_COLUMN = "domain"
+        const val CREATED_COLUMN = "created"
+        const val CREATED_LATEST_COLUMN = "created DESC"
 
         const val ALL = 0
         const val FAVORITES = 1

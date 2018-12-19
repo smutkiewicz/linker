@@ -18,10 +18,14 @@ import studios.aestheticapps.linker.content.addedit.AddEditPresenter
 import studios.aestheticapps.linker.content.addedit.AddEditTaskContract
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.LinkMetadataFormatter
 
-class AddEditBubbleContent (context: Context,
+class AddEditBubbleContent(context: Context,
                             application: Application,
-                            private val callback: BubbleContentCallback) : FrameLayout(context), Content, AddEditTaskContract.View
+                            private val callback: BubbleContentCallback) : FrameLayout(context),
+    Content,
+    AddEditTaskContract.View,
+    LinkMetadataFormatter.BuildModelCallback
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
@@ -53,7 +57,7 @@ class AddEditBubbleContent (context: Context,
 
     override fun isFullscreen() = true
 
-    override fun obtainInfoFromArguments() {}
+    override fun obtainModelFromArguments() {}
 
     override fun createViewFromModel()
     {
@@ -65,7 +69,7 @@ class AddEditBubbleContent (context: Context,
         saveLinkFab.setOnClickListener {
             if (isLinkValid())
             {
-                presenter.saveItem(buildItem())
+                presenter.launchItemToSaveMetadataFormatting(buildItemFromView())
 
                 cleanView()
                 callback.collapseBubble()
@@ -98,11 +102,11 @@ class AddEditBubbleContent (context: Context,
         }
     }
 
-    override fun buildItem() = Link(
+    override fun buildItemFromView() = Link(
         id = 0,
         title = addEditLinkTitleEt.text.toString(),
         url = addEditUrlEt.text.toString(),
-        domain = presenter.parseDomain(addEditUrlEt.text.toString()),
+        domain = "",
         description = addEditDescriptionEt.text.toString(),
         tags = presenter.tagsToString(tagAdapter.elements)
     )
@@ -153,7 +157,7 @@ class AddEditBubbleContent (context: Context,
         BubbleMenuService.destroyFloatingMenu(context)
     }
 
-    override fun buildSampleItemFromClipboardContent()
+    override fun buildSampleModelFromClipboardContent()
     {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -163,17 +167,21 @@ class AddEditBubbleContent (context: Context,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun createEditTexts()
+    override fun createCopyButtons()
     {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun mapModelToView()
+    override fun mapModelToView(model: Link?) {}
+
+    override fun setNewModel(modelFetchedAsync: Link?) {}
+
+    override fun insertSavedModel(result: Link?)
     {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun createSpinner()
+    override fun buildSampleModelFromIntentContent(content: String)
     {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

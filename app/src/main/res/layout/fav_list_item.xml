@@ -23,16 +23,17 @@
                 android:id="@+id/titleTv"
                 android:text="@string/sample_recent_item"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:maxLines="2"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/shareIb"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="8dp"
+                android:layout_height="0dp"
+                android:maxLines="4"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/miniatureIv"/>
+                app:layout_constraintTop_toBottomOf="@+id/divider2"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/copyIb"
+                android:ellipsize="end"/>
 
         <ImageButton
                 android:layout_width="0dp"
@@ -48,20 +49,66 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="12dp"/>
 
         <ImageView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 app:srcCompat="@drawable/default_miniature"
                 android:id="@+id/miniatureIv"
                 app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="12dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="12dp"/>
+        <TextView
+                android:text="github.com"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/domainTv"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/miniatureIv"
                 android:layout_marginStart="8dp"
+                android:lines="1"
+                android:ellipsize="end"
+                app:layout_constraintEnd_toStartOf="@+id/imageView"
+                android:layout_marginEnd="8dp"/>
+        <View
+                android:id="@+id/divider2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView"
+                android:layout_marginTop="4dp"/>
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_starred"
+                android:id="@+id/imageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"/>
+
+        <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                app:srcCompat="@drawable/ic_copy_black"
+                android:id="@+id/copyIb"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/shareIb" app:layout_constraintTop_toTopOf="parent"/>
+                android:background="@android:color/transparent"
+                app:layout_constraintEnd_toStartOf="@+id/shareIb"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"/>
 
     </android.support.constraint.ConstraintLayout>
 

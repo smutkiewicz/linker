@@ -9,29 +9,29 @@ interface AddEditTaskContract
 {
     interface View : BaseView<Presenter>
     {
-        fun obtainInfoFromArguments()
+        fun obtainModelFromArguments()
         fun createFab()
         fun cleanView()
         fun createTagBtn()
         fun createCategoriesSpinner()
         fun createViewFromModel()
         fun createTagRecyclerView()
-        fun createEditTexts()
-        fun createSpinner()
+        fun createCopyButtons()
         fun addTag()
-        fun buildItem(): Link
-        fun mapModelToView()
-        fun buildSampleItemFromClipboardContent()
+        fun buildItemFromView(): Link
+        fun buildSampleModelFromClipboardContent()
+        fun buildSampleModelFromIntentContent(content: String)
     }
 
     interface Presenter : BasePresenter
     {
         fun start(application: Application)
-        fun parseDomain(url: String): String
-        fun saveItem(link: Link)
-        fun updateItem(link: Link)
+        fun launchItemToSaveMetadataFormatting(model: Link)
+        fun saveItem(model: Link)
+        fun updateItem(model: Link)
 
         fun tagsToString(elements: MutableList<String>): String
-        fun getCurrentDateTimeStamp(): String
+        fun buildItemFromUrl(url: String, isNetworkAvailable: Boolean)
+        fun provideValidUrl(url: String): String
     }
 }

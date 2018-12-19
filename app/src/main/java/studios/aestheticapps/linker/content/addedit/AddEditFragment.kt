@@ -1,6 +1,7 @@
 package studios.aestheticapps.linker.content.addedit
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.StaggeredGridLayoutManager
@@ -15,11 +16,19 @@ import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.content_add_edit.*
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
+import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
+import studios.aestheticapps.linker.model.LinkMetadataFormatter
+import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.utils.ClipboardHelper
+import studios.aestheticapps.linker.utils.DateTimeHelper
+import studios.aestheticapps.linker.utils.PrefsHelper
 
-class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnItemSelectedListener
+class AddEditFragment : Fragment(), AddEditTaskContract.View,
+    TextWatcher,
+    OnItemSelectedListener,
+    LinkMetadataFormatter.BuildModelCallback
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
@@ -27,6 +36,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
 
     private lateinit var tagAdapter: TagAdapter
     private lateinit var callback: AddEditCallback
+    private lateinit var updateViewCallback: UpdateViewCallback
     private lateinit var clipboardHelper: ClipboardHelper
 
     private var model: Link? = null
@@ -35,38 +45,10 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
     {
         val view = inflater.inflate(R.layout.content_add_edit, container, false)
 
-        clipboardHelper = ClipboardHelper(context!!)
+        clipboardHelper = ClipboardHelper(context!!.applicationContext)
         restoreSavedState(savedInstanceState)
 
         return view
-    }
-
-    override fun onStart()
-    {
-        super.onStart()
-        presenter.start(activity!!.application)
-
-        createFab()
-        createTagBtn()
-        createCategoriesSpinner()
-        createTagRecyclerView()
-        createViewFromModel()
-        createEditTexts()
-    }
-
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        callback = context as AddEditCallback
-    }
-
-    override fun onSaveInstanceState(outState: Bundle)
-    {
-        super.onSaveInstanceState(outState)
-        outState.apply {
-            putInt(MODE, mode)
-            putParcelable(PARCEL_LINK, buildItem())
-        }
     }
 
     override fun onDestroyView()
@@ -76,40 +58,113 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         super.onDestroyView()
     }
 
-    override fun obtainInfoFromArguments()
+    override fun onStart()
+    {
+        super.onStart()
+        presenter.start(activity!!.application)
+
+        createCategoriesSpinner()
+        createTagRecyclerView()
+
+        createFab()
+        createTagBtn()
+        createCopyButtons()
+    }
+
+    override fun onResume()
+    {
+        super.onResume()
+
+        when (mode)
+        {
+            MODE_ADD ->
+            {
+                val latestUrl = PrefsHelper.obtainLatestParsedUrl(context!!)
+
+                /*if (checkIfIntentUrlBuildIsNeeded(latestUrl))
+                {
+                    // Starting app with intent url that
+                    val content = arguments!!.getString(Link.INTENT_LINK, "")
+                    buildSampleModelFromIntentContent(content)
+                }*/
+
+                if (model == null || (model != null && clipboardHelper.containsNewContent(latestUrl)))
+                {
+                    // Starting app OR app already started and has content, but there's new content in cliboard.
+                    buildSampleModelFromClipboardContent()
+                }
+                else if (model != null)
+                {
+                    // Configuration changed and model is not null.
+                    createViewFromModel()
+                }
+            }
+
+            MODE_EDIT -> createViewFromModel()
+        }
+
+        attachListeners()
+    }
+
+    fun checkIfIntentUrlBuildIsNeeded(latestUrl: String): Boolean
+    {
+        return if (arguments!!.containsKey(Link.INTENT_LINK))
+        {
+            val content = arguments!!.getString(Link.INTENT_LINK, "")
+
+            content != latestUrl && content != EMPTY_URL
+        }
+        else false
+    }
+
+    override fun onAttach(context: Context?)
+    {
+        super.onAttach(context)
+        callback = context as AddEditCallback
+        updateViewCallback = context as UpdateViewCallback
+    }
+
+    override fun onSaveInstanceState(outState: Bundle)
+    {
+        super.onSaveInstanceState(outState)
+        outState.apply {
+            putInt(MODE, mode)
+            putParcelable(PARCEL_LINK, buildItemFromView())
+        }
+    }
+
+    override fun obtainModelFromArguments()
     {
         mode = arguments!!.getInt(MODE, MODE_ADD)
 
         if (mode == MODE_EDIT)
-        {
             model = arguments!!.getParcelable(PARCEL_LINK)
-        }
     }
 
     override fun createViewFromModel()
     {
-        if (model != null)
+        if (model == null)
         {
-            mapModelToView()
+            buildSampleModelFromClipboardContent()
         }
         else
         {
-            buildSampleItemFromClipboardContent()
+            mapModelToView(model)
         }
     }
 
     override fun createFab()
     {
         saveLinkFab.setOnClickListener {
-            if (isLinkValid())
+            if (isUserLinkValid())
             {
                 when (mode)
                 {
-                    MODE_EDIT -> presenter.updateItem(buildItem())
+                    MODE_EDIT -> presenter.updateItem(buildItemFromView())
 
                     MODE_ADD ->
                     {
-                        presenter.saveItem(buildItem())
+                        presenter.launchItemToSaveMetadataFormatting(buildItemFromView())
                         cleanView()
                     }
                 }
@@ -137,7 +192,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
 
     override fun createTagBtn()
     {
-        addTagBtn.setOnClickListener{
+        addTagBtn.setOnClickListener {
             addTag()
         }
     }
@@ -151,30 +206,54 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         )
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+        categoriesSpinner.adapter = adapter
+        categoriesSpinner.isSelected = false
     }
 
-    override fun createEditTexts()
+    override fun createCopyButtons()
     {
-        addEditLinkTitleEt.addTextChangedListener(this)
-        addEditUrlEt.addTextChangedListener(this)
-        addEditDescriptionEt.addTextChangedListener(this)
+        copyUrlIb.setOnClickListener {
+            val content = addEditUrlEt.text.toString()
+            clipboardHelper.copyToCliboard(content)
+        }
+
+        copyDescrIb.setOnClickListener {
+            val content = addEditDescriptionEt.text.toString()
+            clipboardHelper.copyToCliboard(content)
+        }
     }
 
-    override fun createSpinner()
+    override fun mapModelToView(model: Link?)
     {
-        spinner.onItemSelectedListener = this
+        model?.let {
+            if (mode == MODE_ADD)
+                PrefsHelper.setLatestParsedUrl(context!!, model.url)
+
+            addEditLinkTitleEt.setText(it.title)
+            addEditUrlEt.setText(it.url)
+            addEditDescriptionEt.setText(it.description)
+            tagAdapter.elements = it.stringToListOfTags()
+
+            categoriesSpinner
+                .setSelection((categoriesSpinner.adapter as ArrayAdapter<String>)
+                .getPosition(it.category))
+        }
     }
 
-    override fun mapModelToView()
+    override fun setNewModel(modelFetchedAsync: Link?)
     {
-        addEditLinkTitleEt.setText(model!!.title)
-        addEditUrlEt.setText(model!!.url)
-        addEditDescriptionEt.setText(model!!.description)
-        tagAdapter.elements = model!!.stringToListOfTags()
+        this.model = modelFetchedAsync
+        modelFetchedAsync?.let {
+            PrefsHelper.setLatestParsedUrl(context!!, modelFetchedAsync.url)
+        }
+    }
 
-        spinner.setSelection((spinner.adapter as ArrayAdapter<String>)
-            .getPosition(model!!.category))
+    override fun insertSavedModel(result: Link?)
+    {
+        result?.let {
+            presenter.saveItem(result)
+            updateViewCallback.onUpdateView()
+        }
     }
 
     override fun cleanView()
@@ -185,7 +264,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         addEditUrlEt.text.clear()
         addEditDescriptionEt.text.clear()
         tagAdapter.elements.clear()
-        spinner.setSelection(0)
+        categoriesSpinner.setSelection(0)
     }
 
     override fun addTag()
@@ -202,21 +281,32 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
         }
     }
 
-    override fun buildItem() = Link(
+    /**
+     * Only needed fields, Presenter will fill blank parts of the model (such as domain).
+     */
+    override fun buildItemFromView() = Link(
         id = model?.id ?: 0,
         title = addEditLinkTitleEt.text.toString(),
-        category = spinner.selectedItem.toString(),
-        url = addEditUrlEt.text.toString(),
-        domain = presenter.parseDomain(addEditUrlEt.text.toString()),
+        category = categoriesSpinner.selectedItem?.toString() ?: "Unknown",
         description = addEditDescriptionEt.text.toString(),
-        lastUsed = presenter.getCurrentDateTimeStamp(),
+        url = addEditUrlEt.text.toString(),
+        imageUrl = model?.imageUrl ?: LinkMetadataFormatter.DEFAULT_IMAGE_URL,
+        lastUsed = DateTimeHelper.getCurrentDateTimeStamp(),
+        created = model?.created ?: DateTimeHelper.getCurrentDateTimeStamp(),
         isFavorite = model?.isFavorite ?: false,
-        tags = presenter.tagsToString(tagAdapter.elements)
+        tags = presenter.tagsToString(tagAdapter.elements),
+        domain = model?.domain ?: ""
     )
 
-    override fun buildSampleItemFromClipboardContent()
+    override fun buildSampleModelFromClipboardContent()
     {
-        addEditUrlEt.setText(clipboardHelper.obtainClipboardContent())
+        val newContent = clipboardHelper.obtainClipboardContent()
+        presenter.buildItemFromUrl(newContent, isNetworkAvailable())
+    }
+
+    override fun buildSampleModelFromIntentContent(content: String)
+    {
+        presenter.buildItemFromUrl(content, isNetworkAvailable())
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = callback.onEdited()
@@ -225,7 +315,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
 
     override fun afterTextChanged(s: Editable) {}
 
-    override fun onItemSelected(parentView: AdapterView<*>, selectedItemView: View, position: Int, id: Long) = callback.onEdited()
+    override fun onItemSelected(parentView: AdapterView<*>, view: View?, position: Int, id: Long) = callback.onEdited()
 
     override fun onNothingSelected(parentView: AdapterView<*>) {}
 
@@ -233,8 +323,8 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
     {
         if (state != null)
         {
-            mode = state.getInt(MODE)
             val savedModel = state.getParcelable<Link>(PARCEL_LINK)
+            mode = state.getInt(MODE)
 
             when (mode)
             {
@@ -243,45 +333,65 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View, TextWatcher, OnIte
                 MODE_ADD ->
                 {
                     if (clipboardHelper.containsNewContent(savedModel.url))
-                    {
-                        //TODO Link processing
-                    }
+                        buildSampleModelFromClipboardContent()
                     else
-                    {
                         model = savedModel
-                    }
                 }
             }
         }
         else
         {
-            obtainInfoFromArguments()
+            obtainModelFromArguments()
         }
     }
 
-    private fun isLinkValid(): Boolean
+    private fun isUserLinkValid(): Boolean
     {
         var isValid = true
 
+        // Check fields validity
         if (addEditLinkTitleEt.text.isBlank())
         {
             addEditLinkTitleEt.error = getString(R.string.title_error)
             isValid = false
         }
 
-        if (addEditUrlEt.text.isBlank())
+        // Check URL validity on view level and provide valid url on logical level
+        val url = addEditUrlEt.text.toString()
+        val validLink = presenter.provideValidUrl(url)
+
+        if (url.isBlank() || validLink == EMPTY_URL)
         {
             addEditUrlEt.error = getString(R.string.url_error)
             isValid = false
+        }
+        else
+        {
+            addEditUrlEt.setText(validLink)
         }
 
         return isValid
     }
 
+    private fun attachListeners()
+    {
+        //categoriesSpinner.onItemSelectedListener = this
+        addEditLinkTitleEt.addTextChangedListener(this)
+        addEditUrlEt.addTextChangedListener(this)
+        addEditDescriptionEt.addTextChangedListener(this)
+    }
+
+    private fun isNetworkAvailable(): Boolean
+    {
+        val connectivityManager = context!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null
+    }
+
     interface AddEditCallback
     {
-        fun returnToMainView() {} //not necessary for some Views
-        fun onEdited() {} //not necessary for some Views
+        fun returnToMainView() {} // not necessary for some Views
+        fun onEdited() {} // not necessary for some Views
     }
 
     companion object

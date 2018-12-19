@@ -1,13 +1,12 @@
 package studios.aestheticapps.linker.content.details
 
 import android.app.Application
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.LinkRepository
-import java.text.SimpleDateFormat
-import java.util.*
+import studios.aestheticapps.linker.utils.DateTimeHelper
 
-class DetailsPresenter(val view: DetailsContract.View) : DetailsContract.Presenter, OnItemClickListener
+class DetailsPresenter(val view: DetailsContract.View) : DetailsContract.Presenter, OnMyAdapterItemClickListener
 {
     private lateinit var repository: LinkRepository
 
@@ -29,34 +28,28 @@ class DetailsPresenter(val view: DetailsContract.View) : DetailsContract.Present
 
     override fun setItemRecent(link: Link)
     {
-        link.lastUsed = getCurrentTime()
+        link.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
         repository.update(link)
     }
 
-    override fun onItemClicked(link: Link)
+    override fun onItemClicked(model: Link)
     {
-        setItemRecent(link)
-        view.startInternetAction(link)
+        setItemRecent(model)
+        view.startInternetAction(model)
     }
 
-    override fun onItemLongClicked(link: Link) = view.startDetailsAction(link)
+    override fun onItemLongClicked(model: Link) = view.startDetailsAction(model)
 
-    override fun onFavourite(link: Link) = setItemFavourite(link)
+    override fun onFavourite(model: Link) = setItemFavourite(model)
 
-    override fun onShare(link: Link)
+    override fun onShare(model: Link)
     {
-        setItemRecent(link)
-        view.startShareView(link)
+        setItemRecent(model)
+        view.startShareView(model)
     }
 
-    override fun onEdit(link: Link)
+    override fun onEdit(model: Link)
     {
-        view.startEditView(link)
-    }
-
-    private fun getCurrentTime(): String
-    {
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-        return formatter.format(Date())
+        view.startEditView(model)
     }
 }

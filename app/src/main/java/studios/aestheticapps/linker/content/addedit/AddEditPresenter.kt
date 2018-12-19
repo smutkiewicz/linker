@@ -2,17 +2,20 @@ package studios.aestheticapps.linker.content.addedit
 
 import android.app.Application
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.LinkMetadataFormatter
+import studios.aestheticapps.linker.model.LinkValidator
+import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.persistence.LinkRepository
-import java.text.SimpleDateFormat
-import java.util.*
 
 class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract.Presenter
 {
     private lateinit var repository: LinkRepository
+    private val formatter: LinkMetadataFormatter
 
     init
     {
         view.presenter = this
+        formatter = LinkMetadataFormatter(view as LinkMetadataFormatter.BuildModelCallback)
     }
 
     override fun start(application: Application)
@@ -20,28 +23,29 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
         repository = LinkRepository(application)
     }
 
-    override fun start() {}
+    override fun launchItemToSaveMetadataFormatting(model: Link) = formatter.obtainMetadataFromAsync(model)
 
-    override fun stop() {}
+    override fun saveItem(model: Link) = repository.insert(model)
 
-    override fun saveItem(link: Link) = repository.insert(link)
-
-    override fun updateItem(link: Link) = repository.update(link)
-
-    override fun parseDomain(url: String) = "github.com"
+    override fun updateItem(model: Link) = repository.update(model)
 
     override fun tagsToString(elements: MutableList<String>) = Link.listOfTagsToString(elements)
 
-    override fun getCurrentDateTimeStamp(): String
+    /**
+     * Guarantee a valid model, or null.
+     */
+    override fun buildItemFromUrl(url: String, isNetworkAvailable: Boolean)
     {
-        val formatter = SimpleDateFormat(DATE_TIME_FORMAT)
-        val date = Date()
+        val validator = LinkValidator(url)
+        val validUrl = validator.build()
 
-        return formatter.format(date)
+        if (validUrl != EMPTY_URL && isNetworkAvailable)
+            formatter.obtainMetadataFromAsync(validUrl)
     }
 
-    private companion object
+    override fun provideValidUrl(url: String): String
     {
-        const val DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss"
+        val validator = LinkValidator(url)
+        return validator.build()
     }
 }

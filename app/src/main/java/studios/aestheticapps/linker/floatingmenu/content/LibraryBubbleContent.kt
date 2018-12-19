@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.content_library.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.library.LibraryContract
 import studios.aestheticapps.linker.content.library.LibraryPresenter
@@ -61,7 +61,7 @@ class LibraryBubbleContent(context: Context,
 
     override fun setUpLinksRecyclerView()
     {
-        linkAdapter = LinkAdapter(presenter as OnItemClickListener)
+        linkAdapter = LinkAdapter(presenter as OnMyAdapterItemClickListener)
         linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
 
         linksRecyclerView.apply {
@@ -132,4 +132,16 @@ class LibraryBubbleContent(context: Context,
     override fun startDetailsAction(link: Link) {}
 
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
+
+    override fun obtainQueryFromArguments() {}
+
+    override fun setUpSortBySpinner()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun setUpOrderBySection()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

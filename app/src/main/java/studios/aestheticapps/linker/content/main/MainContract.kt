@@ -3,6 +3,7 @@ package studios.aestheticapps.linker.content.main
 import studios.aestheticapps.linker.BasePresenter
 import studios.aestheticapps.linker.BaseView
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
+import studios.aestheticapps.linker.content.library.LibraryFragment
 
 interface MainContract
 {
@@ -10,13 +11,15 @@ interface MainContract
     {
         fun setUpViewPager()
         fun setUpBottomNavigation()
+        fun setUpDrawer()
         fun goToEditViewIfNeeded()
-        fun createViewFromModel(): AddEditFragment
+        fun createAddEditView(): AddEditFragment
 
         fun openBubbles()
         fun closeBubbles()
 
         fun initThemeManager()
+        fun createLibraryView(): LibraryFragment
     }
 
     interface Presenter : BasePresenter

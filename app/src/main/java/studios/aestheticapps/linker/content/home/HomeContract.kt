@@ -17,10 +17,12 @@ interface HomeContract
 
         fun setUpRecentRecyclerView()
         fun setUpFavoritesRecyclerView()
+        fun setUpTagsCloudRecyclerView()
 
         fun startInternetAction(link: Link)
         fun startDetailsAction(link: Link)
         fun startShareView(link: Link)
+        fun startCopyAction(content: String)
     }
 
     interface Presenter : BasePresenter
@@ -29,6 +31,7 @@ interface HomeContract
 
         fun getRecentItems(): LinkedList<Link>
         fun getFavoriteItems(): LinkedList<Link>
+        fun getTagsCloudItems(): LinkedList<String>
         fun setItemFavourite(link: Link)
         fun setItemRecent(link: Link)
     }

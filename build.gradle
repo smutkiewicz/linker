@@ -17,6 +17,15 @@ buildscript {
         materialSpinner = "1.1.0"
         roomVersion = '1.1.1'
         archLifecycleVersion = '1.1.1'
+        commonsValidator = "1.4.0"
+        picasso = "2.71828"
+        jsoup = "1.11.3"
+
+        /**Authentication**/
+        firebaseCore = "16.0.5"
+        firebaseAuth = "16.0.5"
+        playServicesAuth = "16.0.1"
+        googleServices = "4.2.0"
 
         /**Testing**/
         junitAndroid = "4.12"
@@ -34,6 +43,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$gradleVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.google.gms:google-services:$googleServices"
     }
 }
 

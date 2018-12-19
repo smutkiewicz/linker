@@ -13,20 +13,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.content_library.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
-import studios.aestheticapps.linker.adapters.OnItemClickListener
+import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CATEGORY_COLUMN
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_COLUMN
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_LATEST_COLUMN
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.DOMAIN_COLUMN
+import studios.aestheticapps.linker.persistence.LinkRepository.Companion.TITLE_COLUMN
+import studios.aestheticapps.linker.utils.CategoryAdapter
+import studios.aestheticapps.linker.utils.PrefsHelper
 
-class LibraryFragment : Fragment(), LibraryContract.View
+class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSelectedListener
 {
     override var presenter: LibraryContract.Presenter = LibraryPresenter(this)
 
     private lateinit var linkAdapter: LinkAdapter
+    private lateinit var orderByColumn: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View
         = inflater.inflate(R.layout.content_library, container, false)
@@ -36,8 +46,10 @@ class LibraryFragment : Fragment(), LibraryContract.View
         super.onStart()
         presenter.start(activity!!.application)
 
+        setUpOrderBySection()
         setUpSearchBox()
         setUpLinksRecyclerView()
+        setUpSortBySpinner()
         populateViewAdaptersWithContent()
     }
 
@@ -49,7 +61,17 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
     override fun populateViewAdaptersWithContent()
     {
-        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
+        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString(), orderByColumn)
+    }
+
+    override fun obtainQueryFromArguments()
+    {
+        arguments?.let {
+            val query = arguments!!.getString(TAG_PHRASE, "")
+            searchBox.setQuery(query, true)
+        }
+
+        arguments = null
     }
 
     override fun hideBubbles()
@@ -63,7 +85,7 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
     override fun setUpLinksRecyclerView()
     {
-        linkAdapter = LinkAdapter(presenter as OnItemClickListener)
+        linkAdapter = LinkAdapter(presenter as OnMyAdapterItemClickListener)
 
         linksRecyclerView.apply {
             adapter = linkAdapter
@@ -72,6 +94,21 @@ class LibraryFragment : Fragment(), LibraryContract.View
         }
 
         setUpSwipeGestures()
+    }
+
+    override fun setUpSortBySpinner()
+    {
+        val adapter = ArrayAdapter.createFromResource(
+            context,
+            R.array.sort_by_array,
+            android.R.layout.simple_spinner_item
+        )
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sortBySpinner.adapter = adapter
+        sortBySpinner.isSelected = false
+        sortBySpinner.setSelection(CategoryAdapter.Res.columnNameToArrayIndex(orderByColumn), true)
+        sortBySpinner.onItemSelectedListener = this
     }
 
     override fun setUpSwipeGestures()
@@ -99,6 +136,7 @@ class LibraryFragment : Fragment(), LibraryContract.View
             isActivated = false
             isIconified = false
 
+            obtainQueryFromArguments()
             clearFocus()
 
             setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener
@@ -107,11 +145,19 @@ class LibraryFragment : Fragment(), LibraryContract.View
 
                 override fun onQueryTextChange(newText: String): Boolean
                 {
-                    linkAdapter.elements = presenter.searchForItem(newText)
+                    linkAdapter.elements = presenter.searchForItem(newText, orderByColumn)
                     return false
                 }
             })
         }
+    }
+
+    override fun setUpOrderBySection()
+    {
+        orderByColumn = PrefsHelper.obtainOrderByColumn(context!!)
+
+        val columnNameForView = CategoryAdapter.Res.columnNameToColumnNameForView(context!!, orderByColumn)
+        sortByTv.text = getString(R.string.sort_by_column, columnNameForView)
     }
 
     override fun hideKeyboardFrom(view: View)
@@ -125,6 +171,24 @@ class LibraryFragment : Fragment(), LibraryContract.View
     override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, link)
 
     override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
+
+    override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long)
+    {
+        val newOrderByColumn = when(pos)
+        {
+            0 -> TITLE_COLUMN
+            1 -> CATEGORY_COLUMN
+            2 -> DOMAIN_COLUMN
+            3 -> CREATED_LATEST_COLUMN
+            4 -> CREATED_COLUMN
+            else -> TITLE_COLUMN
+        }
+
+        val columnNameForView = CategoryAdapter.Res.arrayIndexToColunmNameForView(context!!, pos)
+        updateOrderByPref(newOrderByColumn, columnNameForView)
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>) {}
 
     private fun buildExitDialogAndConfirmDelete(id: Int, adapterPosition: Int)
     {
@@ -148,5 +212,21 @@ class LibraryFragment : Fragment(), LibraryContract.View
     {
         presenter.removeItem(id)
         linkAdapter.removeItem(adapterPosition)
+    }
+
+    private fun updateOrderByPref(column: String, columnNameForView: String)
+    {
+        orderByColumn = column
+        PrefsHelper.setOrderByColumn(context!!, column)
+
+        sortByTv.text = getString(R.string.sort_by_column, columnNameForView)
+
+        // reload content
+        populateViewAdaptersWithContent()
+    }
+
+    companion object
+    {
+        const val TAG_PHRASE = "tag_phrase"
     }
 }

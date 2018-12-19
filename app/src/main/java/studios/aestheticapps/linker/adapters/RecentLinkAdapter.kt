@@ -9,7 +9,7 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
 import java.util.*
 
-class RecentLinkAdapter(private val callback: OnItemClickListener)
+class RecentLinkAdapter(private val callback: OnMyAdapterItemClickListener)
     : RecyclerView.Adapter<RecentLinkAdapter.ViewHolder>(), MyAdapter
 {
     override var elements: MutableList<Link> = LinkedList()
@@ -39,6 +39,7 @@ class RecentLinkAdapter(private val callback: OnItemClickListener)
             this.link = link
             id = link.id
             titleTextView.text = link.title
+            domainTextView.text = link.domain
         }
     }
 
@@ -47,6 +48,7 @@ class RecentLinkAdapter(private val callback: OnItemClickListener)
         lateinit var link: Link
         var id: Int = 0
         val titleTextView: TextView = itemView.findViewById<TextView>(R.id.titleTv)
+        val domainTextView: TextView = itemView.findViewById<TextView>(R.id.domainTv)
 
         init
         {
