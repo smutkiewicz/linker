@@ -107,7 +107,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sortBySpinner.adapter = adapter
         sortBySpinner.isSelected = false
-        sortBySpinner.setSelection(0, true)
+        sortBySpinner.setSelection(CategoryAdapter.Res.columnNameToArrayIndex(orderByColumn), true)
         sortBySpinner.onItemSelectedListener = this
     }
 
@@ -156,7 +156,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
     {
         orderByColumn = PrefsHelper.obtainOrderByColumn(context!!)
 
-        val columnNameForView = CategoryAdapter.ResAdapter.columnNameToColumnNameForView(context!!, orderByColumn)
+        val columnNameForView = CategoryAdapter.Res.columnNameToColumnNameForView(context!!, orderByColumn)
         sortByTv.text = getString(R.string.sort_by_column, columnNameForView)
     }
 
@@ -184,7 +184,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
             else -> TITLE_COLUMN
         }
 
-        val columnNameForView = CategoryAdapter.ResAdapter.arrayIndexToColunmNameForView(context!!, pos)
+        val columnNameForView = CategoryAdapter.Res.arrayIndexToColunmNameForView(context!!, pos)
         updateOrderByPref(newOrderByColumn, columnNameForView)
     }
 

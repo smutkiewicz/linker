@@ -66,6 +66,7 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
     {
         private const val DELIMITER = ";"
         const val PARCEL_LINK = "linker_link"
+        const val INTENT_LINK = "intent_linker_link"
 
         override fun createFromParcel(parcel: Parcel) = Link(parcel)
 

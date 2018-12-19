@@ -13,7 +13,7 @@ interface MainContract
         fun setUpBottomNavigation()
         fun setUpDrawer()
         fun goToEditViewIfNeeded()
-        fun createViewFromModel(): AddEditFragment
+        fun createAddEditView(): AddEditFragment
 
         fun openBubbles()
         fun closeBubbles()

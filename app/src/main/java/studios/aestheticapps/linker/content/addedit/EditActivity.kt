@@ -7,11 +7,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_edit.*
 import studios.aestheticapps.linker.R
+import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_EDIT
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
-class EditActivity : AppCompatActivity(), AddEditFragment.AddEditCallback
+class EditActivity : AppCompatActivity(), AddEditFragment.AddEditCallback, UpdateViewCallback
 {
     private var edited: Boolean = false
 
@@ -84,6 +85,8 @@ class EditActivity : AppCompatActivity(), AddEditFragment.AddEditCallback
             edited = true
         }
     }
+
+    override fun onUpdateView() {}
 
     private fun initFragment()
     {

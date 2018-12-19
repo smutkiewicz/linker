@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import studios.aestheticapps.linker.content.SearchCallback
+import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
 import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_ADD
 import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_EDIT
@@ -39,6 +40,7 @@ import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleThemeManager
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.model.Link.CREATOR.INTENT_LINK
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
 class MainActivity : AppCompatActivity(),
@@ -46,7 +48,8 @@ class MainActivity : AppCompatActivity(),
     BottomNavigationView.OnNavigationItemSelectedListener,
     NavigationView.OnNavigationItemSelectedListener,
     AddEditFragment.AddEditCallback,
-    SearchCallback
+    SearchCallback,
+    UpdateViewCallback
 {
     override var presenter: MainContract.Presenter = MainPresenter(this)
 
@@ -234,19 +237,29 @@ class MainActivity : AppCompatActivity(),
         else viewPager.currentItem = HOME
     }
 
-    override fun createViewFromModel(): AddEditFragment
+    override fun createAddEditView(): AddEditFragment
     {
-        return if (intent.hasExtra(PARCEL_LINK))
+        return when
         {
-            val model = intent.getParcelableExtra<Link>(PARCEL_LINK)
-            val myFragment = AddEditFragment.newInstance(MODE_EDIT)
-            myFragment.arguments!!.putParcelable(PARCEL_LINK, model)
+            intent.hasExtra(PARCEL_LINK) ->
+            {
+                val model = intent.getParcelableExtra<Link>(PARCEL_LINK)
+                val fragment = AddEditFragment.newInstance(MODE_EDIT)
+                fragment.arguments!!.putParcelable(PARCEL_LINK, model)
 
-            myFragment
-        }
-        else
-        {
-            AddEditFragment.newInstance(MODE_ADD)
+                fragment
+            }
+
+            intent.action == Intent.ACTION_SEND ->
+            {
+                val url = intent.getStringExtra(Intent.EXTRA_TEXT)
+                val fragment = AddEditFragment.newInstance(MODE_ADD)
+                fragment.arguments!!.putString(INTENT_LINK, url)
+
+                fragment
+            }
+
+            else -> AddEditFragment.newInstance(MODE_ADD)
         }
     }
 
@@ -279,6 +292,8 @@ class MainActivity : AppCompatActivity(),
         viewPager.setCurrentItem(LIBRARY, true)
         viewPagerAdapter.notifyDataSetChanged()
     }
+
+    override fun onUpdateView() = viewPagerAdapter.notifyDataSetChanged()
 
     private fun authenticateUserAndFetchAccountSettings()
     {
@@ -317,7 +332,7 @@ class MainActivity : AppCompatActivity(),
     private fun handleSendText(intent: Intent)
     {
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-            //TODO LinkValidators
+            viewPager.currentItem = ADD_EDIT
         }
     }
 
@@ -357,7 +372,7 @@ class MainActivity : AppCompatActivity(),
         {
             return when (position)
             {
-                ADD_EDIT -> createViewFromModel()
+                ADD_EDIT -> createAddEditView()
                 HOME -> HomeFragment()
                 LIBRARY -> createLibraryView()
                 else -> null

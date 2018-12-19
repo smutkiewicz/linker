@@ -20,11 +20,13 @@ interface AddEditTaskContract
         fun addTag()
         fun buildItemFromView(): Link
         fun buildSampleModelFromClipboardContent()
+        fun buildSampleModelFromIntentContent(content: String)
     }
 
     interface Presenter : BasePresenter
     {
         fun start(application: Application)
+        fun launchItemToSaveMetadataFormatting(model: Link)
         fun saveItem(model: Link)
         fun updateItem(model: Link)
 

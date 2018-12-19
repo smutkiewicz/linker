@@ -4,6 +4,7 @@ import android.app.Application
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import studios.aestheticapps.linker.model.LinkValidator
+import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.persistence.LinkRepository
 
 class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract.Presenter
@@ -22,11 +23,9 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
         repository = LinkRepository(application)
     }
 
-    override fun saveItem(model: Link)
-    {
-        val modelWithMetadata = formatter.obtainMetadataFromAsync(model)
-        repository.insert(modelWithMetadata?: model)
-    }
+    override fun launchItemToSaveMetadataFormatting(model: Link) = formatter.obtainMetadataFromAsync(model)
+
+    override fun saveItem(model: Link) = repository.insert(model)
 
     override fun updateItem(model: Link) = repository.update(model)
 
@@ -40,7 +39,7 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
         val validator = LinkValidator(url)
         val validUrl = validator.build()
 
-        if (isNetworkAvailable)
+        if (validUrl != EMPTY_URL && isNetworkAvailable)
             formatter.obtainMetadataFromAsync(validUrl)
     }
 

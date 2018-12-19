@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.content_add_edit.*
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
+import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 import studios.aestheticapps.linker.model.LinkMetadataFormatter
@@ -24,8 +25,7 @@ import studios.aestheticapps.linker.utils.ClipboardHelper
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import studios.aestheticapps.linker.utils.PrefsHelper
 
-class AddEditFragment : Fragment(),
-    AddEditTaskContract.View,
+class AddEditFragment : Fragment(), AddEditTaskContract.View,
     TextWatcher,
     OnItemSelectedListener,
     LinkMetadataFormatter.BuildModelCallback
@@ -36,6 +36,7 @@ class AddEditFragment : Fragment(),
 
     private lateinit var tagAdapter: TagAdapter
     private lateinit var callback: AddEditCallback
+    private lateinit var updateViewCallback: UpdateViewCallback
     private lateinit var clipboardHelper: ClipboardHelper
 
     private var model: Link? = null
@@ -79,9 +80,23 @@ class AddEditFragment : Fragment(),
             MODE_ADD ->
             {
                 val latestUrl = PrefsHelper.obtainLatestParsedUrl(context!!)
+
+                /*if (checkIfIntentUrlBuildIsNeeded(latestUrl))
+                {
+                    // Starting app with intent url that
+                    val content = arguments!!.getString(Link.INTENT_LINK, "")
+                    buildSampleModelFromIntentContent(content)
+                }*/
+
                 if (model == null || (model != null && clipboardHelper.containsNewContent(latestUrl)))
                 {
+                    // Starting app OR app already started and has content, but there's new content in cliboard.
                     buildSampleModelFromClipboardContent()
+                }
+                else if (model != null)
+                {
+                    // Configuration changed and model is not null.
+                    createViewFromModel()
                 }
             }
 
@@ -91,10 +106,22 @@ class AddEditFragment : Fragment(),
         attachListeners()
     }
 
+    fun checkIfIntentUrlBuildIsNeeded(latestUrl: String): Boolean
+    {
+        return if (arguments!!.containsKey(Link.INTENT_LINK))
+        {
+            val content = arguments!!.getString(Link.INTENT_LINK, "")
+
+            content != latestUrl && content != EMPTY_URL
+        }
+        else false
+    }
+
     override fun onAttach(context: Context?)
     {
         super.onAttach(context)
         callback = context as AddEditCallback
+        updateViewCallback = context as UpdateViewCallback
     }
 
     override fun onSaveInstanceState(outState: Bundle)
@@ -111,9 +138,7 @@ class AddEditFragment : Fragment(),
         mode = arguments!!.getInt(MODE, MODE_ADD)
 
         if (mode == MODE_EDIT)
-        {
             model = arguments!!.getParcelable(PARCEL_LINK)
-        }
     }
 
     override fun createViewFromModel()
@@ -139,7 +164,7 @@ class AddEditFragment : Fragment(),
 
                     MODE_ADD ->
                     {
-                        presenter.saveItem(buildItemFromView())
+                        presenter.launchItemToSaveMetadataFormatting(buildItemFromView())
                         cleanView()
                     }
                 }
@@ -223,6 +248,14 @@ class AddEditFragment : Fragment(),
         }
     }
 
+    override fun insertSavedModel(result: Link?)
+    {
+        result?.let {
+            presenter.saveItem(result)
+            updateViewCallback.onUpdateView()
+        }
+    }
+
     override fun cleanView()
     {
         callback.returnToMainView()
@@ -269,6 +302,11 @@ class AddEditFragment : Fragment(),
     {
         val newContent = clipboardHelper.obtainClipboardContent()
         presenter.buildItemFromUrl(newContent, isNetworkAvailable())
+    }
+
+    override fun buildSampleModelFromIntentContent(content: String)
+    {
+        presenter.buildItemFromUrl(content, isNetworkAvailable())
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = callback.onEdited()

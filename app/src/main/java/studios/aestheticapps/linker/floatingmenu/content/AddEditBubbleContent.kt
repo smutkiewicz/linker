@@ -69,7 +69,7 @@ class AddEditBubbleContent(context: Context,
         saveLinkFab.setOnClickListener {
             if (isLinkValid())
             {
-                presenter.saveItem(buildItemFromView())
+                presenter.launchItemToSaveMetadataFormatting(buildItemFromView())
 
                 cleanView()
                 callback.collapseBubble()
@@ -175,5 +175,15 @@ class AddEditBubbleContent(context: Context,
     override fun mapModelToView(model: Link?) {}
 
     override fun setNewModel(modelFetchedAsync: Link?) {}
+
+    override fun insertSavedModel(result: Link?)
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun buildSampleModelFromIntentContent(content: String)
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
 

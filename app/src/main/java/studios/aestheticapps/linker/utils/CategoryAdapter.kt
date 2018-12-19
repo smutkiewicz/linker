@@ -10,7 +10,7 @@ import studios.aestheticapps.linker.persistence.LinkRepository.Companion.TITLE_C
 
 class CategoryAdapter
 {
-    object ResAdapter
+    object Res
     {
         fun arrayIndexToColunmNameForView(context: Context, index: Int): String
         {
@@ -30,6 +30,19 @@ class CategoryAdapter
                 CREATED_LATEST_COLUMN -> array[3]
                 CREATED_COLUMN -> array[4]
                 else -> array[0]
+            }
+        }
+
+        fun columnNameToArrayIndex(column: String): Int
+        {
+            return when (column)
+            {
+                TITLE_COLUMN -> 0
+                CATEGORY_COLUMN -> 1
+                DOMAIN_COLUMN -> 2
+                CREATED_LATEST_COLUMN -> 3
+                CREATED_COLUMN -> 4
+                else -> 0
             }
         }
 

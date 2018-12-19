@@ -12,20 +12,20 @@ import java.net.URL
  */
 class LinkMetadataFormatter(val callback: BuildModelCallback)
 {
-    fun obtainMetadataFromAsync(url: String): Link?
+    fun obtainMetadataFromAsync(url: String)
     {
-        return if (url != EMPTY_URL)
-            GetFromUrlAsyncTask().execute(url).get()
-        else
-            null
+        if (url != EMPTY_URL)
+            GetFromUrlAsyncTask()
+                .execute(url)
+                .get()
     }
 
-    fun obtainMetadataFromAsync(model: Link): Link?
+    fun obtainMetadataFromAsync(model: Link)
     {
-        return if (model.url != EMPTY_URL)
-            GetFromModelAsyncTask().execute(model).get()
-        else
-            null
+        if (model.url != EMPTY_URL)
+            GetFromModelAsyncTask(executeInsert = true)
+                .execute(model)
+                .get()
     }
 
     /**
@@ -47,7 +47,7 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
      */
     private fun obtainMetadataFrom(url: String): Link?
     {
-        val model = Link(title = "", url = url, domain = "", imageUrl = DEFAULT_IMAGE_URL)
+        val model = Link(title = "", url = url, domain = "")
 
         // Info not jsoup-needed in case that HTTP connection will fail
         model.domain = getDomainFrom(url)
@@ -133,11 +133,7 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
 
     private inner class GetFromUrlAsyncTask : AsyncTask<String, Void, Link?>()
     {
-        override fun doInBackground(vararg args: String): Link?
-        {
-            val url = args[0]
-            return obtainMetadataFrom(url)
-        }
+        override fun doInBackground(vararg args: String): Link? = obtainMetadataFrom(url = args[0])
 
         override fun onPostExecute(result: Link?)
         {
@@ -147,12 +143,15 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
         }
     }
 
-    private inner class GetFromModelAsyncTask : AsyncTask<Link, Void, Link?>()
+    private inner class GetFromModelAsyncTask(val executeInsert: Boolean) : AsyncTask<Link, Void, Link?>()
     {
-        override fun doInBackground(vararg args: Link): Link?
+        override fun doInBackground(vararg args: Link): Link? = obtainMetadataFrom(model = args[0])
+
+        override fun onPostExecute(result: Link?)
         {
-            val model = args[0]
-            return obtainMetadataFrom(model)
+            super.onPostExecute(result)
+            if (executeInsert)
+                callback.insertSavedModel(result)
         }
     }
 
@@ -160,6 +159,7 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
     {
         fun mapModelToView(model: Link?)
         fun setNewModel(modelFetchedAsync: Link?)
+        fun insertSavedModel(result: Link?)
     }
 
     companion object
