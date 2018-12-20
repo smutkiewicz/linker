@@ -17,6 +17,18 @@
                 android:layout_height="match_parent"
                 android:padding="8dp">
 
+            <ImageButton
+                    android:layout_width="32dp"
+                    android:layout_height="0dp"
+                    app:srcCompat="@drawable/ic_content_cut"
+                    android:id="@+id/cutDescrIb"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@android:color/transparent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/urlInputLayout"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/cardView2"/>
             <Spinner
                     android:id="@+id/categoriesSpinner"
                     android:layout_width="0dp"
@@ -128,7 +140,7 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintTop_toBottomOf="@+id/urlInputLayout"
                     app:layout_constraintStart_toEndOf="@+id/imageView5"
-                    android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/copyDescrIb" android:layout_marginEnd="8dp"/>
+                    android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/pasteDescrIb" android:layout_marginEnd="8dp"/>
 
             <android.support.design.widget.TextInputLayout
                     android:id="@+id/urlInputLayout"
@@ -137,7 +149,7 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintTop_toBottomOf="@+id/categoriesSpinner"
                     app:layout_constraintStart_toEndOf="@+id/imageView2"
-                    android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/copyUrlIb" android:layout_marginEnd="8dp">
+                    android:layout_marginStart="8dp" app:layout_constraintEnd_toStartOf="@+id/pasteUrlIb" android:layout_marginEnd="8dp">
 
                 <android.support.design.widget.TextInputEditText
                         android:id="@+id/addEditUrlEt"
@@ -188,11 +200,14 @@
                             android:inputType="text"
                             android:singleLine="true"
                             android:hint="@string/new_tag"
-                            tools:layout_editor_absoluteY="0dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:layout_marginEnd="8dp"
                             app:layout_constraintStart_toEndOf="@+id/addTagBtn"
-                            android:layout_marginStart="8dp"/>
+                            android:layout_marginStart="8dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginBottom="8dp"/>
 
                     <ImageButton
                             android:id="@+id/addTagBtn"
@@ -229,10 +244,8 @@
             <ImageButton
                     android:layout_width="32dp"
                     android:layout_height="0dp"
-                    app:srcCompat="@drawable/ic_copy_black"
-                    android:id="@+id/copyUrlIb"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_content_paste"
+                    android:id="@+id/pasteUrlIb"
                     android:layout_marginTop="8dp"
                     app:layout_constraintTop_toBottomOf="@+id/categoriesSpinner"
                     android:background="@android:color/transparent"
@@ -240,23 +253,41 @@
                     app:layout_constraintBottom_toTopOf="@+id/addEditDescriptionEt"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:clickable="true"
-                    android:focusable="true"/>
+                    android:focusable="true"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintEnd_toStartOf="@+id/cutUrlIb"/>
 
             <ImageButton
                     android:layout_width="32dp"
                     android:layout_height="0dp"
-                    app:srcCompat="@drawable/ic_copy_black"
-                    android:id="@+id/copyDescrIb"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_content_paste"
+                    android:id="@+id/pasteDescrIb"
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toTopOf="@+id/cardView2"
-                    android:background="@android:color/transparent"
                     android:layout_marginTop="8dp"
                     app:layout_constraintTop_toBottomOf="@+id/urlInputLayout"
+                    android:background="@android:color/transparent"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:clickable="true"
-                    android:focusable="true"/>
+                    android:focusable="true"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintEnd_toStartOf="@+id/cutDescrIb"/>
+
+            <ImageButton
+                    android:layout_width="32dp"
+                    android:layout_height="0dp"
+                    app:srcCompat="@drawable/ic_content_cut"
+                    android:id="@+id/cutUrlIb"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/categoriesSpinner"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/addEditDescriptionEt"
+                    android:background="@android:color/transparent"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true" />
 
         </android.support.constraint.ConstraintLayout>
 

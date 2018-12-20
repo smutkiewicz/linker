@@ -256,6 +256,9 @@ class MainActivity : AppCompatActivity(),
                 val fragment = AddEditFragment.newInstance(MODE_ADD)
                 fragment.arguments!!.putString(INTENT_LINK, url)
 
+                // Reset intent
+                intent.action = Intent.ACTION_DEFAULT
+
                 fragment
             }
 

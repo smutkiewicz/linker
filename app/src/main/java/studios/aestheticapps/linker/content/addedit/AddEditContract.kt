@@ -16,7 +16,7 @@ interface AddEditTaskContract
         fun createCategoriesSpinner()
         fun createViewFromModel()
         fun createTagRecyclerView()
-        fun createCopyButtons()
+        fun createButtons()
         fun addTag()
         fun buildItemFromView(): Link
         fun buildSampleModelFromClipboardContent()

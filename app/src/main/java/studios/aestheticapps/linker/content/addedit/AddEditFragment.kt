@@ -68,7 +68,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
         createFab()
         createTagBtn()
-        createCopyButtons()
+        createButtons()
     }
 
     override fun onResume()
@@ -81,14 +81,13 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
             {
                 val latestUrl = PrefsHelper.obtainLatestParsedUrl(context!!)
 
-                /*if (checkIfIntentUrlBuildIsNeeded(latestUrl))
+                if (checkIfIntentUrlBuildIsNeeded(latestUrl))
                 {
-                    // Starting app with intent url that
+                    // Starting app with intent url
                     val content = arguments!!.getString(Link.INTENT_LINK, "")
                     buildSampleModelFromIntentContent(content)
-                }*/
-
-                if (model == null || (model != null && clipboardHelper.containsNewContent(latestUrl)))
+                }
+                else if (model == null || (model != null && clipboardHelper.containsNewContent(latestUrl)))
                 {
                     // Starting app OR app already started and has content, but there's new content in cliboard.
                     buildSampleModelFromClipboardContent()
@@ -106,9 +105,9 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         attachListeners()
     }
 
-    fun checkIfIntentUrlBuildIsNeeded(latestUrl: String): Boolean
+    private fun checkIfIntentUrlBuildIsNeeded(latestUrl: String): Boolean
     {
-        return if (arguments!!.containsKey(Link.INTENT_LINK))
+        return if (arguments?.containsKey(Link.INTENT_LINK) == true)
         {
             val content = arguments!!.getString(Link.INTENT_LINK, "")
 
@@ -210,16 +209,22 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         categoriesSpinner.isSelected = false
     }
 
-    override fun createCopyButtons()
+    override fun createButtons()
     {
-        copyUrlIb.setOnClickListener {
-            val content = addEditUrlEt.text.toString()
-            clipboardHelper.copyToCliboard(content)
+        pasteUrlIb.setOnClickListener {
+            clipboardHelper.pasteTo(addEditUrlEt)
         }
 
-        copyDescrIb.setOnClickListener {
-            val content = addEditDescriptionEt.text.toString()
-            clipboardHelper.copyToCliboard(content)
+        pasteDescrIb.setOnClickListener {
+            clipboardHelper.pasteTo(addEditDescriptionEt)
+        }
+
+        cutUrlIb.setOnClickListener {
+            clipboardHelper.cutFrom(addEditUrlEt)
+        }
+
+        cutDescrIb.setOnClickListener {
+            clipboardHelper.cutFrom(addEditDescriptionEt)
         }
     }
 
@@ -306,6 +311,10 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun buildSampleModelFromIntentContent(content: String)
     {
+        // clear arguments from Intent content
+        arguments!!.clear()
+        arguments!!.putInt(MODE, mode)
+
         presenter.buildItemFromUrl(content, isNetworkAvailable())
     }
 
@@ -325,19 +334,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         {
             val savedModel = state.getParcelable<Link>(PARCEL_LINK)
             mode = state.getInt(MODE)
-
-            when (mode)
-            {
-                MODE_EDIT -> model = savedModel
-
-                MODE_ADD ->
-                {
-                    if (clipboardHelper.containsNewContent(savedModel.url))
-                        buildSampleModelFromClipboardContent()
-                    else
-                        model = savedModel
-                }
-            }
+            model = savedModel
         }
         else
         {
