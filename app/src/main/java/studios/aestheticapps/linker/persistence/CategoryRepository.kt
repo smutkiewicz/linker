@@ -63,7 +63,7 @@ class CategoryRepository internal constructor(application: Application)
 
     private class SearchAsyncTask internal constructor(private val asyncTaskDao: CategoryDao) : AsyncTask<String, Void, List<Category>>()
     {
-        override fun doInBackground(vararg params: String?): List<Category> = asyncTaskDao.search(params[0]!!)
+        override fun doInBackground(vararg params: String?): List<Category> = asyncTaskDao.getAll()
     }
 
     companion object

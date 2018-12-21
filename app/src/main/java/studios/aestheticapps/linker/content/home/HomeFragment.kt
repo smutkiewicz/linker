@@ -23,6 +23,7 @@ import studios.aestheticapps.linker.adapters.RecentLinkAdapter
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.SearchCallback
+import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.utils.ClipboardHelper
@@ -30,7 +31,9 @@ import studios.aestheticapps.linker.utils.ClipboardHelper
 class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListener
 {
     override var presenter: HomeContract.Presenter = HomePresenter(this)
+
     private lateinit var callback: SearchCallback
+    private lateinit var updateViewCallback: UpdateViewCallback
 
     private lateinit var recentLinkAdapter: RecentLinkAdapter
     private lateinit var favLinkAdapter: FavoritesAdapter
@@ -60,6 +63,7 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     {
         super.onAttach(context)
         callback = context as SearchCallback
+        updateViewCallback = context as UpdateViewCallback
     }
 
     override fun populateViewAdaptersWithContent()
@@ -139,6 +143,16 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     override fun onSearchTag(tag: String) = callback.onOpenSearchView(tag)
 
     override fun startCopyAction(content: String) = ClipboardHelper(context!!).copyToCliboard(content)
+
+    override fun updateRecentLinkAdapter()
+    {
+        recentLinkAdapter.elements = presenter.getRecentItems()
+    }
+
+    override fun updateFavLinkAdapter()
+    {
+        favLinkAdapter.elements = presenter.getFavoriteItems()
+    }
 
     private fun showEmptyViewIfNeeded()
     {

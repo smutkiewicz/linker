@@ -10,20 +10,14 @@ import studios.aestheticapps.linker.model.Category
 @Dao
 interface CategoryDao
 {
-    @Query("SELECT * from category_table ORDER BY title ASC")
+    @Query("SELECT * from category_table ORDER BY title")
     fun getAll(): List<Category>
 
-    // TODO join
-    /*@Query("SELECT * from category_table ORDER BY title ASC")
-    fun getCategoryByDomain(domain: String): Category*/
+    @Query("SELECT * FROM category_table WHERE ruleDomain = :domain ORDER BY title")
+    fun getCategoryByDomain(domain: String): Category
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(link: Category)
-
-    @Query("SELECT * FROM category_table " +
-        "WHERE title LIKE '%' || :phrase || '%' " +
-        "ORDER BY title")
-    fun search(phrase: String): List<Category>
 
     @Update
     fun update(link: Category)
