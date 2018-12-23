@@ -6,10 +6,13 @@ import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import studios.aestheticapps.linker.model.LinkValidator
 import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.persistence.link.LinkRepository
+import studios.aestheticapps.linker.utils.CategoriesAdapter
 
 class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract.Presenter
 {
     private lateinit var repository: LinkRepository
+    private lateinit var categoriesAdapter: CategoriesAdapter
+
     private val formatter: LinkMetadataFormatter
 
     init
@@ -21,11 +24,19 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
     override fun start(application: Application)
     {
         repository = LinkRepository(application)
+
+        // Part of logic responsible for parsing metadata and category
+        categoriesAdapter = CategoriesAdapter(application)
+        formatter.categoriesAdapter = categoriesAdapter
     }
 
     override fun launchItemToSaveMetadataFormatting(model: Link) = formatter.obtainMetadataFromAsync(model)
 
-    override fun saveItem(model: Link) = repository.insert(model)
+    override fun saveItem(model: Link)
+    {
+        repository.insert(model)
+        categoriesAdapter.insertCategory(domain = model.domain, categoryName = model.category, id = null)
+    }
 
     override fun updateItem(model: Link) = repository.update(model)
 
@@ -48,4 +59,6 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
         val validator = LinkValidator(url)
         return validator.build()
     }
+
+    override fun provideArrayAdapter() = categoriesAdapter.obtainAdapter()
 }

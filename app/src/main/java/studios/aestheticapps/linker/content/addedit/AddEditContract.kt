@@ -1,6 +1,7 @@
 package studios.aestheticapps.linker.content.addedit
 
 import android.app.Application
+import android.widget.ArrayAdapter
 import studios.aestheticapps.linker.BasePresenter
 import studios.aestheticapps.linker.BaseView
 import studios.aestheticapps.linker.model.Link
@@ -33,5 +34,6 @@ interface AddEditTaskContract
         fun tagsToString(elements: MutableList<String>): String
         fun buildItemFromUrl(url: String, isNetworkAvailable: Boolean)
         fun provideValidUrl(url: String): String
+        fun provideArrayAdapter(): ArrayAdapter<String>
     }
 }

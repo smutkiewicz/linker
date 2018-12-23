@@ -27,15 +27,10 @@ class CategoryRepository internal constructor(application: Application)
         ).execute().get()
     }
 
-    fun getCategoriesByDomain(domain: String): LinkedList<Category>
-    {
-        return DatabaseAsyncTask(
-            object : DatabaseTask<LinkedList<Category>>
-            {
-                override fun performOperation() = LinkedList(categoryDao.getCategoriesByDomain(domain))
-            }
-        ).execute().get()
-    }
+    /**
+     * Fired in Formatter's AsyncTask, so no new thread needed.
+     */
+    fun getCategoriesByDomain(domain: String) = LinkedList(categoryDao.getCategoriesByDomain(domain))
 
     fun getDomainsByCategory(categoryName: String): LinkedList<String>
     {

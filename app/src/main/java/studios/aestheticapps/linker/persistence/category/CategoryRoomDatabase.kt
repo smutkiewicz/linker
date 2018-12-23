@@ -49,6 +49,12 @@ abstract class CategoryRoomDatabase : RoomDatabase()
                 super.onCreate(db)
                 PopulateDbAsync(INSTANCE!!).execute()
             }
+
+            override fun onOpen(db: SupportSQLiteDatabase)
+            {
+                super.onOpen(db)
+                //PopulateDbAsync(INSTANCE!!).execute()
+            }
         }
 
         private class PopulateDbAsync internal constructor(db: CategoryRoomDatabase) : AsyncTask<Void, Void, Void>()

@@ -129,7 +129,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
             {
                 val holder = viewHolder as LinkAdapter.ViewHolder
-                buildExitDialogAndConfirmDelete(holder.id, viewHolder.adapterPosition)
+                buildExitDialogAndConfirmDelete(holder.model, viewHolder.adapterPosition)
             }
 
             override fun onMove(rv: RecyclerView?,
@@ -176,11 +176,11 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
+    override fun startInternetAction(model: Link) = IntentActionHelper.startInternetAction(context!!, model)
 
-    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, link)
+    override fun startDetailsAction(model: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, model)
 
-    override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
+    override fun startShareView(model: Link) = IntentActionHelper.startShareView(context!!, model)
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long)
     {
@@ -200,7 +200,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
 
     override fun onNothingSelected(parent: AdapterView<*>) {}
 
-    private fun buildExitDialogAndConfirmDelete(id: Int, adapterPosition: Int)
+    private fun buildExitDialogAndConfirmDelete(model: Link, adapterPosition: Int)
     {
         val builder = AlertDialog
             .Builder(context!!)
@@ -209,7 +209,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
                 setIcon(R.mipmap.ic_launcher)
                 setMessage(R.string.library_message_confirm_exit)
                 setNegativeButton(R.string.library_dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
-                setPositiveButton(R.string.library_delete) { _, _ -> deleteItemPermanently(id, adapterPosition) }
+                setPositiveButton(R.string.library_delete) { _, _ -> deleteItemPermanently(model, adapterPosition) }
             }
 
         builder.apply {
@@ -218,9 +218,9 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         }
     }
 
-    private fun deleteItemPermanently(id: Int, adapterPosition: Int)
+    private fun deleteItemPermanently(model: Link, adapterPosition: Int)
     {
-        presenter.removeItem(id)
+        presenter.removeItem(model)
         linkAdapter.removeItem(adapterPosition)
     }
 

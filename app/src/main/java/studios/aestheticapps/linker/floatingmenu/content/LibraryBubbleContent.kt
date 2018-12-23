@@ -82,7 +82,7 @@ class LibraryBubbleContent(context: Context,
                 {
                     val holder = viewHolder as LinkAdapter.ViewHolder
 
-                    presenter.removeItem(holder.id)
+                    presenter.removeItem(holder.model)
                     linkAdapter.removeItem(viewHolder.adapterPosition)
                 }
 

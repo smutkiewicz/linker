@@ -11,13 +11,13 @@ import java.util.*
 /**
  * Empty Categories are only when noone set any domain in this particular Category.
  */
-class CategoriesAdapter(application: Application)
+class CategoriesAdapter(private val application: Application)
 {
     private val repository: CategoryRepository = CategoryRepository(application)
 
-    fun obtainAdapter(context: Context): ArrayAdapter<String>
+    fun obtainAdapter(): ArrayAdapter<String>
     {
-        val adapter = buildAdapter(context)
+        val adapter = buildAdapter(application.applicationContext)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         return adapter
@@ -94,7 +94,7 @@ class CategoriesAdapter(application: Application)
     /**
      * Get list of Strings for Spinner
      */
-    private fun obtainAllCategories(): List<String> = repository.getAllCategories()
+    fun obtainAllCategories(): List<String> = repository.getAllCategories()
 
     /**
      * Categories are pre-sorted by Repository in order: 1. usages; 2. lastUsed; 3. id;

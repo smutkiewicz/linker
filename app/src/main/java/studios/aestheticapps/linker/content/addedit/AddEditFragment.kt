@@ -198,14 +198,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun createCategoriesSpinner()
     {
-        val adapter = ArrayAdapter.createFromResource(
-            context,
-            R.array.categories,
-            android.R.layout.simple_spinner_item
-        )
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        categoriesSpinner.adapter = adapter
+        categoriesSpinner.adapter = presenter.provideArrayAdapter()
         categoriesSpinner.isSelected = false
     }
 

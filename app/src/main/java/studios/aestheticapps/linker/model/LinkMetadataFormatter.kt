@@ -4,6 +4,7 @@ import android.os.AsyncTask
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
+import studios.aestheticapps.linker.utils.CategoriesAdapter
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.net.URL
 
@@ -12,12 +13,19 @@ import java.net.URL
  */
 class LinkMetadataFormatter(val callback: BuildModelCallback)
 {
+    var categoriesAdapter: CategoriesAdapter? = null
+
     fun obtainMetadataFromAsync(url: String)
     {
         if (url != EMPTY_URL)
+        {
             GetFromUrlAsyncTask()
                 .execute(url)
-                .get()
+
+            /*categoriesAdapter?.let {
+                categoriesAdapter?.obtainCategory(getDomainFrom(url))
+            }*/
+        }
     }
 
     fun obtainMetadataFromAsync(model: Link)
@@ -25,7 +33,6 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
         if (model.url != EMPTY_URL)
             GetFromModelAsyncTask(executeInsert = true)
                 .execute(model)
-                .get()
     }
 
     /**
@@ -87,7 +94,12 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
 
     private fun getCategoryByDomain(domain: String): String
     {
-        // TODO recognizing categories
+        categoriesAdapter?.let {
+            return categoriesAdapter!!
+                .obtainCategory(domain)
+                .name
+        }
+
         return "Undefined"
     }
 

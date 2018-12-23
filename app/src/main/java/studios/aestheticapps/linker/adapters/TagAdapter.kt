@@ -15,8 +15,14 @@ class TagAdapter(private val isMenuEnabled: Boolean = false)
     : RecyclerView.Adapter<TagAdapter.ViewHolder>(), View.OnCreateContextMenuListener
 {
     var onTagClickedListener: OnTagClickedListener? = null
-    var elements: MutableList<String> = LinkedList()
     var position: Int = 0
+
+    var elements: MutableList<String> = LinkedList()
+        set(value)
+        {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun getItemCount() = elements.size
 

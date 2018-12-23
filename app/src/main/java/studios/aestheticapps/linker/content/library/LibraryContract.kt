@@ -22,9 +22,9 @@ interface LibraryContract
         fun setUpSortBySpinner()
         fun setUpOrderBySection()
 
-        fun startInternetAction(link: Link)
-        fun startShareView(link: Link)
-        fun startDetailsAction(link: Link)
+        fun startInternetAction(model: Link)
+        fun startShareView(model: Link)
+        fun startDetailsAction(model: Link)
         fun obtainQueryFromArguments()
     }
 
@@ -35,9 +35,8 @@ interface LibraryContract
         fun getAllItems(): LinkedList<Link>
         fun searchForItem(phrase: String, orderBy: String = TITLE_COLUMN): LinkedList<Link>
 
-        fun removeItem(id: Int)
-        fun addItem(link: Link)
-        fun setItemFavourite(link: Link)
-        fun setItemRecent(link: Link)
+        fun removeItem(model: Link)
+        fun setItemFavourite(model: Link)
+        fun setItemRecent(model: Link)
     }
 }
