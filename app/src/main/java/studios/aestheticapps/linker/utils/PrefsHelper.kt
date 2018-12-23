@@ -1,7 +1,7 @@
 package studios.aestheticapps.linker.utils
 
 import android.content.Context
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.TITLE_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.TITLE_COLUMN
 
 object PrefsHelper
 {

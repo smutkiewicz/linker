@@ -4,11 +4,11 @@ import android.content.Context
 import android.widget.ArrayAdapter
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Category
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CATEGORY_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_LATEST_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.DOMAIN_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.TITLE_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CATEGORY_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CREATED_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CREATED_LATEST_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.DOMAIN_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.TITLE_COLUMN
 
 class CategoryAdapter(context: Context, resource: Int) : ArrayAdapter<Category>(context, resource)
 {

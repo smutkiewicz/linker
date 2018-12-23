@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.persistence
+package studios.aestheticapps.linker.persistence.link
 
 import android.arch.persistence.db.SupportSQLiteQuery
 import android.arch.persistence.room.Dao

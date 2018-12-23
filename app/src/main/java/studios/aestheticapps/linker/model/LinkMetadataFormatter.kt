@@ -88,7 +88,7 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
     private fun getCategoryByDomain(domain: String): String
     {
         // TODO recognizing categories
-        return "Science/Education"
+        return "Undefined"
     }
 
     private fun getFaviconUrlFrom(doc: Document): String

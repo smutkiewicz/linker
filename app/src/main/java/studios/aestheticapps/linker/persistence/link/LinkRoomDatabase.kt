@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.persistence
+package studios.aestheticapps.linker.persistence.link
 
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Database
@@ -27,7 +27,6 @@ abstract class LinkRoomDatabase : RoomDatabase()
                         context.applicationContext,
                         LinkRoomDatabase::class.java,
                         "link_database")
-                        .addCallback(roomDatabaseCallback)
                         .build()
                 }
             }
@@ -39,14 +38,6 @@ abstract class LinkRoomDatabase : RoomDatabase()
         {
             INSTANCE!!.close()
             INSTANCE = null
-        }
-
-        private val roomDatabaseCallback = object : RoomDatabase.Callback()
-        {
-            override fun onOpen(db: SupportSQLiteDatabase)
-            {
-                super.onOpen(db)
-            }
         }
 
         private val MIGRATION_1_2: Migration = object : Migration(1, 2)

@@ -5,7 +5,7 @@ import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.LinkMetadataFormatter
 import studios.aestheticapps.linker.model.LinkValidator
 import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
-import studios.aestheticapps.linker.persistence.LinkRepository
+import studios.aestheticapps.linker.persistence.link.LinkRepository
 
 class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract.Presenter
 {

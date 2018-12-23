@@ -25,11 +25,11 @@ import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CATEGORY_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_LATEST_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.DOMAIN_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.TITLE_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CATEGORY_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CREATED_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CREATED_LATEST_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.DOMAIN_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.TITLE_COLUMN
 import studios.aestheticapps.linker.utils.CategoryAdapter
 import studios.aestheticapps.linker.utils.PrefsHelper
 

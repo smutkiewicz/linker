@@ -4,7 +4,7 @@ import android.app.Application
 import studios.aestheticapps.linker.BasePresenter
 import studios.aestheticapps.linker.BaseView
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.TITLE_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.TITLE_COLUMN
 import java.util.*
 
 interface LibraryContract
@@ -35,7 +35,7 @@ interface LibraryContract
         fun getAllItems(): LinkedList<Link>
         fun searchForItem(phrase: String, orderBy: String = TITLE_COLUMN): LinkedList<Link>
 
-        fun removeItem(position: Int)
+        fun removeItem(id: Int)
         fun addItem(link: Link)
         fun setItemFavourite(link: Link)
         fun setItemRecent(link: Link)

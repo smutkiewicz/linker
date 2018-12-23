@@ -43,10 +43,7 @@ class RecentLinkAdapter(private val callback: OnMyAdapterItemClickListener)
         }
     }
 
-    private fun bringItemToFront(oldIndex: Int)
-    {
-        notifyItemMoved(oldIndex, 0)
-    }
+    private fun bringItemToFront(oldIndex: Int) = notifyItemMoved(oldIndex, 0)
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
@@ -58,7 +55,7 @@ class RecentLinkAdapter(private val callback: OnMyAdapterItemClickListener)
         init
         {
             itemView.setOnClickListener{
-                //callback.onShare(link)
+                callback.onShare(link)
                 bringItemToFront(this.adapterPosition)
             }
 
