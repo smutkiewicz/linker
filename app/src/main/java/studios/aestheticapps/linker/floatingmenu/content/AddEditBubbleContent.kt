@@ -185,5 +185,15 @@ class AddEditBubbleContent(context: Context,
     {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun activateLoadingView()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun deactivateLoadingView()
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
 

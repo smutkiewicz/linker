@@ -6,16 +6,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+    <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/addEditProgressBar" android:indeterminate="true" android:visibility="gone"/>
     <android.support.v4.widget.NestedScrollView
-            android:id="@+id/scrollView2"
+            android:id="@+id/addEditDetalisScrollView"
             android:layout_width="match_parent"
             app:layout_anchorGravity="left|top"
-            app:layout_anchor="@+id/scrollView2" android:layout_height="wrap_content">
+            app:layout_anchor="@+id/addEditDetalisScrollView" android:layout_height="wrap_content">
 
         <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8dp">
+                android:padding="8dp" android:id="@+id/addEditLayout">
 
             <ImageButton
                     android:layout_width="32dp"
@@ -287,7 +292,7 @@
                     android:background="@android:color/transparent"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"/>
 
         </android.support.constraint.ConstraintLayout>
 

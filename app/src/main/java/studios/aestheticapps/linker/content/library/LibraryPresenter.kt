@@ -5,7 +5,7 @@ import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.link.LinkRepository
 import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.ALL
-import studios.aestheticapps.linker.utils.CategoriesAdapter
+import studios.aestheticapps.linker.adapters.CategoriesAdapter
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 

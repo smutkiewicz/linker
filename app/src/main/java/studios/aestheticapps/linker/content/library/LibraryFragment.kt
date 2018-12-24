@@ -21,6 +21,7 @@ import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
 import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
+import studios.aestheticapps.linker.adapters.SortByAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
@@ -30,7 +31,6 @@ import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CR
 import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CREATED_LATEST_COLUMN
 import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.DOMAIN_COLUMN
 import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.TITLE_COLUMN
-import studios.aestheticapps.linker.utils.CategoryAdapter
 import studios.aestheticapps.linker.utils.PrefsHelper
 
 class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSelectedListener
@@ -117,7 +117,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sortBySpinner.adapter = adapter
         sortBySpinner.isSelected = false
-        sortBySpinner.setSelection(CategoryAdapter.Res.columnNameToArrayIndex(orderByColumn), true)
+        sortBySpinner.setSelection(SortByAdapter.columnNameToArrayIndex(orderByColumn), true)
         sortBySpinner.onItemSelectedListener = this
     }
 
@@ -166,7 +166,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
     {
         orderByColumn = PrefsHelper.obtainOrderByColumn(context!!)
 
-        val columnNameForView = CategoryAdapter.Res.columnNameToColumnNameForView(context!!, orderByColumn)
+        val columnNameForView = SortByAdapter.columnNameToColumnNameForView(context!!, orderByColumn)
         sortByTv.text = getString(R.string.sort_by_column, columnNameForView)
     }
 
@@ -194,7 +194,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
             else -> TITLE_COLUMN
         }
 
-        val columnNameForView = CategoryAdapter.Res.arrayIndexToColunmNameForView(context!!, pos)
+        val columnNameForView = SortByAdapter.arrayIndexToColumnNameForView(context!!, pos)
         updateOrderByPref(newOrderByColumn, columnNameForView)
     }
 

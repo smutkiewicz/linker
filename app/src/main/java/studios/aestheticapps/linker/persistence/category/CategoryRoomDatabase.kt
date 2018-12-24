@@ -18,6 +18,12 @@ abstract class CategoryRoomDatabase : RoomDatabase()
     {
         private var INSTANCE: CategoryRoomDatabase? = null
 
+        private const val USAGE_VERY_IMPORTANT = 20
+        private const val USAGE_IMPORTANT = 10
+        private const val USAGE_MEDIUM = 5
+        private const val USAGE_MINIMUM = 1
+        private const val USAGE_UNUSED = 0
+
         fun getInstance(context: Context): CategoryRoomDatabase?
         {
             if (INSTANCE == null)
@@ -66,32 +72,32 @@ abstract class CategoryRoomDatabase : RoomDatabase()
                 dao.apply {
                     insert(Category(name = "Undefined", ruleDomain = "", usages = 0))
                     insert(Category(name = "Animals", ruleDomain = "", usages = 0))
-                    insert(Category(name = "Blogs", ruleDomain = "link.medium.com"))
-                    insert(Category(name = "Books", ruleDomain = "goodreads.com"))
-                    insert(Category(name = "Business", ruleDomain = "outlook.office.com"))
-                    insert(Category(name = "Education", ruleDomain = "developer.android.com"))
+                    insert(Category(name = "Blogs", ruleDomain = "link.medium.com", usages = USAGE_IMPORTANT))
+                    insert(Category(name = "Books", ruleDomain = "goodreads.com", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "Business", ruleDomain = "outlook.office.com", usages = USAGE_MEDIUM))
+                    insert(Category(name = "Education", ruleDomain = "developer.android.com", usages = USAGE_MEDIUM))
                     insert(Category(name = "Food", ruleDomain = "", usages = 0))
-                    insert(Category(name = "Gifs", ruleDomain = "media2.giphy.com"))
+                    insert(Category(name = "Gifs", ruleDomain = "media2.giphy.com", usages = USAGE_VERY_IMPORTANT))
                     insert(Category(name = "Important", ruleDomain = "", usages = 0))
-                    insert(Category(name = "Memes", ruleDomain = "m.9gag.com"))
-                    insert(Category(name = "Memes", ruleDomain = "9gag.com"))
-                    insert(Category(name = "Music", ruleDomain = "soundcloud.com"))
-                    insert(Category(name = "News", ruleDomain = "news.google.com"))
+                    insert(Category(name = "Memes", ruleDomain = "m.9gag.com", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "Memes", ruleDomain = "9gag.com", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "Music", ruleDomain = "soundcloud.com", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "News", ruleDomain = "news.google.com", usages = USAGE_MINIMUM))
                     insert(Category(name = "Science", ruleDomain = "", usages = 0))
-                    insert(Category(name = "Social", ruleDomain = "facebook.com"))
-                    insert(Category(name = "Social", ruleDomain = "m.facebook.com"))
-                    insert(Category(name = "Social", ruleDomain = "on.fb.me"))
-                    insert(Category(name = "Social", ruleDomain = "fb.me"))
-                    insert(Category(name = "Social", ruleDomain = "twitter.com"))
-                    insert(Category(name = "Social", ruleDomain = "instagram.com"))
-                    insert(Category(name = "Social", ruleDomain = "tumblr.com"))
-                    insert(Category(name = "Sports", ruleDomain = "premierleague.com"))
+                    insert(Category(name = "Social", ruleDomain = "facebook.com", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "Social", ruleDomain = "m.facebook.com", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "Social", ruleDomain = "on.fb.me", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "Social", ruleDomain = "fb.me", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "Social", ruleDomain = "twitter.com", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "Social", ruleDomain = "instagram.com", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "Social", ruleDomain = "tumblr.com", usages = USAGE_VERY_IMPORTANT))
+                    insert(Category(name = "Sports", ruleDomain = "premierleague.com", usages = USAGE_IMPORTANT))
                     insert(Category(name = "Technology", ruleDomain = "", usages = 0))
-                    insert(Category(name = "Travel", ruleDomain = "maps.app.goo.gl"))
-                    insert(Category(name = "Videos", ruleDomain = "youtu.be"))
-                    insert(Category(name = "Videos", ruleDomain = "youtube.com"))
-                    insert(Category(name = "Work", ruleDomain = "drive.google.com"))
-                    insert(Category(name = "Work", ruleDomain = "github.com"))
+                    insert(Category(name = "Travel", ruleDomain = "maps.app.goo.gl", usages = USAGE_IMPORTANT))
+                    insert(Category(name = "Videos", ruleDomain = "youtu.be", usages = USAGE_IMPORTANT))
+                    insert(Category(name = "Videos", ruleDomain = "youtube.com", usages = USAGE_IMPORTANT))
+                    insert(Category(name = "Work", ruleDomain = "drive.google.com", usages = USAGE_MEDIUM))
+                    insert(Category(name = "Work", ruleDomain = "github.com", usages = USAGE_MEDIUM))
                 }
 
                 return null

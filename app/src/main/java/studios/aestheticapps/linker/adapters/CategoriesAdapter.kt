@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.utils
+package studios.aestheticapps.linker.adapters
 
 import android.app.Application
 import android.content.Context
@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import studios.aestheticapps.linker.model.Category
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.category.CategoryRepository
+import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
 /**
@@ -78,7 +79,7 @@ class CategoriesAdapter(private val application: Application)
     {
         if (model.category == UNDEFINED) return
 
-        val category: Category = repository.getCategoryWithDomain(model.category, model.domain)
+        val category = repository.getCategoryWithDomain(model.category, model.domain)
 
         if (category.usages > 1)
         {
@@ -87,7 +88,18 @@ class CategoriesAdapter(private val application: Application)
         }
         else
         {
-            repository.update(buildUnused(category))
+            val domainsInThisCategory = repository.getDomainsByCategory(model.category)
+
+            if (domainsInThisCategory.size == 1)
+            {
+                // If there are no more domains with this Category, just update item and switch to unused state.
+                repository.update(buildUnused(category))
+            }
+            else
+            {
+                // If there are more domains with this Category, delete item.
+                repository.delete(category.id)
+            }
         }
     }
 

@@ -8,6 +8,8 @@ import android.provider.Settings
 import android.widget.Toast
 import studios.aestheticapps.linker.MainActivity.Companion.MY_PERMISSIONS_REQUEST_DRAW_OVERLAY
 
+
+
 /**
  * Helper extension function for showing a [Toast]
  */

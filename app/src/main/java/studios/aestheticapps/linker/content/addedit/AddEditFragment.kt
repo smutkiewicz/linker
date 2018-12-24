@@ -9,6 +9,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -17,6 +19,8 @@ import kotlinx.android.synthetic.main.content_add_edit.*
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.UpdateViewCallback
+import studios.aestheticapps.linker.extensions.disableChildrenOf
+import studios.aestheticapps.linker.extensions.enableChildrenOf
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 import studios.aestheticapps.linker.model.LinkMetadataFormatter
@@ -26,9 +30,8 @@ import studios.aestheticapps.linker.utils.DateTimeHelper
 import studios.aestheticapps.linker.utils.PrefsHelper
 
 class AddEditFragment : Fragment(), AddEditTaskContract.View,
-    TextWatcher,
-    OnItemSelectedListener,
-    LinkMetadataFormatter.BuildModelCallback
+    TextWatcher, OnItemSelectedListener,
+    LinkMetadataFormatter.BuildModelCallback, TagAdapter.OnTagClickedListener
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
@@ -224,9 +227,6 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     override fun mapModelToView(model: Link?)
     {
         model?.let {
-            if (mode == MODE_ADD)
-                PrefsHelper.setLatestParsedUrl(context!!, model.url)
-
             addEditLinkTitleEt.setText(it.title)
             addEditUrlEt.setText(it.url)
             addEditDescriptionEt.setText(it.description)
@@ -254,6 +254,18 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         }
     }
 
+    override fun activateLoadingView()
+    {
+        addEditProgressBar?.visibility = VISIBLE
+        disableChildrenOf(addEditLayout)
+    }
+
+    override fun deactivateLoadingView()
+    {
+        addEditProgressBar?.visibility = GONE
+        enableChildrenOf(addEditLayout)
+    }
+
     override fun cleanView()
     {
         callback.returnToMainView()
@@ -263,6 +275,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         addEditDescriptionEt.text.clear()
         tagAdapter.elements.clear()
         categoriesSpinner.setSelection(0)
+        model = null
     }
 
     override fun addTag()
@@ -270,6 +283,8 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         if (newTagEt.text.isNotBlank())
         {
             tagAdapter.addItem(newTagEt.text.toString())
+            model?.addTag(newTagEt.text.toString())
+
             newTagEt.text.clear()
             callback.onEdited()
         }
@@ -285,14 +300,14 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     override fun buildItemFromView() = Link(
         id = model?.id ?: 0,
         title = addEditLinkTitleEt.text.toString(),
-        category = categoriesSpinner.selectedItem?.toString() ?: "Unknown",
+        category = model?.category ?: categoriesSpinner.selectedItem?.toString() ?: "Unknown",
         description = addEditDescriptionEt.text.toString(),
         url = addEditUrlEt.text.toString(),
         imageUrl = model?.imageUrl ?: LinkMetadataFormatter.DEFAULT_IMAGE_URL,
         lastUsed = DateTimeHelper.getCurrentDateTimeStamp(),
         created = model?.created ?: DateTimeHelper.getCurrentDateTimeStamp(),
         isFavorite = model?.isFavorite ?: false,
-        tags = presenter.tagsToString(tagAdapter.elements),
+        tags = model?.tags ?: presenter.tagsToString(tagAdapter.elements),
         domain = model?.domain ?: ""
     )
 
@@ -317,9 +332,20 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun afterTextChanged(s: Editable) {}
 
-    override fun onItemSelected(parentView: AdapterView<*>, view: View?, position: Int, id: Long) = callback.onEdited()
+    override fun onItemSelected(parentView: AdapterView<*>, view: View?, position: Int, id: Long)
+    {
+        val selectedCategory: String = categoriesSpinner.selectedItem.toString()
+        model?.category = selectedCategory
+
+        callback.onEdited()
+    }
 
     override fun onNothingSelected(parentView: AdapterView<*>) {}
+
+    override fun onDeleteTag(tag: String)
+    {
+        model?.removeTag(tag)
+    }
 
     private fun restoreSavedState(state: Bundle?)
     {
@@ -365,7 +391,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     private fun attachListeners()
     {
-        //categoriesSpinner.onItemSelectedListener = this
+        categoriesSpinner.onItemSelectedListener = this
         addEditLinkTitleEt.addTextChangedListener(this)
         addEditUrlEt.addTextChangedListener(this)
         addEditDescriptionEt.addTextChangedListener(this)

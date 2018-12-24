@@ -108,4 +108,14 @@ class CategoryRepository internal constructor(application: Application)
             }
         ).execute()
     }
+
+    fun delete(id: Int)
+    {
+        DatabaseAsyncTask(
+            object : DatabaseTask<Unit>
+            {
+                override fun performOperation() = categoryDao.delete(id)
+            }
+        ).execute()
+    }
 }

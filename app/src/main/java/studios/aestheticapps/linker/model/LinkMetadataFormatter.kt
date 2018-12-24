@@ -3,8 +3,8 @@ package studios.aestheticapps.linker.model
 import android.os.AsyncTask
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import studios.aestheticapps.linker.adapters.CategoriesAdapter
 import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
-import studios.aestheticapps.linker.utils.CategoriesAdapter
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.net.URL
 
@@ -145,6 +145,12 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
 
     private inner class GetFromUrlAsyncTask : AsyncTask<String, Void, Link?>()
     {
+        override fun onPreExecute()
+        {
+            super.onPreExecute()
+            callback.activateLoadingView()
+        }
+
         override fun doInBackground(vararg args: String): Link? = obtainMetadataFrom(url = args[0])
 
         override fun onPostExecute(result: Link?)
@@ -152,6 +158,7 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
             super.onPostExecute(result)
             callback.mapModelToView(result)
             callback.setNewModel(result)
+            callback.deactivateLoadingView()
         }
     }
 
@@ -162,16 +169,17 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
         override fun onPostExecute(result: Link?)
         {
             super.onPostExecute(result)
-            if (executeInsert)
-                callback.insertSavedModel(result)
+            if (executeInsert) callback.insertSavedModel(result)
         }
     }
 
     interface BuildModelCallback
     {
+        fun activateLoadingView()
         fun mapModelToView(model: Link?)
         fun setNewModel(modelFetchedAsync: Link?)
         fun insertSavedModel(result: Link?)
+        fun deactivateLoadingView()
     }
 
     companion object

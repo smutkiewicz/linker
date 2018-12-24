@@ -53,6 +53,20 @@ data class Link(@PrimaryKey(autoGenerate = true) val id: Int = 0,
 
     override fun describeContents() = 0
 
+    fun addTag(tag: String)
+    {
+        val tagsList = stringToListOfTags()
+        tagsList.add(tag)
+        tags = listOfTagsToString(tagsList)
+    }
+
+    fun removeTag(tag: String)
+    {
+        val tagsList = stringToListOfTags()
+        tagsList.remove(tag)
+        tags = listOfTagsToString(tagsList)
+    }
+
     fun stringToListOfTags(): MutableList<String>
     {
         val list = mutableListOf<String>()
