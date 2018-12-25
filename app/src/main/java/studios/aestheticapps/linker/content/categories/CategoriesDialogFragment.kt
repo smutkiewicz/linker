@@ -11,7 +11,6 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.CategoriesAdapter
-import studios.aestheticapps.linker.model.Category.Companion.PARCEL_CATEGORY_NAME
 
 class CategoriesDialogFragment : DialogFragment(), CategoriesContract.View
 {
@@ -40,18 +39,11 @@ class CategoriesDialogFragment : DialogFragment(), CategoriesContract.View
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        restoreSavedState(savedInstanceState)
     }
 
     override fun onAttach(context: Context)
     {
         super.onAttach(context)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle)
-    {
-        super.onSaveInstanceState(outState)
-        outState.putStringArrayList(PARCEL_CATEGORY_NAME, ArrayList(categoriesAdapter.elements))
     }
 
     override fun createRecyclerView(view: View)
@@ -95,10 +87,4 @@ class CategoriesDialogFragment : DialogFragment(), CategoriesContract.View
 
     private fun inflateAndReturnView()
         = activity!!.layoutInflater.inflate(R.layout.content_categories, null)
-
-    private fun restoreSavedState(state: Bundle?)
-    {
-        /*if (state != null)
-            categoriesAdapter.elements = state.getStringArrayList(PARCEL_CATEGORY_NAME)*/
-    }
 }
