@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import studios.aestheticapps.linker.content.addedit.EditActivity
+import studios.aestheticapps.linker.content.categories.CategoriesDialogFragment
 import studios.aestheticapps.linker.content.details.DetailsDialogFragment
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
@@ -57,4 +58,6 @@ object IntentActionHelper
         
         context.startActivity(intent)
     }
+
+    fun startCategoriesDialogAction(manager: FragmentManager) = CategoriesDialogFragment().show(manager, "Categories")
 }

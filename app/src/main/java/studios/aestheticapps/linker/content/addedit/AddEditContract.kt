@@ -22,6 +22,7 @@ interface AddEditTaskContract
         fun buildItemFromView(): Link
         fun buildSampleModelFromClipboardContent()
         fun buildSampleModelFromIntentContent(content: String)
+        fun startCategoriesDialogAction()
     }
 
     interface Presenter : BasePresenter

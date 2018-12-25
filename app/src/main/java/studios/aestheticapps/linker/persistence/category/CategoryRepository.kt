@@ -17,6 +17,16 @@ class CategoryRepository internal constructor(application: Application)
         categoryDao = db.categoryDao()
     }
 
+    fun getAll(): LinkedList<Category>
+    {
+        return DatabaseAsyncTask(
+            object : DatabaseTask<LinkedList<Category>>
+            {
+                override fun performOperation() = LinkedList(categoryDao.getAll())
+            }
+        ).execute().get()
+    }
+
     fun getAllCategories(): LinkedList<String>
     {
         return DatabaseAsyncTask(

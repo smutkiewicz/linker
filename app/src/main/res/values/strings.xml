@@ -78,6 +78,9 @@
     <string name="so_empty_here">There\'s so empty here :(</string>
     <string name="action_search">Search</string>
     <string name="sort_by_column">Sort by: %s</string>
+    <string name="add_category">Add Category...</string>
+    <string name="categories_title">Categories</string>
+    <string name="category">Category</string>
 
     <!-- New stuff, for refactor -->
 </resources>

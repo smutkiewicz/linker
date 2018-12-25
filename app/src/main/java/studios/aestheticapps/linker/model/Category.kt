@@ -12,3 +12,9 @@ data class Category(@PrimaryKey(autoGenerate = true) val id: Int = 0,
                     var ruleDomain: String,
                     var usages: Int = 1,
                     var lastUsed: String = DateTimeHelper.getCurrentDateTimeStamp())
+{
+    companion object
+    {
+        const val PARCEL_CATEGORY_NAME = "linker_category_name"
+    }
+}

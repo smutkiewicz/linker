@@ -2,7 +2,13 @@ package studios.aestheticapps.linker.adapters
 
 import android.app.Application
 import android.content.Context
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.TextView
+import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Category
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.category.CategoryRepository
@@ -108,6 +114,8 @@ class CategoriesAdapter(private val application: Application)
      */
     fun obtainAllCategories(): List<String> = repository.getAllCategories()
 
+    fun obtainAllCategoriesList() = repository.getAll()
+
     /**
      * Categories are pre-sorted by Repository in order: 1. usages; 2. lastUsed; 3. id;
      */
@@ -133,6 +141,55 @@ class CategoriesAdapter(private val application: Application)
         android.R.layout.simple_spinner_item,
         obtainAllCategories()
     )
+
+    class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>()
+    {
+        var elements: MutableList<String> = LinkedList()
+            set(value)
+            {
+                field = value
+                notifyDataSetChanged()
+            }
+
+        override fun getItemCount() = elements.size
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
+        {
+            val view = LayoutInflater.from(parent.context).inflate(
+                R.layout.category_item,
+                parent,
+                false
+            )
+
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int)
+        {
+            holder.apply {
+                categoryName = elements[position]
+                titleTv.text = categoryName
+            }
+        }
+
+        fun removeItem(position: Int)
+        {
+            elements.removeAt(position)
+            notifyItemRemoved(position)
+        }
+
+        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+        {
+            lateinit var categoryName: String
+
+            val titleTv: TextView = itemView.findViewById(R.id.categoryTitleTv)
+
+            init
+            {
+                // TODO
+            }
+        }
+    }
 
     private companion object
     {

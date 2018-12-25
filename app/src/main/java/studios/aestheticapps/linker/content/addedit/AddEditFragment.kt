@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.content_add_edit.*
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
+import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.extensions.disableChildrenOf
 import studios.aestheticapps.linker.extensions.enableChildrenOf
@@ -207,6 +208,10 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun createButtons()
     {
+        addCategoryIb.setOnClickListener {
+            startCategoriesDialogAction()
+        }
+
         pasteUrlIb.setOnClickListener {
             clipboardHelper.pasteTo(addEditUrlEt)
         }
@@ -346,6 +351,8 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     {
         model?.removeTag(tag)
     }
+
+    override fun startCategoriesDialogAction() = IntentActionHelper.startCategoriesDialogAction(fragmentManager!!)
 
     private fun restoreSavedState(state: Bundle?)
     {
