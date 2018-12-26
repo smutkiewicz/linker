@@ -72,9 +72,7 @@ class CategoriesDialogFragment : DialogFragment(), CategoriesContract.View
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
                 {
                     val holder = viewHolder as CategoriesAdapter.RecyclerViewAdapter.ViewHolder
-                    presenter.removeItem(holder.categoryName)
-                    categoriesRecyclerViewAdapter.removeItem(viewHolder.adapterPosition)
-                    callback.updateCategories()
+                    buildDialogAndConfirmDelete(holder.categoryName, viewHolder.adapterPosition)
                 }
 
                 override fun onMove(rv: RecyclerView?, h: RecyclerView.ViewHolder?, t: RecyclerView.ViewHolder?) = false
@@ -114,6 +112,32 @@ class CategoriesDialogFragment : DialogFragment(), CategoriesContract.View
     private fun reloadItems()
     {
         categoriesRecyclerViewAdapter.elements = presenter.getAll()
+        callback.updateCategories()
+    }
+
+    private fun buildDialogAndConfirmDelete(categoryName: String, adapterPosition: Int)
+    {
+        val builder = AlertDialog
+            .Builder(context!!)
+            .apply {
+                setTitle(R.string.title_confirm_delete)
+                setMessage(R.string.message_confirm_delete)
+                setIcon(R.mipmap.ic_launcher)
+                setNegativeButton(R.string.dont_delete) { _, _ -> categoriesRecyclerViewAdapter.notifyDataSetChanged() }
+                setPositiveButton(R.string.please_delete) { _, _ -> deleteItemPermanently(categoryName, adapterPosition) }
+                setOnCancelListener { categoriesRecyclerViewAdapter.notifyDataSetChanged() }
+            }
+
+        builder.apply {
+            create()
+            show()
+        }
+    }
+
+    private fun deleteItemPermanently(categoryName: String, adapterPosition: Int)
+    {
+        presenter.removeItem(categoryName)
+        categoriesRecyclerViewAdapter.removeItem(adapterPosition)
         callback.updateCategories()
     }
 

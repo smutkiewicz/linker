@@ -134,9 +134,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
                 buildExitDialogAndConfirmDelete(holder.model, viewHolder.adapterPosition)
             }
 
-            override fun onMove(rv: RecyclerView?,
-                                h: RecyclerView.ViewHolder?,
-                                t: RecyclerView.ViewHolder?): Boolean { return false }
+            override fun onMove(rv: RecyclerView?, h: RecyclerView.ViewHolder?, t: RecyclerView.ViewHolder?) = false
         })
 
         helper.attachToRecyclerView(linksRecyclerView)
@@ -207,11 +205,11 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         val builder = AlertDialog
             .Builder(context!!)
             .apply {
-                setTitle(R.string.library_confirm_exit)
+                setTitle(R.string.title_confirm_delete)
                 setIcon(R.mipmap.ic_launcher)
-                setMessage(R.string.library_message_confirm_exit)
-                setNegativeButton(R.string.library_dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
-                setPositiveButton(R.string.library_delete) { _, _ -> deleteItemPermanently(model, adapterPosition) }
+                setMessage(R.string.message_confirm_delete)
+                setNegativeButton(R.string.dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
+                setPositiveButton(R.string.please_delete) { _, _ -> deleteItemPermanently(model, adapterPosition) }
                 setOnCancelListener { linkAdapter.notifyDataSetChanged() }
             }
 
