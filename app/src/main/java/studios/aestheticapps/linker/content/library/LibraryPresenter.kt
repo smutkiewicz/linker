@@ -3,14 +3,16 @@ package studios.aestheticapps.linker.content.library
 import android.app.Application
 import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.persistence.LinkRepository
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.ALL
+import studios.aestheticapps.linker.persistence.link.LinkRepository
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.ALL
+import studios.aestheticapps.linker.adapters.CategoriesAdapter
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
 class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Presenter, OnMyAdapterItemClickListener
 {
     private lateinit var repository: LinkRepository
+    private lateinit var categoriesAdapter: CategoriesAdapter
 
     init
     {
@@ -20,26 +22,31 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
     override fun start(application: Application)
     {
         repository = LinkRepository(application)
+
+        // Part of logic responsible for parsing metadata and category
+        categoriesAdapter = CategoriesAdapter(application)
     }
 
     override fun getAllItems(): LinkedList<Link> = repository.getListOf(ALL)
 
     override fun searchForItem(phrase: String, orderBy: String) = repository.search(phrase, orderBy)
 
-    override fun addItem(link: Link) = repository.insert(link)
-
-    override fun removeItem(id: Int) = repository.delete(id)
-
-    override fun setItemFavourite(link: Link)
+    override fun removeItem(model: Link)
     {
-        link.isFavorite = !link.isFavorite
-        repository.update(link)
+        repository.delete(model.id)
+        categoriesAdapter.deleteItemWithCategory(model)
     }
 
-    override fun setItemRecent(link: Link)
+    override fun setItemFavourite(model: Link)
     {
-        link.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
-        repository.update(link)
+        model.isFavorite = !model.isFavorite
+        repository.update(model)
+    }
+
+    override fun setItemRecent(model: Link)
+    {
+        model.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
+        repository.update(model)
     }
 
     override fun onItemClicked(model: Link)

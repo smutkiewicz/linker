@@ -1,25 +1,44 @@
 <resources>
     <string name="app_name">Linker</string>
+    <string name="motto">Let us organize links to the people, places and things you love.</string>
 
     <!-- AppBar actions -->
     <string name="action_settings">Settings</string>
     <string name="action_bubbles">Linker Bubbles</string>
     <string name="action_edit">Edit</string>
 
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="info_title">About version and author</string>
+    <string name="info_summary">v. %1$s by Aesthetic Apps Studios</string>
+    <string name="info_author_title">About Linker</string>
+    <string name="info_author">Linker&lt;br/>&lt;br/>
+        Let us organize links to the people, places and things you love.&lt;br/>&lt;br/>
+        All rights reserved.&lt;br/>
+        Created by Mike.&lt;br/>&lt;br/>
+        Version %1$s.&lt;br/>
+        &lt;b>&#169; Aesthetic Apps Studios 2018-19&lt;/b>
+    </string>
+
     <!-- Service -->
     <string name="service_is_active">Linker service is active.</string>
 
     <!-- Browse items content -->
     <string name="search_for_links_in_your_library">Search for links in your library…</string>
-    <string name="library_confirm_exit">Remove item</string>
-    <string name="library_message_confirm_exit">Are you sure you want to remove this item?</string>
-    <string name="library_delete">Delete</string>
-    <string name="library_dont_delete">Save</string>
+    <string name="action_search">Search</string>
+    <string name="sort_by_column">Sort by: %s</string>
+
+    <!-- Delete content -->
+    <string name="title_confirm_delete">Remove item</string>
+    <string name="message_confirm_delete">Are you sure you want to remove this item?</string>
+    <string name="please_delete">Delete</string>
+    <string name="dont_delete">No, save this item</string>
 
     <!-- Home content -->
     <string name="recent">Quick Share</string>
     <string name="favorites">Favorites</string>
     <string name="tags_cloud">Tags Cloud</string>
+    <string name="so_empty_here">There\'s so empty here :(</string>
 
     <!-- AddEdit content -->
     <string name="add_edit_my_description">My description....</string>
@@ -35,8 +54,8 @@
     <string name="url_error">You need to enter a valid URL.</string>
     <string name="edit_confirm_exit">Confirm exit</string>
     <string name="edit_message_confirm_exit">Are you sure you want to abort your changes?</string>
-    <string name="edit_save">Save</string>
-    <string name="edit_abort">Abort</string>
+    <string name="edit_save">Return and edit</string>
+    <string name="edit_discard">Discard changes</string>
     <string name="add_edit_blank_tag_error">You can\'t add blank tag!</string>
     <string name="no_description">No description</string>
     <string name="title_activity_edit">EditActivity</string>
@@ -66,7 +85,8 @@
     <string name="signing_in">Signing in…</string>
     <string name="copyright">&#169; Aesthetic Apps Studios 2018–19</string>
     <string name="sign_in_to_linker_with_google">Sign In to Linker with Google.</string>
-    <string name="title_activity_main2">Main2Activity</string>
+
+    <!-- Drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -74,10 +94,13 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_account">Account</string>
     <string name="log_out">Log out</string>
-    <string name="settings">Settings</string>
-    <string name="so_empty_here">There\'s so empty here :(</string>
-    <string name="action_search">Search</string>
-    <string name="sort_by_column">Sort by: %s</string>
+
+    <!-- Categories -->
+    <string name="add_category">Add Category…</string>
+    <string name="categories_title">Categories</string>
+    <string name="category">Category</string>
+    <string name="swipe_to_remove_category">Swipe to remove Category…</string>
+    <string name="categories_nonunique_name_error">Category already exists!</string>
 
     <!-- New stuff, for refactor -->
 </resources>

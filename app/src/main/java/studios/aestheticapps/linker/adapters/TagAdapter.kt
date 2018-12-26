@@ -15,8 +15,14 @@ class TagAdapter(private val isMenuEnabled: Boolean = false)
     : RecyclerView.Adapter<TagAdapter.ViewHolder>(), View.OnCreateContextMenuListener
 {
     var onTagClickedListener: OnTagClickedListener? = null
-    var elements: MutableList<String> = LinkedList()
     var position: Int = 0
+
+    var elements: MutableList<String> = LinkedList()
+        set(value)
+        {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun getItemCount() = elements.size
 
@@ -58,22 +64,24 @@ class TagAdapter(private val isMenuEnabled: Boolean = false)
         delete.setOnMenuItemClickListener(onContextMenu)
     }
 
-    fun removeItem(position: Int)
+    fun removeItem(tag: String, position: Int)
     {
         elements.removeAt(position)
         notifyItemRemoved(position)
+        onTagClickedListener?.onDeleteTag(tag)
     }
 
     fun addItem(tag: String)
     {
         elements.add(tag)
         notifyDataSetChanged()
+        onTagClickedListener?.onAddTag(tag)
     }
 
     private val onContextMenu = MenuItem.OnMenuItemClickListener { item ->
         when (item.itemId)
         {
-            DELETE_TAG -> removeItem(position)
+            DELETE_TAG -> removeItem(elements[position], position)
         }
         true
     }
@@ -85,7 +93,9 @@ class TagAdapter(private val isMenuEnabled: Boolean = false)
 
     interface OnTagClickedListener
     {
-        fun onSearchTag(tag: String)
+        fun onSearchTag(tag: String) {}
+        fun onDeleteTag(tag: String) {}
+        fun onAddTag(tag: String) {}
     }
 
     private companion object

@@ -1,6 +1,7 @@
 package studios.aestheticapps.linker.content.addedit
 
 import android.app.Application
+import android.widget.ArrayAdapter
 import studios.aestheticapps.linker.BasePresenter
 import studios.aestheticapps.linker.BaseView
 import studios.aestheticapps.linker.model.Link
@@ -16,11 +17,12 @@ interface AddEditTaskContract
         fun createCategoriesSpinner()
         fun createViewFromModel()
         fun createTagRecyclerView()
-        fun createCopyButtons()
+        fun createButtons()
         fun addTag()
         fun buildItemFromView(): Link
         fun buildSampleModelFromClipboardContent()
         fun buildSampleModelFromIntentContent(content: String)
+        fun startCategoriesDialogAction()
     }
 
     interface Presenter : BasePresenter
@@ -33,5 +35,6 @@ interface AddEditTaskContract
         fun tagsToString(elements: MutableList<String>): String
         fun buildItemFromUrl(url: String, isNetworkAvailable: Boolean)
         fun provideValidUrl(url: String): String
+        fun provideArrayAdapter(): ArrayAdapter<String>
     }
 }

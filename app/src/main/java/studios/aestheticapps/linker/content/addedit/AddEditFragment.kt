@@ -9,6 +9,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -16,7 +18,11 @@ import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.content_add_edit.*
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
+import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.UpdateViewCallback
+import studios.aestheticapps.linker.content.categories.CategoriesDialogFragment
+import studios.aestheticapps.linker.extensions.disableChildrenOf
+import studios.aestheticapps.linker.extensions.enableChildrenOf
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 import studios.aestheticapps.linker.model.LinkMetadataFormatter
@@ -26,9 +32,9 @@ import studios.aestheticapps.linker.utils.DateTimeHelper
 import studios.aestheticapps.linker.utils.PrefsHelper
 
 class AddEditFragment : Fragment(), AddEditTaskContract.View,
-    TextWatcher,
-    OnItemSelectedListener,
-    LinkMetadataFormatter.BuildModelCallback
+    TextWatcher, OnItemSelectedListener,
+    LinkMetadataFormatter.BuildModelCallback, TagAdapter.OnTagClickedListener,
+    CategoriesDialogFragment.CategoriesChangedCallback
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
@@ -68,7 +74,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
         createFab()
         createTagBtn()
-        createCopyButtons()
+        createButtons()
     }
 
     override fun onResume()
@@ -81,14 +87,13 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
             {
                 val latestUrl = PrefsHelper.obtainLatestParsedUrl(context!!)
 
-                /*if (checkIfIntentUrlBuildIsNeeded(latestUrl))
+                if (checkIfIntentUrlBuildIsNeeded(latestUrl))
                 {
-                    // Starting app with intent url that
+                    // Starting app with intent url
                     val content = arguments!!.getString(Link.INTENT_LINK, "")
                     buildSampleModelFromIntentContent(content)
-                }*/
-
-                if (model == null || (model != null && clipboardHelper.containsNewContent(latestUrl)))
+                }
+                else if (model == null || (model != null && clipboardHelper.containsNewContent(latestUrl)))
                 {
                     // Starting app OR app already started and has content, but there's new content in cliboard.
                     buildSampleModelFromClipboardContent()
@@ -106,9 +111,9 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         attachListeners()
     }
 
-    fun checkIfIntentUrlBuildIsNeeded(latestUrl: String): Boolean
+    private fun checkIfIntentUrlBuildIsNeeded(latestUrl: String): Boolean
     {
-        return if (arguments!!.containsKey(Link.INTENT_LINK))
+        return if (arguments?.containsKey(Link.INTENT_LINK) == true)
         {
             val content = arguments!!.getString(Link.INTENT_LINK, "")
 
@@ -160,7 +165,11 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
             {
                 when (mode)
                 {
-                    MODE_EDIT -> presenter.updateItem(buildItemFromView())
+                    MODE_EDIT ->
+                    {
+                        activateLoadingView()
+                        presenter.updateItem(buildItemFromView())
+                    }
 
                     MODE_ADD ->
                     {
@@ -180,6 +189,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     {
         tagAdapter = TagAdapter(true)
         tagAdapter.elements = mutableListOf()
+        tagAdapter.onTagClickedListener = this
 
         tagRecyclerView.apply {
             adapter = tagAdapter
@@ -199,36 +209,36 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun createCategoriesSpinner()
     {
-        val adapter = ArrayAdapter.createFromResource(
-            context,
-            R.array.categories,
-            android.R.layout.simple_spinner_item
-        )
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        categoriesSpinner.adapter = adapter
+        categoriesSpinner.adapter = presenter.provideArrayAdapter()
         categoriesSpinner.isSelected = false
     }
 
-    override fun createCopyButtons()
+    override fun createButtons()
     {
-        copyUrlIb.setOnClickListener {
-            val content = addEditUrlEt.text.toString()
-            clipboardHelper.copyToCliboard(content)
+        addCategoryIb.setOnClickListener {
+            startCategoriesDialogAction()
         }
 
-        copyDescrIb.setOnClickListener {
-            val content = addEditDescriptionEt.text.toString()
-            clipboardHelper.copyToCliboard(content)
+        pasteUrlIb.setOnClickListener {
+            clipboardHelper.pasteTo(addEditUrlEt)
+        }
+
+        pasteDescrIb.setOnClickListener {
+            clipboardHelper.pasteTo(addEditDescriptionEt)
+        }
+
+        cutUrlIb.setOnClickListener {
+            clipboardHelper.cutFrom(addEditUrlEt)
+        }
+
+        cutDescrIb.setOnClickListener {
+            clipboardHelper.cutFrom(addEditDescriptionEt)
         }
     }
 
     override fun mapModelToView(model: Link?)
     {
         model?.let {
-            if (mode == MODE_ADD)
-                PrefsHelper.setLatestParsedUrl(context!!, model.url)
-
             addEditLinkTitleEt.setText(it.title)
             addEditUrlEt.setText(it.url)
             addEditDescriptionEt.setText(it.description)
@@ -256,6 +266,20 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         }
     }
 
+    override fun activateLoadingView()
+    {
+        addEditProgressBar?.visibility = VISIBLE
+        saveLinkFab.hide()
+        disableChildrenOf(addEditLayout)
+    }
+
+    override fun deactivateLoadingView()
+    {
+        addEditProgressBar?.visibility = GONE
+        enableChildrenOf(addEditLayout)
+        saveLinkFab.show()
+    }
+
     override fun cleanView()
     {
         callback.returnToMainView()
@@ -265,6 +289,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         addEditDescriptionEt.text.clear()
         tagAdapter.elements.clear()
         categoriesSpinner.setSelection(0)
+        model = null
     }
 
     override fun addTag()
@@ -272,6 +297,8 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         if (newTagEt.text.isNotBlank())
         {
             tagAdapter.addItem(newTagEt.text.toString())
+            model!!.addTag(newTagEt.text.toString())
+
             newTagEt.text.clear()
             callback.onEdited()
         }
@@ -287,14 +314,14 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     override fun buildItemFromView() = Link(
         id = model?.id ?: 0,
         title = addEditLinkTitleEt.text.toString(),
-        category = categoriesSpinner.selectedItem?.toString() ?: "Unknown",
+        category = model?.category ?: categoriesSpinner.selectedItem?.toString() ?: "Unknown",
         description = addEditDescriptionEt.text.toString(),
         url = addEditUrlEt.text.toString(),
         imageUrl = model?.imageUrl ?: LinkMetadataFormatter.DEFAULT_IMAGE_URL,
         lastUsed = DateTimeHelper.getCurrentDateTimeStamp(),
         created = model?.created ?: DateTimeHelper.getCurrentDateTimeStamp(),
         isFavorite = model?.isFavorite ?: false,
-        tags = presenter.tagsToString(tagAdapter.elements),
+        tags = model?.tags ?: presenter.tagsToString(tagAdapter.elements),
         domain = model?.domain ?: ""
     )
 
@@ -306,6 +333,10 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun buildSampleModelFromIntentContent(content: String)
     {
+        // clear arguments from Intent content
+        arguments!!.clear()
+        arguments!!.putInt(MODE, mode)
+
         presenter.buildItemFromUrl(content, isNetworkAvailable())
     }
 
@@ -315,9 +346,24 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun afterTextChanged(s: Editable) {}
 
-    override fun onItemSelected(parentView: AdapterView<*>, view: View?, position: Int, id: Long) = callback.onEdited()
+    override fun onItemSelected(parentView: AdapterView<*>, view: View?, position: Int, id: Long)
+    {
+        val selectedCategory: String = categoriesSpinner.selectedItem.toString()
+        model?.category = selectedCategory
+
+        callback.onEdited()
+    }
 
     override fun onNothingSelected(parentView: AdapterView<*>) {}
+
+    override fun onDeleteTag(tag: String) = model!!.removeTag(tag)
+
+    override fun startCategoriesDialogAction() = IntentActionHelper.startCategoriesDialogAction(fragmentManager!!, this)
+
+    override fun updateCategories()
+    {
+        createCategoriesSpinner()
+    }
 
     private fun restoreSavedState(state: Bundle?)
     {
@@ -325,19 +371,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         {
             val savedModel = state.getParcelable<Link>(PARCEL_LINK)
             mode = state.getInt(MODE)
-
-            when (mode)
-            {
-                MODE_EDIT -> model = savedModel
-
-                MODE_ADD ->
-                {
-                    if (clipboardHelper.containsNewContent(savedModel.url))
-                        buildSampleModelFromClipboardContent()
-                    else
-                        model = savedModel
-                }
-            }
+            model = savedModel
         }
         else
         {
@@ -375,7 +409,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     private fun attachListeners()
     {
-        //categoriesSpinner.onItemSelectedListener = this
+        categoriesSpinner.onItemSelectedListener = this
         addEditLinkTitleEt.addTextChangedListener(this)
         addEditUrlEt.addTextChangedListener(this)
         addEditDescriptionEt.addTextChangedListener(this)

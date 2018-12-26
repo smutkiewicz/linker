@@ -1,6 +1,7 @@
 package studios.aestheticapps.linker.content.library
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -20,20 +21,23 @@ import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
 import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
+import studios.aestheticapps.linker.adapters.SortByAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
+import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CATEGORY_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.CREATED_LATEST_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.DOMAIN_COLUMN
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.TITLE_COLUMN
-import studios.aestheticapps.linker.utils.CategoryAdapter
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CATEGORY_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CREATED_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CREATED_LATEST_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.DOMAIN_COLUMN
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.TITLE_COLUMN
 import studios.aestheticapps.linker.utils.PrefsHelper
 
 class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSelectedListener
 {
     override var presenter: LibraryContract.Presenter = LibraryPresenter(this)
+
+    private lateinit var updateViewCallback: UpdateViewCallback
 
     private lateinit var linkAdapter: LinkAdapter
     private lateinit var orderByColumn: String
@@ -57,6 +61,12 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
     {
         super.onDestroy()
         presenter.stop()
+    }
+
+    override fun onAttach(context: Context?)
+    {
+        super.onAttach(context)
+        updateViewCallback = context as UpdateViewCallback
     }
 
     override fun populateViewAdaptersWithContent()
@@ -105,9 +115,11 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         )
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        sortBySpinner.adapter = adapter
-        sortBySpinner.isSelected = false
-        sortBySpinner.setSelection(CategoryAdapter.Res.columnNameToArrayIndex(orderByColumn), true)
+        sortBySpinner.apply {
+            this.adapter = adapter
+            sortBySpinner.isSelected = false
+            sortBySpinner.setSelection(SortByAdapter.columnNameToArrayIndex(orderByColumn), true)
+        }
         sortBySpinner.onItemSelectedListener = this
     }
 
@@ -119,12 +131,10 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
             {
                 val holder = viewHolder as LinkAdapter.ViewHolder
-                buildExitDialogAndConfirmDelete(holder.id, viewHolder.adapterPosition)
+                buildExitDialogAndConfirmDelete(holder.model, viewHolder.adapterPosition)
             }
 
-            override fun onMove(rv: RecyclerView?,
-                                h: RecyclerView.ViewHolder?,
-                                t: RecyclerView.ViewHolder?): Boolean { return false }
+            override fun onMove(rv: RecyclerView?, h: RecyclerView.ViewHolder?, t: RecyclerView.ViewHolder?) = false
         })
 
         helper.attachToRecyclerView(linksRecyclerView)
@@ -156,7 +166,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
     {
         orderByColumn = PrefsHelper.obtainOrderByColumn(context!!)
 
-        val columnNameForView = CategoryAdapter.Res.columnNameToColumnNameForView(context!!, orderByColumn)
+        val columnNameForView = SortByAdapter.columnNameToColumnNameForView(context!!, orderByColumn)
         sortByTv.text = getString(R.string.sort_by_column, columnNameForView)
     }
 
@@ -166,11 +176,11 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
+    override fun startInternetAction(model: Link) = IntentActionHelper.startInternetAction(context!!, model)
 
-    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, link)
+    override fun startDetailsAction(model: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, model)
 
-    override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
+    override fun startShareView(model: Link) = IntentActionHelper.startShareView(context!!, model)
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long)
     {
@@ -184,22 +194,23 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
             else -> TITLE_COLUMN
         }
 
-        val columnNameForView = CategoryAdapter.Res.arrayIndexToColunmNameForView(context!!, pos)
+        val columnNameForView = SortByAdapter.arrayIndexToColumnNameForView(context!!, pos)
         updateOrderByPref(newOrderByColumn, columnNameForView)
     }
 
     override fun onNothingSelected(parent: AdapterView<*>) {}
 
-    private fun buildExitDialogAndConfirmDelete(id: Int, adapterPosition: Int)
+    private fun buildExitDialogAndConfirmDelete(model: Link, adapterPosition: Int)
     {
         val builder = AlertDialog
             .Builder(context!!)
             .apply {
-                setTitle(R.string.library_confirm_exit)
+                setTitle(R.string.title_confirm_delete)
                 setIcon(R.mipmap.ic_launcher)
-                setMessage(R.string.library_message_confirm_exit)
-                setNegativeButton(R.string.library_dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
-                setPositiveButton(R.string.library_delete) { _, _ -> deleteItemPermanently(id, adapterPosition) }
+                setMessage(R.string.message_confirm_delete)
+                setNegativeButton(R.string.dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
+                setPositiveButton(R.string.please_delete) { _, _ -> deleteItemPermanently(model, adapterPosition) }
+                setOnCancelListener { linkAdapter.notifyDataSetChanged() }
             }
 
         builder.apply {
@@ -208,9 +219,9 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         }
     }
 
-    private fun deleteItemPermanently(id: Int, adapterPosition: Int)
+    private fun deleteItemPermanently(model: Link, adapterPosition: Int)
     {
-        presenter.removeItem(id)
+        presenter.removeItem(model)
         linkAdapter.removeItem(adapterPosition)
     }
 

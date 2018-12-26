@@ -3,9 +3,9 @@ package studios.aestheticapps.linker.content.home
 import android.app.Application
 import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.persistence.LinkRepository
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.FAVORITES
-import studios.aestheticapps.linker.persistence.LinkRepository.Companion.RECENT
+import studios.aestheticapps.linker.persistence.link.LinkRepository
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.FAVORITES
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.RECENT
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 

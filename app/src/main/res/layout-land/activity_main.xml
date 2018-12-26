@@ -16,8 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".MainActivity"
-            android:focusableInTouchMode="true"
-            android:fitsSystemWindows="true">
+            android:focusableInTouchMode="true">
 
         <android.support.design.widget.AppBarLayout
                 android:layout_height="wrap_content"
@@ -38,7 +37,9 @@
                  layout="@layout/content_main"
                  app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
                  android:layout_marginBottom="56dp"
-                 android:layout_marginTop="48dp" android:layout_width="match_parent" android:layout_height="match_parent"/>
+                 android:layout_marginTop="48dp"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"/>
 
         <android.support.design.widget.BottomNavigationView
                 android:id="@+id/bottomNavigation"

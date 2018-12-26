@@ -23,6 +23,7 @@ import studios.aestheticapps.linker.adapters.RecentLinkAdapter
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.SearchCallback
+import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.utils.ClipboardHelper
@@ -30,7 +31,9 @@ import studios.aestheticapps.linker.utils.ClipboardHelper
 class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListener
 {
     override var presenter: HomeContract.Presenter = HomePresenter(this)
+
     private lateinit var callback: SearchCallback
+    private lateinit var updateViewCallback: UpdateViewCallback
 
     private lateinit var recentLinkAdapter: RecentLinkAdapter
     private lateinit var favLinkAdapter: FavoritesAdapter
@@ -60,6 +63,7 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     {
         super.onAttach(context)
         callback = context as SearchCallback
+        updateViewCallback = context as UpdateViewCallback
     }
 
     override fun populateViewAdaptersWithContent()
@@ -140,39 +144,43 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
 
     override fun startCopyAction(content: String) = ClipboardHelper(context!!).copyToCliboard(content)
 
+    override fun updateRecentLinkAdapter()
+    {
+        recentLinkAdapter.elements = presenter.getRecentItems()
+    }
+
+    override fun updateFavLinkAdapter()
+    {
+        favLinkAdapter.elements = presenter.getFavoriteItems()
+    }
+
     private fun showEmptyViewIfNeeded()
     {
         if (recentLinkAdapter.itemCount == 0)
-        {
-            recentRecyclerView.visibility = View.INVISIBLE
-            emptyShareTv.visibility = View.VISIBLE
-        }
+            setEmptyState(recentRecyclerView, emptyShareTv)
         else
-        {
-            recentRecyclerView.visibility = View.VISIBLE
-            emptyShareTv.visibility = View.GONE
-        }
+            setActiveState(recentRecyclerView, emptyShareTv)
 
         if (favLinkAdapter.itemCount == 0)
-        {
-            favRecyclerView.visibility = View.INVISIBLE
-            emptyFavsTv.visibility = View.VISIBLE
-        }
+            setEmptyState(favRecyclerView, emptyFavsTv)
         else
-        {
-            favRecyclerView.visibility = View.VISIBLE
-            emptyFavsTv.visibility = View.GONE
-        }
+            setActiveState(favRecyclerView, emptyFavsTv)
 
         if (tagCloudAdapter.itemCount == 0)
-        {
-            tagsCloudRecyclerView.visibility = View.INVISIBLE
-            emptyCloudTv.visibility = View.VISIBLE
-        }
+            setEmptyState(tagsCloudRecyclerView, emptyCloudTv)
         else
-        {
-            tagsCloudRecyclerView.visibility = View.VISIBLE
-            emptyCloudTv.visibility = View.GONE
-        }
+            setActiveState(tagsCloudRecyclerView, emptyCloudTv)
+    }
+
+    private fun setEmptyState(container: View, emptyStateView: View)
+    {
+        container.visibility = View.INVISIBLE
+        emptyStateView.visibility = View.VISIBLE
+    }
+
+    private fun setActiveState(container: View, emptyStateView: View)
+    {
+        container.visibility = View.VISIBLE
+        emptyStateView.visibility = View.GONE
     }
 }

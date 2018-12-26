@@ -1,6 +1,7 @@
 package studios.aestheticapps.linker.model
 
 import org.apache.commons.validator.routines.UrlValidator
+import org.apache.commons.validator.routines.UrlValidator.ALLOW_ALL_SCHEMES
 
 /**
  * Provides vaild urls for model.
@@ -33,7 +34,7 @@ class LinkValidator(private var url: String)
         if (url == EMPTY_URL)
             return false
 
-        val urlValidator = UrlValidator()
+        val urlValidator = UrlValidator(ALLOW_ALL_SCHEMES)
         return urlValidator.isValid(url)
     }
 

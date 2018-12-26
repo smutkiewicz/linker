@@ -3,7 +3,7 @@ package studios.aestheticapps.linker.content.details
 import android.app.Application
 import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.persistence.LinkRepository
+import studios.aestheticapps.linker.persistence.link.LinkRepository
 import studios.aestheticapps.linker.utils.DateTimeHelper
 
 class DetailsPresenter(val view: DetailsContract.View) : DetailsContract.Presenter, OnMyAdapterItemClickListener

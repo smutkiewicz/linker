@@ -24,6 +24,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header.view.*
+import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.SearchCallback
 import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
@@ -164,6 +165,7 @@ class MainActivity : AppCompatActivity(),
             {
                 item.isChecked = true
                 drawerLayout.closeDrawer(GravityCompat.START)
+                IntentActionHelper.startSettingsAction(this)
                 return true
             }
 
@@ -255,6 +257,9 @@ class MainActivity : AppCompatActivity(),
                 val url = intent.getStringExtra(Intent.EXTRA_TEXT)
                 val fragment = AddEditFragment.newInstance(MODE_ADD)
                 fragment.arguments!!.putString(INTENT_LINK, url)
+
+                // Reset intent
+                intent.action = Intent.ACTION_DEFAULT
 
                 fragment
             }

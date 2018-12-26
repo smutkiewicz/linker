@@ -23,6 +23,9 @@ interface HomeContract
         fun startDetailsAction(link: Link)
         fun startShareView(link: Link)
         fun startCopyAction(content: String)
+
+        fun updateRecentLinkAdapter()
+        fun updateFavLinkAdapter()
     }
 
     interface Presenter : BasePresenter
