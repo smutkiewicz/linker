@@ -1,10 +1,24 @@
 <resources>
     <string name="app_name">Linker</string>
+    <string name="motto">Let us organize links to the people, places and things you love.</string>
 
     <!-- AppBar actions -->
     <string name="action_settings">Settings</string>
     <string name="action_bubbles">Linker Bubbles</string>
     <string name="action_edit">Edit</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="info_title">About version and author</string>
+    <string name="info_summary">v. %1$s by Aesthetic Apps Studios</string>
+    <string name="info_author_title">About Linker</string>
+    <string name="info_author">Linker&lt;br/>&lt;br/>
+        Let us organize links to the people, places and things you love.&lt;br/>&lt;br/>
+        All rights reserved.&lt;br/>
+        Created by Mike.&lt;br/>&lt;br/>
+        Version %1$s.&lt;br/>
+        &lt;b>&#169; Aesthetic Apps Studios 2018-19&lt;/b>
+    </string>
 
     <!-- Service -->
     <string name="service_is_active">Linker service is active.</string>
@@ -80,7 +94,6 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_account">Account</string>
     <string name="log_out">Log out</string>
-    <string name="settings">Settings</string>
 
     <!-- Categories -->
     <string name="add_category">Add Category…</string>
