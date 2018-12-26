@@ -115,9 +115,11 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         )
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        sortBySpinner.adapter = adapter
-        sortBySpinner.isSelected = false
-        sortBySpinner.setSelection(SortByAdapter.columnNameToArrayIndex(orderByColumn), true)
+        sortBySpinner.apply {
+            this.adapter = adapter
+            sortBySpinner.isSelected = false
+            sortBySpinner.setSelection(SortByAdapter.columnNameToArrayIndex(orderByColumn), true)
+        }
         sortBySpinner.onItemSelectedListener = this
     }
 
@@ -210,6 +212,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
                 setMessage(R.string.library_message_confirm_exit)
                 setNegativeButton(R.string.library_dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
                 setPositiveButton(R.string.library_delete) { _, _ -> deleteItemPermanently(model, adapterPosition) }
+                setOnCancelListener { linkAdapter.notifyDataSetChanged() }
             }
 
         builder.apply {

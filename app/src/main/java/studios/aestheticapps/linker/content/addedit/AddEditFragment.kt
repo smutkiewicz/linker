@@ -20,6 +20,7 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.UpdateViewCallback
+import studios.aestheticapps.linker.content.categories.CategoriesDialogFragment
 import studios.aestheticapps.linker.extensions.disableChildrenOf
 import studios.aestheticapps.linker.extensions.enableChildrenOf
 import studios.aestheticapps.linker.model.Link
@@ -32,7 +33,8 @@ import studios.aestheticapps.linker.utils.PrefsHelper
 
 class AddEditFragment : Fragment(), AddEditTaskContract.View,
     TextWatcher, OnItemSelectedListener,
-    LinkMetadataFormatter.BuildModelCallback, TagAdapter.OnTagClickedListener
+    LinkMetadataFormatter.BuildModelCallback, TagAdapter.OnTagClickedListener,
+    CategoriesDialogFragment.CategoriesChangedCallback
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
@@ -163,7 +165,11 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
             {
                 when (mode)
                 {
-                    MODE_EDIT -> presenter.updateItem(buildItemFromView())
+                    MODE_EDIT ->
+                    {
+                        activateLoadingView()
+                        presenter.updateItem(buildItemFromView())
+                    }
 
                     MODE_ADD ->
                     {
@@ -183,6 +189,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     {
         tagAdapter = TagAdapter(true)
         tagAdapter.elements = mutableListOf()
+        tagAdapter.onTagClickedListener = this
 
         tagRecyclerView.apply {
             adapter = tagAdapter
@@ -288,7 +295,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         if (newTagEt.text.isNotBlank())
         {
             tagAdapter.addItem(newTagEt.text.toString())
-            model?.addTag(newTagEt.text.toString())
+            model!!.addTag(newTagEt.text.toString())
 
             newTagEt.text.clear()
             callback.onEdited()
@@ -349,10 +356,15 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun onDeleteTag(tag: String)
     {
-        model?.removeTag(tag)
+        model!!.removeTag(tag)
     }
 
-    override fun startCategoriesDialogAction() = IntentActionHelper.startCategoriesDialogAction(fragmentManager!!)
+    override fun startCategoriesDialogAction() = IntentActionHelper.startCategoriesDialogAction(fragmentManager!!, this)
+
+    override fun updateCategories()
+    {
+        createCategoriesSpinner()
+    }
 
     private fun restoreSavedState(state: Bundle?)
     {

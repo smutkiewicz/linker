@@ -1,6 +1,7 @@
 package studios.aestheticapps.linker.persistence.category
 
 import android.app.Application
+import android.util.Log
 import studios.aestheticapps.linker.model.Category
 import studios.aestheticapps.linker.persistence.DatabaseAsyncTask
 import studios.aestheticapps.linker.persistence.DatabaseTask
@@ -17,14 +18,15 @@ class CategoryRepository internal constructor(application: Application)
         categoryDao = db.categoryDao()
     }
 
-    fun getAll(): LinkedList<Category>
+    private fun printAll()
     {
-        return DatabaseAsyncTask(
+        val categories = DatabaseAsyncTask(
             object : DatabaseTask<LinkedList<Category>>
             {
                 override fun performOperation() = LinkedList(categoryDao.getAll())
             }
         ).execute().get()
+        Log.d("CATEGORIES", categories.toString())
     }
 
     fun getAllCategories(): LinkedList<String>
@@ -125,6 +127,16 @@ class CategoryRepository internal constructor(application: Application)
             object : DatabaseTask<Unit>
             {
                 override fun performOperation() = categoryDao.delete(id)
+            }
+        ).execute()
+    }
+
+    fun deleteCategory(categoryName: String)
+    {
+        DatabaseAsyncTask(
+            object : DatabaseTask<Unit>
+            {
+                override fun performOperation() = categoryDao.deleteCategory(categoryName)
             }
         ).execute()
     }

@@ -25,7 +25,7 @@ interface LinkDao
     fun searchRawQuery(query: SupportSQLiteQuery): List<Link>
 
     @Query("SELECT * from link_table WHERE id = :id")
-    fun searchById(id: Int): Link
+    fun getById(id: Int): Link
 
     @Query("SELECT * from link_table WHERE isFavorite = 1")
     fun getFavourites(): List<Link>
@@ -35,6 +35,9 @@ interface LinkDao
 
     @Update
     fun update(link: Link)
+
+    @Query("UPDATE link_table SET category = 'Undefined' WHERE category = :categoryName")
+    fun updateDeletedCategoryEntries(categoryName: String)
 
     @Query("DELETE FROM link_table WHERE id = :id")
     fun delete(id: Int)

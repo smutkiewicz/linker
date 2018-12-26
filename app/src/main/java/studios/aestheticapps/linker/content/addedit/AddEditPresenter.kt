@@ -35,10 +35,14 @@ class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract
     override fun saveItem(model: Link)
     {
         repository.insert(model)
-        categoriesAdapter.insertCategory(domain = model.domain, categoryName = model.category, id = null)
+        categoriesAdapter.insertItemWithCategory(domain = model.domain, categoryName = model.category, id = null)
     }
 
-    override fun updateItem(model: Link) = repository.update(model)
+    override fun updateItem(model: Link)
+    {
+        categoriesAdapter.editItemWithCategory(model)
+        repository.update(model)
+    }
 
     override fun tagsToString(elements: MutableList<String>) = Link.listOfTagsToString(elements)
 

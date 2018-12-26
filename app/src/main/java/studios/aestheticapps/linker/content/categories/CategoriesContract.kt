@@ -11,6 +11,7 @@ interface CategoriesContract
     interface View : BaseView<Presenter>
     {
         fun createRecyclerView(view: android.view.View)
+        fun createAddCategoryUI(view: android.view.View)
         fun populateViewAdaptersWithContent()
         fun setUpSwipeGesturesTo(recyclerView: RecyclerView)
     }
@@ -20,6 +21,6 @@ interface CategoriesContract
         fun start(application: Application)
         fun getAll(): LinkedList<String>
         fun removeItem(categoryName: String)
-        fun addItem(categoryName: String)
+        fun addItem(categoryName: String): Boolean
     }
 }

@@ -12,6 +12,7 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Category
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.category.CategoryRepository
+import studios.aestheticapps.linker.persistence.link.LinkRepository
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
@@ -39,9 +40,24 @@ class CategoriesAdapter(private val application: Application)
         )
 
     /**
+     * New empty Category insert.
+     */
+    fun insertCategory(categoryName: String): Boolean
+    {
+        // Check if categoryName is unique.
+        val allCategories = obtainAllCategories()
+        if (allCategories.contains(categoryName)) return false
+
+        // New empty Category
+        repository.insert(buildUnused(categoryName))
+
+        return true
+    }
+
+    /**
      * It is assumed that this process is fired on new item's insert.
      */
-    fun insertCategory(domain: String, categoryName: String, id: Int?)
+    fun insertItemWithCategory(domain: String, categoryName: String, id: Int?)
     {
         if (categoryName == UNDEFINED) return
 
@@ -79,9 +95,40 @@ class CategoriesAdapter(private val application: Application)
     }
 
     /**
+     * Edit Category logic when user edits an existing Link.
+     */
+    fun editItemWithCategory(newItem: Link)
+    {
+        // Get old item from Link table and check if the category was changed.
+        val linkRepository = LinkRepository(application)
+        val oldItem = linkRepository.getById(newItem.id)
+
+        if (oldItem.category == newItem.category) return
+
+        // Delete usages of old category from domain.
+        deleteItemWithCategory(oldItem)
+
+        // Insert usages of new category with this domain.
+        insertItemWithCategory(newItem.domain, newItem.category, null)
+    }
+
+    /**
+     * Permanently delete particular Category.
+     */
+    fun deleteCategory(categoryName: String)
+    {
+        // Update all Link entries with this Category to 'Undefined'.
+        val linkRepository = LinkRepository(application)
+        linkRepository.updateDeletedCategoryEntries(categoryName)
+
+        // Delete all category entries in category table.
+        repository.deleteCategory(categoryName)
+    }
+
+    /**
      * It is assumed that this process is fired on item's delete.
      */
-    fun deleteCategory(model: Link)
+    fun deleteItemWithCategory(model: Link)
     {
         if (model.category == UNDEFINED) return
 
@@ -114,8 +161,6 @@ class CategoriesAdapter(private val application: Application)
      */
     fun obtainAllCategories(): List<String> = repository.getAllCategories()
 
-    fun obtainAllCategoriesList() = repository.getAll()
-
     /**
      * Categories are pre-sorted by Repository in order: 1. usages; 2. lastUsed; 3. id;
      */
@@ -131,6 +176,14 @@ class CategoriesAdapter(private val application: Application)
     private fun buildUnused(category: Category) = Category(
         id = category.id,
         name = category.name,
+        ruleDomain = EMPTY_DOMAIN_RULE,
+        lastUsed = DateTimeHelper.getDateTimeNever(),
+        usages = 0
+    )
+
+    private fun buildUnused(categoryName: String) = Category(
+        id = 0,
+        name = categoryName,
         ruleDomain = EMPTY_DOMAIN_RULE,
         lastUsed = DateTimeHelper.getDateTimeNever(),
         usages = 0
@@ -181,13 +234,7 @@ class CategoriesAdapter(private val application: Application)
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         {
             lateinit var categoryName: String
-
             val titleTv: TextView = itemView.findViewById(R.id.categoryTitleTv)
-
-            init
-            {
-                // TODO
-            }
         }
     }
 

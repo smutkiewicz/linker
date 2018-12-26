@@ -34,7 +34,7 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
     override fun removeItem(model: Link)
     {
         repository.delete(model.id)
-        categoriesAdapter.deleteCategory(model)
+        categoriesAdapter.deleteItemWithCategory(model)
     }
 
     override fun setItemFavourite(model: Link)

@@ -21,13 +21,9 @@ class CategoriesPresenter(val view: CategoriesContract.View) : CategoriesContrac
 
     override fun getAll() = LinkedList(categoriesAdapter.obtainAllCategories())
 
-    override fun addItem(categoryName: String)
-    {
-        // TODO add item to db
-    }
+    // Add item to db
+    override fun addItem(categoryName: String) = categoriesAdapter.insertCategory(categoryName)
 
-    override fun removeItem(categoryName: String)
-    {
-        // TODO remove item from db
-    }
+    // Remove item from db
+    override fun removeItem(categoryName: String) = categoriesAdapter.deleteCategory(categoryName)
 }

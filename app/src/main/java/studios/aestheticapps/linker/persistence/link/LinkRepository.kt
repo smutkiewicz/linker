@@ -28,6 +28,16 @@ class LinkRepository internal constructor(application: Application)
         }
     }
 
+    fun getById(id: Int): Link
+    {
+        return DatabaseAsyncTask(
+            object : DatabaseTask<Link>
+            {
+                override fun performOperation() = linkDao.getById(id)
+            }
+        ).execute().get()
+    }
+
     fun search(phrase: String, orderBy: String = TITLE_COLUMN): LinkedList<Link>
     {
         return DatabaseAsyncTask(
@@ -46,6 +56,16 @@ class LinkRepository internal constructor(application: Application)
             object : DatabaseTask<Unit>
             {
                 override fun performOperation() = linkDao.update(link)
+            }
+        ).execute()
+    }
+
+    fun updateDeletedCategoryEntries(categoryName: String)
+    {
+        DatabaseAsyncTask(
+            object : DatabaseTask<Unit>
+            {
+                override fun performOperation() = linkDao.updateDeletedCategoryEntries(categoryName)
             }
         ).execute()
     }

@@ -14,7 +14,7 @@
     <string name="library_confirm_exit">Remove item</string>
     <string name="library_message_confirm_exit">Are you sure you want to remove this item?</string>
     <string name="library_delete">Delete</string>
-    <string name="library_dont_delete">Save</string>
+    <string name="library_dont_delete">No, save this link</string>
 
     <!-- Home content -->
     <string name="recent">Quick Share</string>
@@ -66,7 +66,6 @@
     <string name="signing_in">Signing in…</string>
     <string name="copyright">&#169; Aesthetic Apps Studios 2018–19</string>
     <string name="sign_in_to_linker_with_google">Sign In to Linker with Google.</string>
-    <string name="title_activity_main2">Main2Activity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -78,10 +77,11 @@
     <string name="so_empty_here">There\'s so empty here :(</string>
     <string name="action_search">Search</string>
     <string name="sort_by_column">Sort by: %s</string>
-    <string name="add_category">Add Category...</string>
+    <string name="add_category">Add Category…</string>
     <string name="categories_title">Categories</string>
     <string name="category">Category</string>
-    <string name="swipe_to_remove_category">Swipe to remove Category...</string>
+    <string name="swipe_to_remove_category">Swipe to remove Category…</string>
+    <string name="categories_nonunique_name_error">Category already exists!</string>
 
     <!-- New stuff, for refactor -->
 </resources>

@@ -59,5 +59,7 @@ object IntentActionHelper
         context.startActivity(intent)
     }
 
-    fun startCategoriesDialogAction(manager: FragmentManager) = CategoriesDialogFragment().show(manager, "Categories")
+    fun startCategoriesDialogAction(manager: FragmentManager,
+                                    callback: CategoriesDialogFragment.CategoriesChangedCallback)
+        = CategoriesDialogFragment.newInstance(callback).show(manager, "Categories")
 }
