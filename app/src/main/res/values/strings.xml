@@ -54,8 +54,8 @@
     <string name="url_error">You need to enter a valid URL.</string>
     <string name="edit_confirm_exit">Confirm exit</string>
     <string name="edit_message_confirm_exit">Are you sure you want to abort your changes?</string>
-    <string name="edit_save">Save</string>
-    <string name="edit_abort">Abort</string>
+    <string name="edit_save">Return and edit</string>
+    <string name="edit_discard">Discard changes</string>
     <string name="add_edit_blank_tag_error">You can\'t add blank tag!</string>
     <string name="no_description">No description</string>
     <string name="title_activity_edit">EditActivity</string>

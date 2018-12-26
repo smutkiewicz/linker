@@ -157,36 +157,30 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     private fun showEmptyViewIfNeeded()
     {
         if (recentLinkAdapter.itemCount == 0)
-        {
-            recentRecyclerView.visibility = View.INVISIBLE
-            emptyShareTv.visibility = View.VISIBLE
-        }
+            setEmptyState(recentRecyclerView, emptyShareTv)
         else
-        {
-            recentRecyclerView.visibility = View.VISIBLE
-            emptyShareTv.visibility = View.GONE
-        }
+            setActiveState(recentRecyclerView, emptyShareTv)
 
         if (favLinkAdapter.itemCount == 0)
-        {
-            favRecyclerView.visibility = View.INVISIBLE
-            emptyFavsTv.visibility = View.VISIBLE
-        }
+            setEmptyState(favRecyclerView, emptyFavsTv)
         else
-        {
-            favRecyclerView.visibility = View.VISIBLE
-            emptyFavsTv.visibility = View.GONE
-        }
+            setActiveState(favRecyclerView, emptyFavsTv)
 
         if (tagCloudAdapter.itemCount == 0)
-        {
-            tagsCloudRecyclerView.visibility = View.INVISIBLE
-            emptyCloudTv.visibility = View.VISIBLE
-        }
+            setEmptyState(tagsCloudRecyclerView, emptyCloudTv)
         else
-        {
-            tagsCloudRecyclerView.visibility = View.VISIBLE
-            emptyCloudTv.visibility = View.GONE
-        }
+            setActiveState(tagsCloudRecyclerView, emptyCloudTv)
+    }
+
+    private fun setEmptyState(container: View, emptyStateView: View)
+    {
+        container.visibility = View.INVISIBLE
+        emptyStateView.visibility = View.VISIBLE
+    }
+
+    private fun setActiveState(container: View, emptyStateView: View)
+    {
+        container.visibility = View.VISIBLE
+        emptyStateView.visibility = View.GONE
     }
 }

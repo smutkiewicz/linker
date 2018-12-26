@@ -269,6 +269,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     override fun activateLoadingView()
     {
         addEditProgressBar?.visibility = VISIBLE
+        saveLinkFab.hide()
         disableChildrenOf(addEditLayout)
     }
 
@@ -276,6 +277,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     {
         addEditProgressBar?.visibility = GONE
         enableChildrenOf(addEditLayout)
+        saveLinkFab.show()
     }
 
     override fun cleanView()
@@ -354,10 +356,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun onNothingSelected(parentView: AdapterView<*>) {}
 
-    override fun onDeleteTag(tag: String)
-    {
-        model!!.removeTag(tag)
-    }
+    override fun onDeleteTag(tag: String) = model!!.removeTag(tag)
 
     override fun startCategoriesDialogAction() = IntentActionHelper.startCategoriesDialogAction(fragmentManager!!, this)
 

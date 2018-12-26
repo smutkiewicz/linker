@@ -125,7 +125,7 @@ class EditActivity : AppCompatActivity(), AddEditFragment.AddEditCallback, Updat
                 setIcon(R.mipmap.ic_launcher)
                 setMessage(R.string.edit_message_confirm_exit)
                 setNegativeButton(R.string.edit_save) { _, _ ->  }
-                setPositiveButton(R.string.edit_abort) { _, _ -> returnToMainView() }
+                setPositiveButton(R.string.edit_discard) { _, _ -> returnToMainView() }
             }
 
         builder.apply {
