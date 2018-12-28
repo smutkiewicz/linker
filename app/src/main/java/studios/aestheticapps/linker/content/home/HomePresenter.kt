@@ -67,6 +67,10 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnMyA
         repository.update(link)
     }
 
+    override fun attachDataObserver(o: Observer) = repository.addObserver(o)
+
+    override fun detachDataObserver(o: Observer) = repository.deleteObserver(o)
+
     override fun onItemClicked(model: Link)
     {
         setItemRecent(model)
@@ -87,6 +91,6 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnMyA
 
     private companion object
     {
-        const val MAX_TAGS = 6
+        const val MAX_TAGS = 10
     }
 }

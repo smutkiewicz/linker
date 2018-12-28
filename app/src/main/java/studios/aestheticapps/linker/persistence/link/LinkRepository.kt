@@ -2,12 +2,13 @@ package studios.aestheticapps.linker.persistence.link
 
 import android.app.Application
 import android.arch.persistence.db.SimpleSQLiteQuery
+import android.util.Log
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.DatabaseAsyncTask
 import studios.aestheticapps.linker.persistence.DatabaseTask
 import java.util.*
 
-class LinkRepository internal constructor(application: Application)
+class LinkRepository internal constructor(application: Application): Observable()
 {
     private val db: LinkRoomDatabase = LinkRoomDatabase.getInstance(application)!!
     private val linkDao: LinkDao
@@ -15,6 +16,28 @@ class LinkRepository internal constructor(application: Application)
     init
     {
         linkDao = db.linkDao()
+    }
+
+    override fun notifyObservers()
+    {
+        super.notifyObservers()
+        db.observers.forEach {
+            it.update(this, "update")
+        }
+
+        Log.d(TAG, "Notified!")
+    }
+
+    override fun addObserver(o: Observer?)
+    {
+        super.addObserver(o)
+        db.observers.add(o!!)
+    }
+
+    override fun deleteObserver(o: Observer?)
+    {
+        super.deleteObserver(o)
+        db.observers.remove(o)
     }
 
     fun getListOf(category: Int): LinkedList<Link>
@@ -58,6 +81,8 @@ class LinkRepository internal constructor(application: Application)
                 override fun performOperation() = linkDao.update(link)
             }
         ).execute()
+
+        notifyObservers()
     }
 
     fun updateDeletedCategoryEntries(categoryName: String)
@@ -68,6 +93,8 @@ class LinkRepository internal constructor(application: Application)
                 override fun performOperation() = linkDao.updateDeletedCategoryEntries(categoryName)
             }
         ).execute()
+
+        notifyObservers()
     }
 
     fun insert(link: Link)
@@ -78,6 +105,8 @@ class LinkRepository internal constructor(application: Application)
                 override fun performOperation() = linkDao.insert(link)
             }
         ).execute()
+
+        notifyObservers()
     }
 
     fun delete(id: Int)
@@ -88,6 +117,8 @@ class LinkRepository internal constructor(application: Application)
                 override fun performOperation() = linkDao.delete(id)
             }
         ).execute()
+
+        notifyObservers()
     }
 
     private fun getAll(): LinkedList<Link>
@@ -134,6 +165,7 @@ class LinkRepository internal constructor(application: Application)
 
     companion object
     {
+        private const val TAG = "LINK_REPO"
         private const val EMPTY = ""
 
         const val TITLE_COLUMN = "title"

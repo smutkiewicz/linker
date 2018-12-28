@@ -27,8 +27,9 @@ import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.utils.ClipboardHelper
+import java.util.*
 
-class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListener
+class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListener, Observer
 {
     override var presenter: HomeContract.Presenter = HomePresenter(this)
 
@@ -46,6 +47,7 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     {
         super.onStart()
         presenter.start(activity!!.application)
+        presenter.attachDataObserver(this)
 
         setUpRecentRecyclerView()
         setUpFavoritesRecyclerView()
@@ -56,6 +58,7 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     override fun onDestroy()
     {
         super.onDestroy()
+        presenter.detachDataObserver(this)
         presenter.stop()
     }
 
@@ -144,6 +147,13 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
 
     override fun startCopyAction(content: String) = ClipboardHelper(context!!).copyToCliboard(content)
 
+    override fun update(p0: Observable?, p1: Any?)
+    {
+        updateFavLinkAdapter()
+        updateRecentLinkAdapter()
+        updateTagCloudAdapter()
+    }
+
     override fun updateRecentLinkAdapter()
     {
         recentLinkAdapter.elements = presenter.getRecentItems()
@@ -152,6 +162,11 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     override fun updateFavLinkAdapter()
     {
         favLinkAdapter.elements = presenter.getFavoriteItems()
+    }
+
+    override fun updateTagCloudAdapter()
+    {
+        tagCloudAdapter.elements = presenter.getTagsCloudItems()
     }
 
     private fun showEmptyViewIfNeeded()

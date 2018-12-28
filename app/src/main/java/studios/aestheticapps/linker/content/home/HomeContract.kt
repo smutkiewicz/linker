@@ -26,6 +26,7 @@ interface HomeContract
 
         fun updateRecentLinkAdapter()
         fun updateFavLinkAdapter()
+        fun updateTagCloudAdapter()
     }
 
     interface Presenter : BasePresenter
@@ -37,5 +38,8 @@ interface HomeContract
         fun getTagsCloudItems(): LinkedList<String>
         fun setItemFavourite(link: Link)
         fun setItemRecent(link: Link)
+
+        fun attachDataObserver(o: Observer)
+        fun detachDataObserver(o: Observer)
     }
 }

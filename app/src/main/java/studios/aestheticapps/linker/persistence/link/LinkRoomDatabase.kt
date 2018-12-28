@@ -7,11 +7,13 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.migration.Migration
 import android.content.Context
 import studios.aestheticapps.linker.model.Link
+import java.util.*
 
-@Database(entities = [Link::class], version = 1)
+@Database(entities = [Link::class], version = 1, exportSchema = false)
 abstract class LinkRoomDatabase : RoomDatabase()
 {
     abstract fun linkDao(): LinkDao
+    val observers: LinkedList<Observer> = LinkedList()
 
     companion object
     {
