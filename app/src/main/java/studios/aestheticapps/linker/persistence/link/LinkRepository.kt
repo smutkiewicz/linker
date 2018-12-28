@@ -6,6 +6,7 @@ import android.util.Log
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.DatabaseAsyncTask
 import studios.aestheticapps.linker.persistence.DatabaseTask
+import studios.aestheticapps.linker.persistence.LinkRoomDatabase
 import java.util.*
 
 class LinkRepository internal constructor(application: Application): Observable()
