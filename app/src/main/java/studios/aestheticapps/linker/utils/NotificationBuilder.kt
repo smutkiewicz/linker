@@ -1,5 +1,6 @@
 package studios.aestheticapps.linker.utils
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
@@ -16,7 +17,7 @@ class NotificationBuilder(private val titleResId: Int,
                           private val notificationChannelPriority: Int = 0,
                           private val notificationColor: Int = Color.GREEN)
 {
-    fun buildNotificationAndNotify(context: Context)
+    fun buildNotification(context: Context): Notification?
     {
         val nm = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
         val title = context.getString(titleResId)
@@ -42,8 +43,7 @@ class NotificationBuilder(private val titleResId: Int,
             builder.setChannelId(serviceChannelId)
         }
 
-        val notification = builder.build()
-        nm.notify(titleResId, notification)
+        return builder.build()
     }
 
     companion object

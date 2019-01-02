@@ -5,12 +5,15 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import io.mattcarroll.hover.Content
 import kotlinx.android.synthetic.main.content_library.view.*
@@ -18,19 +21,24 @@ import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
 import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
+import studios.aestheticapps.linker.adapters.SortByAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.library.LibraryContract
 import studios.aestheticapps.linker.content.library.LibraryPresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.persistence.link.LinkRepository
+import studios.aestheticapps.linker.utils.PrefsHelper
 
 class LibraryBubbleContent(context: Context,
                            application: Application,
-                           private val callback: BubbleContentCallback) : FrameLayout(context), Content, LibraryContract.View
+                           private val bubbleContentCallback: BubbleContentCallback) : FrameLayout(context),
+    Content, LibraryContract.View, AdapterView.OnItemSelectedListener
 {
     override var presenter: LibraryContract.Presenter = LibraryPresenter(this)
 
     private lateinit var linkAdapter: LinkAdapter
+    private lateinit var orderByColumn: String
 
     init
     {
@@ -38,8 +46,11 @@ class LibraryBubbleContent(context: Context,
 
         presenter.start(application)
 
+        setUpOrderBySection()
         setUpSearchBox()
         setUpLinksRecyclerView()
+        setUpSortBySpinner()
+        populateViewAdaptersWithContent()
     }
 
     override fun getView() = this
@@ -59,10 +70,16 @@ class LibraryBubbleContent(context: Context,
         BubbleMenuService.destroyFloatingMenu(context!!)
     }
 
+    override fun populateViewAdaptersWithContent()
+    {
+        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString(), orderByColumn)
+    }
+
+    override fun obtainQueryFromArguments() {}
+
     override fun setUpLinksRecyclerView()
     {
         linkAdapter = LinkAdapter(presenter as OnMyAdapterItemClickListener)
-        linkAdapter.elements = presenter.searchForItem(searchBox.query.toString())
 
         linksRecyclerView.apply {
             adapter = linkAdapter
@@ -73,6 +90,24 @@ class LibraryBubbleContent(context: Context,
         setUpSwipeGestures()
     }
 
+    override fun setUpSortBySpinner()
+    {
+        val adapter = ArrayAdapter.createFromResource(
+            context,
+            R.array.sort_by_array,
+            android.R.layout.simple_spinner_item
+        )
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sortBySpinner.apply {
+            this.adapter = adapter
+            sortBySpinner.isSelected = false
+            sortBySpinner.setSelection(SortByAdapter.columnNameToArrayIndex(orderByColumn), true)
+        }
+
+        sortBySpinner.onItemSelectedListener = this
+    }
+
     override fun setUpSwipeGestures()
     {
         val helper = ItemTouchHelper(
@@ -81,14 +116,10 @@ class LibraryBubbleContent(context: Context,
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
                 {
                     val holder = viewHolder as LinkAdapter.ViewHolder
-
-                    presenter.removeItem(holder.model)
-                    linkAdapter.removeItem(viewHolder.adapterPosition)
+                    buildExitDialogAndConfirmDelete(holder.model, viewHolder.adapterPosition)
                 }
 
-                override fun onMove(rv: RecyclerView?,
-                                    h: RecyclerView.ViewHolder?,
-                                    t: RecyclerView.ViewHolder?): Boolean { return false }
+                override fun onMove(rv: RecyclerView?, h: RecyclerView.ViewHolder?, t: RecyclerView.ViewHolder?) = false
             })
 
         helper.attachToRecyclerView(linksRecyclerView)
@@ -97,10 +128,10 @@ class LibraryBubbleContent(context: Context,
     override fun setUpSearchBox()
     {
         searchBox.apply {
-            isActivated = true
+            isActivated = false
             isIconified = false
 
-            onActionViewExpanded()
+            obtainQueryFromArguments()
             clearFocus()
 
             setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener
@@ -109,11 +140,19 @@ class LibraryBubbleContent(context: Context,
 
                 override fun onQueryTextChange(newText: String): Boolean
                 {
-                    linkAdapter.elements = presenter.searchForItem(newText)
+                    linkAdapter.elements = presenter.searchForItem(newText, orderByColumn)
                     return false
                 }
             })
         }
+    }
+
+    override fun setUpOrderBySection()
+    {
+        orderByColumn = PrefsHelper.obtainOrderByColumn(context!!)
+
+        val columnNameForView = SortByAdapter.columnNameToColumnNameForView(context!!, orderByColumn)
+        sortByTv.text = context.getString(R.string.sort_by_column, columnNameForView)
     }
 
     override fun hideKeyboardFrom(view: View)
@@ -122,26 +161,80 @@ class LibraryBubbleContent(context: Context,
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    override fun populateViewAdaptersWithContent()
+    override fun startInternetAction(model: Link)
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        bubbleContentCallback.collapseBubble()
+        IntentActionHelper.startInternetAction(context!!, model)
     }
 
-    override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
-
-    override fun startDetailsAction(link: Link) {}
-
-    override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
-
-    override fun obtainQueryFromArguments() {}
-
-    override fun setUpSortBySpinner()
+    override fun startDetailsAction(model: Link)
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // TODO Details
+        //IntentActionHelper.startDetailsAction(fragmentManager!!, model)
     }
 
-    override fun setUpOrderBySection()
+    override fun startShareView(model: Link)
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        bubbleContentCallback.collapseBubble()
+        IntentActionHelper.startShareView(context!!, model)
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long)
+    {
+        val newOrderByColumn = when(pos)
+        {
+            0 -> LinkRepository.TITLE_COLUMN
+            1 -> LinkRepository.CATEGORY_COLUMN
+            2 -> LinkRepository.DOMAIN_COLUMN
+            3 -> LinkRepository.CREATED_LATEST_COLUMN
+            4 -> LinkRepository.CREATED_COLUMN
+            else -> LinkRepository.TITLE_COLUMN
+        }
+
+        val columnNameForView = SortByAdapter.arrayIndexToColumnNameForView(context!!, pos)
+        updateOrderByPref(newOrderByColumn, columnNameForView)
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>) {}
+
+    private fun buildExitDialogAndConfirmDelete(model: Link, adapterPosition: Int)
+    {
+        val builder = AlertDialog
+            .Builder(context!!)
+            .apply {
+                setTitle(R.string.title_confirm_delete)
+                setIcon(R.mipmap.ic_launcher)
+                setMessage(R.string.message_confirm_delete)
+                setNegativeButton(R.string.dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
+                setPositiveButton(R.string.please_delete) { _, _ -> deleteItemPermanently(model, adapterPosition) }
+                setOnCancelListener { linkAdapter.notifyDataSetChanged() }
+            }
+
+        builder.apply {
+            create()
+            show()
+        }
+    }
+
+    private fun deleteItemPermanently(model: Link, adapterPosition: Int)
+    {
+        presenter.removeItem(model)
+        linkAdapter.removeItem(adapterPosition)
+    }
+
+    private fun updateOrderByPref(column: String, columnNameForView: String)
+    {
+        orderByColumn = column
+        PrefsHelper.setOrderByColumn(context!!, column)
+
+        sortByTv.text = context.getString(R.string.sort_by_column, columnNameForView)
+
+        // reload content
+        populateViewAdaptersWithContent()
+    }
+
+    companion object
+    {
+        const val TAG_PHRASE = "tag_phrase"
     }
 }

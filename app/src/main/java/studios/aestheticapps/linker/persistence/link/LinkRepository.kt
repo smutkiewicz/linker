@@ -2,7 +2,6 @@ package studios.aestheticapps.linker.persistence.link
 
 import android.app.Application
 import android.arch.persistence.db.SimpleSQLiteQuery
-import android.util.Log
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.DatabaseAsyncTask
 import studios.aestheticapps.linker.persistence.DatabaseTask
@@ -19,14 +18,20 @@ class LinkRepository internal constructor(application: Application): Observable(
         linkDao = db.linkDao()
     }
 
+    override fun notifyObservers(mode: Any?)
+    {
+        super.notifyObservers(mode)
+        db.observers.forEach {
+            it.update(this, mode)
+        }
+    }
+
     override fun notifyObservers()
     {
         super.notifyObservers()
         db.observers.forEach {
-            it.update(this, "update")
+            it.update(this, LINK_UPDATE)
         }
-
-        Log.d(TAG, "Notified!")
     }
 
     override fun addObserver(o: Observer?)
@@ -74,7 +79,7 @@ class LinkRepository internal constructor(application: Application): Observable(
         ).execute().get()
     }
 
-    fun update(link: Link)
+    fun update(link: Link, mode: String = LINK_UPDATE)
     {
         DatabaseAsyncTask(
             object : DatabaseTask<Unit>
@@ -83,7 +88,7 @@ class LinkRepository internal constructor(application: Application): Observable(
             }
         ).execute()
 
-        notifyObservers()
+        notifyObservers(mode)
     }
 
     fun updateDeletedCategoryEntries(categoryName: String)
@@ -168,6 +173,10 @@ class LinkRepository internal constructor(application: Application): Observable(
     {
         private const val TAG = "LINK_REPO"
         private const val EMPTY = ""
+
+        const val LINK_UPDATE = "link_update"
+        const val RECENT_UPDATE = "recent_update"
+        const val FAV_UPDATE = "fav_update"
 
         const val TITLE_COLUMN = "title"
         const val CATEGORY_COLUMN = "category"

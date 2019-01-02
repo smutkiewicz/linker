@@ -150,6 +150,20 @@
                     android:layout_marginStart="8dp"
                     android:gravity="center" android:textSize="18sp"/>
 
+            <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_exit_to_app_black"
+                    android:id="@+id/exitToAppBtn"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/transparent"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/recentRecyclerView" android:visibility="gone"/>
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>

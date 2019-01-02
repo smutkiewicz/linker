@@ -1,5 +1,6 @@
 package studios.aestheticapps.linker.floatingmenu
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -15,6 +16,8 @@ import io.mattcarroll.hover.window.HoverMenuService
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.floatingmenu.content.BubbleContentCallback
 import studios.aestheticapps.linker.utils.NotificationBuilder
+import studios.aestheticapps.linker.utils.PrefsHelper
+import studios.aestheticapps.linker.utils.PrefsHelper.VIEW_BUBBLE
 import java.io.IOException
 
 class BubbleMenuService : HoverMenuService(), BubbleContentCallback
@@ -26,6 +29,20 @@ class BubbleMenuService : HoverMenuService(), BubbleContentCallback
         super.onCreate()
         initReceiver()
         createNotification(R.string.service_is_active)
+        PrefsHelper.setLatestView(this, VIEW_BUBBLE)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            startForeground(
+                FOREGROUND_ID,
+                createNotification(R.string.service_is_active)
+            )
+        }
+
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy()
@@ -78,7 +95,7 @@ class BubbleMenuService : HoverMenuService(), BubbleContentCallback
         startService(Intent(this, BubbleMenuService::class.java))
     }
 
-    private fun createNotification(titleResId: Int)
+    private fun createNotification(titleResId: Int): Notification?
     {
         val notificationChannelPriority = when
         {
@@ -96,7 +113,7 @@ class BubbleMenuService : HoverMenuService(), BubbleContentCallback
             notificationColor = Color.GREEN
         )
 
-        builder.buildNotificationAndNotify(this)
+        return builder.buildNotification(this)
     }
 
     private var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver()
@@ -110,6 +127,7 @@ class BubbleMenuService : HoverMenuService(), BubbleContentCallback
     companion object
     {
         private const val TAG = "BubbleMenuService"
+        private const val FOREGROUND_ID = 2601
         private const val SERVICE_CHANNEL_ID = "linker_channel_id"
         private const val BCAST_CONFIG_CHANGED = "android.intent.action.CONFIGURATION_CHANGED"
 

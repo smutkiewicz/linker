@@ -21,8 +21,6 @@ class CategoryRepository internal constructor(application: Application)
 
     fun getAllCategories(): LinkedList<String>
     {
-        printAll()
-
         return DatabaseAsyncTask(
             object : DatabaseTask<LinkedList<String>>
             {

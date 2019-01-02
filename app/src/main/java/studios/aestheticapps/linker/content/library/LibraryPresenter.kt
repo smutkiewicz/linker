@@ -1,11 +1,13 @@
 package studios.aestheticapps.linker.content.library
 
 import android.app.Application
+import studios.aestheticapps.linker.adapters.CategoriesAdapter
 import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.link.LinkRepository
 import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.ALL
-import studios.aestheticapps.linker.adapters.CategoriesAdapter
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.FAV_UPDATE
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.RECENT_UPDATE
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
@@ -40,13 +42,13 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
     override fun setItemFavourite(model: Link)
     {
         model.isFavorite = !model.isFavorite
-        repository.update(model)
+        repository.update(model, FAV_UPDATE)
     }
 
     override fun setItemRecent(model: Link)
     {
         model.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
-        repository.update(model)
+        repository.update(model, RECENT_UPDATE)
     }
 
     override fun onItemClicked(model: Link)

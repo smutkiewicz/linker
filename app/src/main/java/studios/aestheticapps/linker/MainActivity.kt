@@ -43,6 +43,8 @@ import studios.aestheticapps.linker.floatingmenu.theme.BubbleThemeManager
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.INTENT_LINK
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
+import studios.aestheticapps.linker.utils.PrefsHelper
+import studios.aestheticapps.linker.utils.PrefsHelper.VIEW_APP
 
 class MainActivity : AppCompatActivity(),
     MainContract.View,
@@ -66,6 +68,7 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        PrefsHelper.setLatestView(this, VIEW_APP)
 
         setUpBottomNavigation()
         setUpViewPager()

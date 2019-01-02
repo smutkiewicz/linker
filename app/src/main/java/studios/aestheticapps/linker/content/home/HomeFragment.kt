@@ -23,9 +23,11 @@ import studios.aestheticapps.linker.adapters.RecentLinkAdapter
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.SearchCallback
-import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.FAV_UPDATE
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.LINK_UPDATE
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.RECENT_UPDATE
 import studios.aestheticapps.linker.utils.ClipboardHelper
 import java.util.*
 
@@ -34,7 +36,6 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     override var presenter: HomeContract.Presenter = HomePresenter(this)
 
     private lateinit var callback: SearchCallback
-    private lateinit var updateViewCallback: UpdateViewCallback
 
     private lateinit var recentLinkAdapter: RecentLinkAdapter
     private lateinit var favLinkAdapter: FavoritesAdapter
@@ -66,7 +67,6 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     {
         super.onAttach(context)
         callback = context as SearchCallback
-        updateViewCallback = context as UpdateViewCallback
     }
 
     override fun populateViewAdaptersWithContent()
@@ -147,11 +147,21 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
 
     override fun startCopyAction(content: String) = ClipboardHelper(context!!).copyToCliboard(content)
 
-    override fun update(p0: Observable?, p1: Any?)
+    override fun update(p0: Observable?, mode: Any?)
     {
-        updateFavLinkAdapter()
-        updateRecentLinkAdapter()
-        updateTagCloudAdapter()
+        when (mode)
+        {
+            LINK_UPDATE ->
+            {
+                updateFavLinkAdapter()
+                updateRecentLinkAdapter()
+                updateTagCloudAdapter()
+            }
+
+            RECENT_UPDATE -> updateRecentLinkAdapter()
+
+            FAV_UPDATE -> updateFavLinkAdapter()
+        }
     }
 
     override fun updateRecentLinkAdapter()

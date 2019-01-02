@@ -1,8 +1,5 @@
 package studios.aestheticapps.linker.model
 
-import org.apache.commons.validator.routines.UrlValidator
-import org.apache.commons.validator.routines.UrlValidator.ALLOW_ALL_SCHEMES
-
 /**
  * Provides vaild urls for model.
  */
@@ -31,13 +28,11 @@ class LinkValidator(private var url: String)
 
     private fun isValid(): Boolean
     {
-        if (url == EMPTY_URL)
+        if ((url == EMPTY_URL) or containsSpaces(url))
             return false
 
-        val urlValidator = UrlValidator(ALLOW_ALL_SCHEMES)
-        return urlValidator.isValid(url)
+        return beginsWithValidProtocol(url) or containsCharacteristicChars(url)
     }
-
 
     private fun repair(url: String): String
     {
@@ -64,6 +59,8 @@ class LinkValidator(private var url: String)
     private fun beginsWithValidProtocol(url: String) = url.startsWith("http://") or url.startsWith("https://")
 
     private fun containsCharacteristicChars(url: String) = (url.indexOf(".") >= 0) or (url.indexOf(":") >= 0)
+
+    private fun containsSpaces(url: String) = url.contains(" ")
 
     companion object
     {
