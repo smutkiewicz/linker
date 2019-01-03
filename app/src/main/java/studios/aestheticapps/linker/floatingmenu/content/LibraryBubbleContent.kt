@@ -5,7 +5,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -25,15 +24,19 @@ import studios.aestheticapps.linker.adapters.SortByAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.library.LibraryContract
 import studios.aestheticapps.linker.content.library.LibraryPresenter
+import studios.aestheticapps.linker.extensions.disableChildren
+import studios.aestheticapps.linker.extensions.enableChildren
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
+import studios.aestheticapps.linker.floatingmenu.ui.BubbleDialog
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.link.LinkRepository
 import studios.aestheticapps.linker.utils.PrefsHelper
+import java.util.*
 
 class LibraryBubbleContent(context: Context,
                            application: Application,
                            private val bubbleContentCallback: BubbleContentCallback) : FrameLayout(context),
-    Content, LibraryContract.View, AdapterView.OnItemSelectedListener
+    Content, LibraryContract.View, AdapterView.OnItemSelectedListener, BubbleDialog.BubbleDialogCallback, Observer
 {
     override var presenter: LibraryContract.Presenter = LibraryPresenter(this)
 
@@ -45,6 +48,7 @@ class LibraryBubbleContent(context: Context,
         LayoutInflater.from(context).inflate(R.layout.content_library, this, true)
 
         presenter.start(application)
+        presenter.attachDataObserver(this)
 
         setUpOrderBySection()
         setUpSearchBox()
@@ -197,23 +201,44 @@ class LibraryBubbleContent(context: Context,
 
     override fun onNothingSelected(parent: AdapterView<*>) {}
 
+    override fun onPositiveBtnPressed()
+    {
+
+    }
+
+    override fun onNegativeBtnPressed()
+    {
+
+    }
+
+    override fun update(p0: Observable?, p1: Any?)
+    {
+        populateViewAdaptersWithContent()
+    }
+
     private fun buildExitDialogAndConfirmDelete(model: Link, adapterPosition: Int)
     {
-        val builder = AlertDialog
-            .Builder(context!!)
-            .apply {
-                setTitle(R.string.title_confirm_delete)
-                setIcon(R.mipmap.ic_launcher)
-                setMessage(R.string.message_confirm_delete)
-                setNegativeButton(R.string.dont_delete) { _, _ -> linkAdapter.notifyDataSetChanged() }
-                setPositiveButton(R.string.please_delete) { _, _ -> deleteItemPermanently(model, adapterPosition) }
-                setOnCancelListener { linkAdapter.notifyDataSetChanged() }
-            }
+        libraryLayout.disableChildren()
+        BubbleDialog.draw(context,
+            title = context.getString(R.string.title_confirm_delete),
+            message = context.getString(R.string.message_confirm_delete),
+            negativeBtnTitle = context.getString(R.string.dont_delete),
+            positiveBtnTitle = context.getString(R.string.please_delete),
+            callback = (object : BubbleDialog.BubbleDialogCallback
+            {
+                override fun onPositiveBtnPressed()
+                {
+                    libraryLayout.enableChildren()
+                    deleteItemPermanently(model, adapterPosition)
+                }
 
-        builder.apply {
-            create()
-            show()
-        }
+                override fun onNegativeBtnPressed()
+                {
+                    libraryLayout.enableChildren()
+                    linkAdapter.notifyDataSetChanged()
+                }
+            })
+        )
     }
 
     private fun deleteItemPermanently(model: Link, adapterPosition: Int)

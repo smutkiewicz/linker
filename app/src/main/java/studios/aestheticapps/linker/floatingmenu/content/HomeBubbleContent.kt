@@ -73,8 +73,6 @@ class HomeBubbleContent(context: Context,
         BubbleMenuService.destroyFloatingMenu(context)
     }
 
-    //////////////////////
-
     /*override fun onAttach(context: Context?)
     {
         super.onAttach(context)

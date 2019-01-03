@@ -64,6 +64,8 @@ class BubbleMenuService : HoverMenuService(), BubbleContentCallback
 
     override fun collapseBubble() = hoverView.collapse()
 
+    override fun notifyContentChanged() = bubbleMenu.notifyMenuChanged()
+
     private fun createHoverMenu(): HoverMenu?
     {
         try
@@ -132,7 +134,14 @@ class BubbleMenuService : HoverMenuService(), BubbleContentCallback
         private const val BCAST_CONFIG_CHANGED = "android.intent.action.CONFIGURATION_CHANGED"
 
         fun showFloatingMenu(context: Context)
-            = context.startService(Intent(context, BubbleMenuService::class.java))
+        {
+            val intent = Intent(context, BubbleMenuService::class.java)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                context.startForegroundService(intent)
+            else
+                context.startService(intent)
+        }
 
         fun destroyFloatingMenu(context: Context)
             = context.stopService(Intent(context, BubbleMenuService::class.java))

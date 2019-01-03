@@ -51,6 +51,10 @@ class LibraryPresenter(val view: LibraryContract.View) : LibraryContract.Present
         repository.update(model, RECENT_UPDATE)
     }
 
+    override fun attachDataObserver(o: Observer) = repository.addObserver(o)
+
+    override fun detachDataObserver(o: Observer) = repository.deleteObserver(o)
+
     override fun onItemClicked(model: Link)
     {
         setItemRecent(model)

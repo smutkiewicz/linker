@@ -435,7 +435,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     companion object
     {
-        private const val MODE = "mode"
+        const val MODE = "mode"
         const val MODE_ADD = 0
         const val MODE_EDIT = 1
 
