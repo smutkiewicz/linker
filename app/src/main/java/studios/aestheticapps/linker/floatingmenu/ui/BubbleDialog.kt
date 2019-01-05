@@ -59,14 +59,15 @@ class BubbleDialog(myContext: Context,
         }
 
         val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
             layoutType,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT
         )
 
         params.gravity = Gravity.CENTER
+        frameLayout?.fitsSystemWindows = true
 
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager!!.addView(frameLayout, params)

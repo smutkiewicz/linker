@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import studios.aestheticapps.linker.R
 import java.util.*
@@ -28,8 +29,14 @@ class TagAdapter(private val isMenuEnabled: Boolean = false)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
     {
+        val layoutId = when
+        {
+            isMenuEnabled -> R.layout.tag_deletable_item
+            else -> R.layout.tag_item
+        }
+
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.tag_item,
+            layoutId,
             parent,
             false
         )
@@ -41,6 +48,7 @@ class TagAdapter(private val isMenuEnabled: Boolean = false)
     {
         val tag = elements[position]
         holder.apply {
+            this.tag = tag
             titleTextView.text = "#$tag"
         }
 
@@ -89,6 +97,17 @@ class TagAdapter(private val isMenuEnabled: Boolean = false)
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
         val titleTextView: TextView = itemView.findViewById<TextView>(R.id.tagTitle)
+        var tag: String = ""
+        var deleteTagBtn: ImageButton? = null
+
+        init
+        {
+            if (isMenuEnabled)
+            {
+                deleteTagBtn = itemView.findViewById<ImageButton>(R.id.deleteTagBtn)
+                deleteTagBtn?.setOnClickListener { removeItem(tag, position) }
+            }
+        }
     }
 
     interface OnTagClickedListener

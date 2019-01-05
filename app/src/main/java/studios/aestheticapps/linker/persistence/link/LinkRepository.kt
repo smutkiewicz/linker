@@ -124,7 +124,7 @@ class LinkRepository internal constructor(application: Application): Observable(
             }
         ).execute()
 
-        notifyObservers()
+        notifyObservers(LINK_DELETE)
     }
 
     private fun getAll(): LinkedList<Link>
@@ -177,6 +177,7 @@ class LinkRepository internal constructor(application: Application): Observable(
         const val LINK_UPDATE = "link_update"
         const val RECENT_UPDATE = "recent_update"
         const val FAV_UPDATE = "fav_update"
+        const val LINK_DELETE = "link_delete"
 
         const val TITLE_COLUMN = "title"
         const val CATEGORY_COLUMN = "category"

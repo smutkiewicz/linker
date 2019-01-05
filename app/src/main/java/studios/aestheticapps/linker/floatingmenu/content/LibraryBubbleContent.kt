@@ -24,19 +24,18 @@ import studios.aestheticapps.linker.adapters.SortByAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.library.LibraryContract
 import studios.aestheticapps.linker.content.library.LibraryPresenter
-import studios.aestheticapps.linker.extensions.disableChildren
-import studios.aestheticapps.linker.extensions.enableChildren
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.floatingmenu.ui.BubbleDialog
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.link.LinkRepository
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.LINK_DELETE
 import studios.aestheticapps.linker.utils.PrefsHelper
 import java.util.*
 
 class LibraryBubbleContent(context: Context,
                            application: Application,
                            private val bubbleContentCallback: BubbleContentCallback) : FrameLayout(context),
-    Content, LibraryContract.View, AdapterView.OnItemSelectedListener, BubbleDialog.BubbleDialogCallback, Observer
+    Content, LibraryContract.View, AdapterView.OnItemSelectedListener, Observer
 {
     override var presenter: LibraryContract.Presenter = LibraryPresenter(this)
 
@@ -201,24 +200,14 @@ class LibraryBubbleContent(context: Context,
 
     override fun onNothingSelected(parent: AdapterView<*>) {}
 
-    override fun onPositiveBtnPressed()
+    override fun update(o: Observable?, mode: Any?)
     {
-
-    }
-
-    override fun onNegativeBtnPressed()
-    {
-
-    }
-
-    override fun update(p0: Observable?, p1: Any?)
-    {
-        populateViewAdaptersWithContent()
+        if (mode != LINK_DELETE)
+            populateViewAdaptersWithContent()
     }
 
     private fun buildExitDialogAndConfirmDelete(model: Link, adapterPosition: Int)
     {
-        libraryLayout.disableChildren()
         BubbleDialog.draw(context,
             title = context.getString(R.string.title_confirm_delete),
             message = context.getString(R.string.message_confirm_delete),
@@ -226,17 +215,9 @@ class LibraryBubbleContent(context: Context,
             positiveBtnTitle = context.getString(R.string.please_delete),
             callback = (object : BubbleDialog.BubbleDialogCallback
             {
-                override fun onPositiveBtnPressed()
-                {
-                    libraryLayout.enableChildren()
-                    deleteItemPermanently(model, adapterPosition)
-                }
+                override fun onPositiveBtnPressed() = deleteItemPermanently(model, adapterPosition)
 
-                override fun onNegativeBtnPressed()
-                {
-                    libraryLayout.enableChildren()
-                    linkAdapter.notifyDataSetChanged()
-                }
+                override fun onNegativeBtnPressed() = linkAdapter.notifyDataSetChanged()
             })
         )
     }
