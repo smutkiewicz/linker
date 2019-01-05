@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.model
+package studios.aestheticapps.linker.validation
 
 import org.apache.commons.validator.routines.UrlValidator
 import org.apache.commons.validator.routines.UrlValidator.ALLOW_ALL_SCHEMES
@@ -86,6 +86,6 @@ class LinkValidator(private var url: String)
     {
         const val EMPTY_URL = ""
         private const val URL_REGEX = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
-        private val pattern = Pattern.compile(LinkValidator.URL_REGEX)
+        private val pattern = Pattern.compile(URL_REGEX)
     }
 }

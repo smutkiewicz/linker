@@ -20,7 +20,7 @@ import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.SearchCallback
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.model.LinkMetadataFormatter
+import studios.aestheticapps.linker.validation.LinkMetadataFormatter
 import studios.aestheticapps.linker.utils.ClipboardHelper
 
 class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter.OnTagClickedListener

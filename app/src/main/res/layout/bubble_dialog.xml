@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@color/common_google_signin_btn_text_light_focused"
-            android:id="@+id/imageView4"
+            android:id="@+id/backgroundIv"
             android:layout_margin="0dp"/>
 
 </android.support.design.widget.CoordinatorLayout>

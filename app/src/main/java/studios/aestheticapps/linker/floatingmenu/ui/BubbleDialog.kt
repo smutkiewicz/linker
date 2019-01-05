@@ -2,15 +2,18 @@ package studios.aestheticapps.linker.floatingmenu.ui
 
 import android.app.KeyguardManager
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.PowerManager
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import studios.aestheticapps.linker.R
 
@@ -35,6 +38,25 @@ class BubbleDialog(myContext: Context,
         initTitleAndMessage()
         initPositiveBtn()
         initNegativeBtn()
+        initOnCancel()
+    }
+
+    override fun dispatchConfigurationChanged(newConfig: Configuration?)
+    {
+        super.dispatchConfigurationChanged(newConfig)
+        destroy()
+    }
+
+    override fun dispatchKeyEvent(keyEvent: KeyEvent?): Boolean
+    {
+        super.dispatchKeyEvent(keyEvent)
+
+        return if (keyEvent?.action == KeyEvent.ACTION_UP && keyEvent.keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            destroy()
+            true
+        }
+        else false
     }
 
     fun destroy()
@@ -106,6 +128,15 @@ class BubbleDialog(myContext: Context,
                 callback.onPositiveBtnPressed()
                 destroy()
             }
+        }
+    }
+
+    private fun initOnCancel()
+    {
+        val backgroundIv = frameLayout?.findViewById<ImageView>(R.id.backgroundIv)
+        backgroundIv?.setOnClickListener {
+            callback.onCancel()
+            destroy()
         }
     }
 

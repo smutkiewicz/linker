@@ -18,18 +18,19 @@ import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.addedit.AddEditFragment
 import studios.aestheticapps.linker.content.addedit.AddEditPresenter
 import studios.aestheticapps.linker.content.addedit.AddEditTaskContract
-import studios.aestheticapps.linker.content.categories.CategoriesDialogFragment
+import studios.aestheticapps.linker.content.categories.CategoriesChangedCallback
 import studios.aestheticapps.linker.extensions.disableChildren
 import studios.aestheticapps.linker.extensions.enableChildren
+import studios.aestheticapps.linker.floatingmenu.ui.BubbleCategoriesDialog
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.model.LinkMetadataFormatter
-import studios.aestheticapps.linker.model.LinkValidator
 import studios.aestheticapps.linker.utils.ClipboardHelper
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import studios.aestheticapps.linker.utils.PrefsHelper
+import studios.aestheticapps.linker.validation.LinkMetadataFormatter
+import studios.aestheticapps.linker.validation.LinkValidator
 
 class AddEditBubbleContent(context: Context,
-                           application: Application,
+                           private val application: Application,
                            private val bubbleContentCallback: BubbleContentCallback) : FrameLayout(context),
     Content,
     AddEditTaskContract.View,
@@ -37,15 +38,13 @@ class AddEditBubbleContent(context: Context,
     AdapterView.OnItemSelectedListener,
     LinkMetadataFormatter.BuildModelCallback,
     TagAdapter.OnTagClickedListener,
-    CategoriesDialogFragment.CategoriesChangedCallback
+    CategoriesChangedCallback
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
     private var mode: Int = AddEditFragment.MODE_ADD
 
     private lateinit var tagAdapter: TagAdapter
-    //private lateinit var callback: AddEditFragment.AddEditCallback
-    //private lateinit var updateViewCallback: UpdateViewCallback
 
     private var clipboardHelper: ClipboardHelper
     private var model: Link? = null
@@ -54,9 +53,6 @@ class AddEditBubbleContent(context: Context,
     {
         LayoutInflater.from(context).inflate(R.layout.content_add_edit, this, true)
         clipboardHelper = ClipboardHelper(context.applicationContext)
-
-        //callback = context as AddEditFragment.AddEditCallback
-        //updateViewCallback = context as UpdateViewCallback
 
         presenter.start(application)
 
@@ -140,8 +136,6 @@ class AddEditBubbleContent(context: Context,
                         cleanView()
                     }
                 }
-
-                ////////
             }
 
             true
@@ -225,7 +219,6 @@ class AddEditBubbleContent(context: Context,
     {
         result?.let {
             presenter.saveItem(result)
-            //updateViewCallback.onUpdateView()
         }
     }
 
@@ -245,8 +238,6 @@ class AddEditBubbleContent(context: Context,
 
     override fun cleanView()
     {
-        //callback.returnToMainView()
-
         addEditLinkTitleEt.text.clear()
         addEditUrlEt.text.clear()
         addEditDescriptionEt.text.clear()
@@ -263,7 +254,6 @@ class AddEditBubbleContent(context: Context,
             model?.addTag(newTagEt.text.toString())
 
             newTagEt.text.clear()
-            //callback.onEdited()
         }
         else
         {
@@ -312,8 +302,6 @@ class AddEditBubbleContent(context: Context,
     {
         val selectedCategory: String = categoriesSpinner.selectedItem.toString()
         model?.category = selectedCategory
-
-        //callback.onEdited()
     }
 
     override fun onNothingSelected(parentView: AdapterView<*>) {}
@@ -323,11 +311,7 @@ class AddEditBubbleContent(context: Context,
         model?.removeTag(tag)
     }
 
-    override fun startCategoriesDialogAction()
-    {
-        // TODO Categories
-        //IntentActionHelper.startCategoriesDialogAction(fragmentManager!!, this)
-    }
+    override fun startCategoriesDialogAction() = BubbleCategoriesDialog.draw(context, application, this)
 
     override fun updateCategories()
     {

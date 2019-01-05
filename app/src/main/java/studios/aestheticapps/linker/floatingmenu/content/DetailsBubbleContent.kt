@@ -29,7 +29,7 @@ import studios.aestheticapps.linker.content.details.DetailsContract
 import studios.aestheticapps.linker.content.details.DetailsPresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.model.LinkMetadataFormatter
+import studios.aestheticapps.linker.validation.LinkMetadataFormatter
 import studios.aestheticapps.linker.utils.ClipboardHelper
 
 class DetailsBubbleContent(context: Context,

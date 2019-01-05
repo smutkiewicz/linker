@@ -218,6 +218,8 @@ class LibraryBubbleContent(context: Context,
                 override fun onPositiveBtnPressed() = deleteItemPermanently(model, adapterPosition)
 
                 override fun onNegativeBtnPressed() = linkAdapter.notifyDataSetChanged()
+
+                override fun onCancel() = linkAdapter.notifyDataSetChanged()
             })
         )
     }

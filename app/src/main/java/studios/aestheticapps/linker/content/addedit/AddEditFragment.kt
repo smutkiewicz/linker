@@ -20,21 +20,21 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.UpdateViewCallback
-import studios.aestheticapps.linker.content.categories.CategoriesDialogFragment
+import studios.aestheticapps.linker.content.categories.CategoriesChangedCallback
 import studios.aestheticapps.linker.extensions.disableChildrenOf
 import studios.aestheticapps.linker.extensions.enableChildrenOf
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
-import studios.aestheticapps.linker.model.LinkMetadataFormatter
-import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.utils.ClipboardHelper
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import studios.aestheticapps.linker.utils.PrefsHelper
+import studios.aestheticapps.linker.validation.LinkMetadataFormatter
+import studios.aestheticapps.linker.validation.LinkValidator.Companion.EMPTY_URL
 
 class AddEditFragment : Fragment(), AddEditTaskContract.View,
     TextWatcher, OnItemSelectedListener,
     LinkMetadataFormatter.BuildModelCallback, TagAdapter.OnTagClickedListener,
-    CategoriesDialogFragment.CategoriesChangedCallback
+    CategoriesChangedCallback
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 

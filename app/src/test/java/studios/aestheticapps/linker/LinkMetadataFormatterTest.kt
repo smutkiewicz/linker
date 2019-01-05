@@ -4,7 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.model.LinkMetadataFormatter
+import studios.aestheticapps.linker.validation.LinkMetadataFormatter
 
 class LinkMetadataFormatterTest
 {
