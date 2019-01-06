@@ -25,13 +25,14 @@ import studios.aestheticapps.linker.content.SearchCallback
 import studios.aestheticapps.linker.content.home.HomeContract
 import studios.aestheticapps.linker.content.home.HomePresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
+import studios.aestheticapps.linker.floatingmenu.ui.BubbleDetailsDialog
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.link.LinkRepository
 import studios.aestheticapps.linker.utils.ClipboardHelper
 import java.util.*
 
 class HomeBubbleContent(context: Context,
-                        application: Application,
+                        private val application: Application,
                         private val bubbleContentCallback: BubbleContentCallback) : FrameLayout(context),
     Content, HomeContract.View, TagAdapter.OnTagClickedListener, Observer
 {
@@ -72,13 +73,6 @@ class HomeBubbleContent(context: Context,
 
         BubbleMenuService.destroyFloatingMenu(context)
     }
-
-    /*override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        searchCallback = context as SearchCallback
-        updateViewCallback = context as UpdateViewCallback
-    }*/
 
     override fun populateViewAdaptersWithContent()
     {
@@ -139,22 +133,18 @@ class HomeBubbleContent(context: Context,
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    override fun startInternetAction(link: Link)
+    override fun startInternetAction(model: Link)
     {
         bubbleContentCallback.collapseBubble()
-        IntentActionHelper.startInternetAction(context!!, link)
+        IntentActionHelper.startInternetAction(context!!, model)
     }
 
-    override fun startDetailsAction(link: Link)
-    {
-        // TODO Details
-        //IntentActionHelper.startDetailsAction(fragmentManager!!, link)
-    }
+    override fun startDetailsAction(model: Link) = BubbleDetailsDialog.draw(context, application, bubbleContentCallback, model)
 
-    override fun startShareView(link: Link)
+    override fun startShareView(model: Link)
     {
         bubbleContentCallback.collapseBubble()
-        IntentActionHelper.startShareView(context!!, link)
+        IntentActionHelper.startShareView(context!!, model)
     }
 
     override fun onSearchTag(tag: String)

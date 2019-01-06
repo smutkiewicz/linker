@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(),
     {
         super.onResume()
         if(isBubbleServiceRunning()) closeBubbles()
-        viewPagerAdapter?.notifyDataSetChanged()
+        viewPagerAdapter.notifyDataSetChanged()
     }
 
     override fun onBackPressed()

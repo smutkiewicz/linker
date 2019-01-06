@@ -137,11 +137,11 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
+    override fun startInternetAction(model: Link) = IntentActionHelper.startInternetAction(context!!, model)
 
-    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, link)
+    override fun startDetailsAction(model: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, model)
 
-    override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
+    override fun startShareView(model: Link) = IntentActionHelper.startShareView(context!!, model)
 
     override fun onSearchTag(tag: String) = callback.onOpenSearchView(tag)
 

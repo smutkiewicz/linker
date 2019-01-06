@@ -25,6 +25,7 @@ import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.library.LibraryContract
 import studios.aestheticapps.linker.content.library.LibraryPresenter
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
+import studios.aestheticapps.linker.floatingmenu.ui.BubbleDetailsDialog
 import studios.aestheticapps.linker.floatingmenu.ui.BubbleDialog
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.link.LinkRepository
@@ -33,7 +34,7 @@ import studios.aestheticapps.linker.utils.PrefsHelper
 import java.util.*
 
 class LibraryBubbleContent(context: Context,
-                           application: Application,
+                           private val application: Application,
                            private val bubbleContentCallback: BubbleContentCallback) : FrameLayout(context),
     Content, LibraryContract.View, AdapterView.OnItemSelectedListener, Observer
 {
@@ -170,11 +171,7 @@ class LibraryBubbleContent(context: Context,
         IntentActionHelper.startInternetAction(context!!, model)
     }
 
-    override fun startDetailsAction(model: Link)
-    {
-        // TODO Details
-        //IntentActionHelper.startDetailsAction(fragmentManager!!, model)
-    }
+    override fun startDetailsAction(model: Link) = BubbleDetailsDialog.draw(context, application, bubbleContentCallback, model)
 
     override fun startShareView(model: Link)
     {
