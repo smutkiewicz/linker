@@ -1,11 +1,12 @@
-package studios.aestheticapps.linker.model
+package studios.aestheticapps.linker.validation
 
 import android.os.AsyncTask
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import studios.aestheticapps.linker.adapters.CategoriesAdapter
-import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
+import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.utils.DateTimeHelper
+import studios.aestheticapps.linker.validation.LinkValidator.Companion.EMPTY_URL
 import java.net.URL
 
 /**
@@ -21,10 +22,6 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
         {
             GetFromUrlAsyncTask()
                 .execute(url)
-
-            /*categoriesAdapter?.let {
-                categoriesAdapter?.obtainCategory(getDomainFrom(url))
-            }*/
         }
     }
 
@@ -156,9 +153,11 @@ class LinkMetadataFormatter(val callback: BuildModelCallback)
         override fun onPostExecute(result: Link?)
         {
             super.onPostExecute(result)
-            callback.mapModelToView(result)
-            callback.setNewModel(result)
-            callback.deactivateLoadingView()
+            callback.apply {
+                mapModelToView(result)
+                setNewModel(result)
+                deactivateLoadingView()
+            }
         }
     }
 

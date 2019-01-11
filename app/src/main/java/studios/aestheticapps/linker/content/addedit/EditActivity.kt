@@ -1,7 +1,10 @@
 package studios.aestheticapps.linker.content.addedit
 
+import android.app.ActivityManager
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.NavUtils
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -9,12 +12,18 @@ import kotlinx.android.synthetic.main.activity_edit.*
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_EDIT
+import studios.aestheticapps.linker.extensions.checkForDrawOverlaysPermissions
+import studios.aestheticapps.linker.extensions.createDrawOverlayPermissionsIntent
+import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
+import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
+import studios.aestheticapps.linker.floatingmenu.theme.BubbleThemeManager
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 
 class EditActivity : AppCompatActivity(), AddEditFragment.AddEditCallback, UpdateViewCallback
 {
     private var edited: Boolean = false
+    private var isReturnToBubblesNeeded = false
 
     private lateinit var fragment: AddEditFragment
 
@@ -37,6 +46,13 @@ class EditActivity : AppCompatActivity(), AddEditFragment.AddEditCallback, Updat
         {
             restoreFragment(savedInstanceState)
         }
+    }
+
+    override fun onResume()
+    {
+        super.onResume()
+        isReturnToBubblesNeeded = isBubbleServiceRunning()
+        if(isReturnToBubblesNeeded) closeBubbles()
     }
 
     override fun onSaveInstanceState(outState: Bundle)
@@ -76,6 +92,7 @@ class EditActivity : AppCompatActivity(), AddEditFragment.AddEditCallback, Updat
     override fun returnToMainView()
     {
         NavUtils.navigateUpFromSameTask(this)
+        if (isReturnToBubblesNeeded) openBubbles()
     }
 
     override fun onEdited()
@@ -132,6 +149,46 @@ class EditActivity : AppCompatActivity(), AddEditFragment.AddEditCallback, Updat
             create()
             show()
         }
+    }
+
+    private fun isBubbleServiceRunning(): Boolean
+    {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE))
+        {
+            if (BubbleMenuService::class.java.name == service.service.className) return true
+        }
+
+        return false
+    }
+
+    private fun openBubbles()
+    {
+        if(checkForDrawOverlaysPermissions())
+        {
+            initThemeManager()
+            BubbleMenuService.showFloatingMenu(this)
+            finish()
+        }
+        else
+        {
+            createDrawOverlayPermissionsIntent()
+        }
+    }
+
+    private fun closeBubbles()
+    {
+        BubbleMenuService.destroyFloatingMenu(this)
+    }
+
+    private fun initThemeManager()
+    {
+        val defaultTheme = BubbleTheme(
+            ContextCompat.getColor(this, R.color.colorPrimary),
+            ContextCompat.getColor(this, R.color.colorPrimary)
+        )
+
+        BubbleThemeManager.init(defaultTheme)
     }
 
     private companion object

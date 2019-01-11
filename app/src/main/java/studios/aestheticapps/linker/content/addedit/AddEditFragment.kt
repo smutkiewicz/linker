@@ -20,21 +20,21 @@ import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.UpdateViewCallback
-import studios.aestheticapps.linker.content.categories.CategoriesDialogFragment
+import studios.aestheticapps.linker.content.categories.CategoriesChangedCallback
 import studios.aestheticapps.linker.extensions.disableChildrenOf
 import studios.aestheticapps.linker.extensions.enableChildrenOf
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
-import studios.aestheticapps.linker.model.LinkMetadataFormatter
-import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.utils.ClipboardHelper
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import studios.aestheticapps.linker.utils.PrefsHelper
+import studios.aestheticapps.linker.validation.LinkMetadataFormatter
+import studios.aestheticapps.linker.validation.LinkValidator.Companion.EMPTY_URL
 
 class AddEditFragment : Fragment(), AddEditTaskContract.View,
     TextWatcher, OnItemSelectedListener,
     LinkMetadataFormatter.BuildModelCallback, TagAdapter.OnTagClickedListener,
-    CategoriesDialogFragment.CategoriesChangedCallback
+    CategoriesChangedCallback
 {
     override var presenter: AddEditTaskContract.Presenter = AddEditPresenter(this)
 
@@ -116,7 +116,6 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         return if (arguments?.containsKey(Link.INTENT_LINK) == true)
         {
             val content = arguments!!.getString(Link.INTENT_LINK, "")
-
             content != latestUrl && content != EMPTY_URL
         }
         else false
@@ -297,7 +296,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         if (newTagEt.text.isNotBlank())
         {
             tagAdapter.addItem(newTagEt.text.toString())
-            model!!.addTag(newTagEt.text.toString())
+            model?.addTag(newTagEt.text.toString())
 
             newTagEt.text.clear()
             callback.onEdited()
@@ -311,19 +310,22 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     /**
      * Only needed fields, Presenter will fill blank parts of the model (such as domain).
      */
-    override fun buildItemFromView() = Link(
-        id = model?.id ?: 0,
-        title = addEditLinkTitleEt.text.toString(),
-        category = model?.category ?: categoriesSpinner.selectedItem?.toString() ?: "Unknown",
-        description = addEditDescriptionEt.text.toString(),
-        url = addEditUrlEt.text.toString(),
-        imageUrl = model?.imageUrl ?: LinkMetadataFormatter.DEFAULT_IMAGE_URL,
-        lastUsed = DateTimeHelper.getCurrentDateTimeStamp(),
-        created = model?.created ?: DateTimeHelper.getCurrentDateTimeStamp(),
-        isFavorite = model?.isFavorite ?: false,
-        tags = model?.tags ?: presenter.tagsToString(tagAdapter.elements),
-        domain = model?.domain ?: ""
-    )
+    override fun buildItemFromView(): Link
+    {
+        return Link(
+            id = model?.id ?: 0,
+            title = addEditLinkTitleEt.text.toString(),
+            category = model?.category ?: categoriesSpinner.selectedItem?.toString() ?: "Unknown",
+            description = addEditDescriptionEt.text.toString(),
+            url = addEditUrlEt.text.toString(),
+            imageUrl = model?.imageUrl ?: LinkMetadataFormatter.DEFAULT_IMAGE_URL,
+            lastUsed = DateTimeHelper.getCurrentDateTimeStamp(),
+            created = model?.created ?: DateTimeHelper.getCurrentDateTimeStamp(),
+            isFavorite = model?.isFavorite ?: false,
+            tags = model?.tags ?: presenter.tagsToString(tagAdapter.elements),
+            domain = model?.domain ?: ""
+        )
+    }
 
     override fun buildSampleModelFromClipboardContent()
     {
@@ -356,7 +358,10 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun onNothingSelected(parentView: AdapterView<*>) {}
 
-    override fun onDeleteTag(tag: String) = model!!.removeTag(tag)
+    override fun onDeleteTag(tag: String)
+    {
+        model?.removeTag(tag)
+    }
 
     override fun startCategoriesDialogAction() = IntentActionHelper.startCategoriesDialogAction(fragmentManager!!, this)
 
@@ -430,7 +435,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     companion object
     {
-        private const val MODE = "mode"
+        const val MODE = "mode"
         const val MODE_ADD = 0
         const val MODE_EDIT = 1
 

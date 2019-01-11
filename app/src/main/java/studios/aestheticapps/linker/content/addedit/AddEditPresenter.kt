@@ -3,9 +3,9 @@ package studios.aestheticapps.linker.content.addedit
 import android.app.Application
 import studios.aestheticapps.linker.adapters.CategoriesAdapter
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.model.LinkMetadataFormatter
-import studios.aestheticapps.linker.model.LinkValidator
-import studios.aestheticapps.linker.model.LinkValidator.Companion.EMPTY_URL
+import studios.aestheticapps.linker.validation.LinkMetadataFormatter
+import studios.aestheticapps.linker.validation.LinkValidator
+import studios.aestheticapps.linker.validation.LinkValidator.Companion.EMPTY_URL
 import studios.aestheticapps.linker.persistence.link.LinkRepository
 
 class AddEditPresenter(val view: AddEditTaskContract.View) : AddEditTaskContract.Presenter

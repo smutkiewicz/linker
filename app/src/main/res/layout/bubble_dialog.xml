@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+    <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:id="@+id/dialogCv"
+            app:cardBackgroundColor="@color/cardview_light_background" android:layout_gravity="center">
+
+        <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_width="29dp"
+                    android:layout_height="26dp"
+                    android:src="@mipmap/ic_launcher_round"
+                    android:id="@+id/iconIv"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="24dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="16dp"/>
+
+            <TextView
+                    android:text="Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dialogTitleTv"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    app:layout_constraintStart_toEndOf="@+id/iconIv"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="16dp"/>
+
+            <TextView
+                    android:text="Are you sure to do this?"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dialogMsgTv"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/dialogTitleTv"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="24dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Tooltip"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="24dp"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    android:maxLines="3" android:textSize="16sp" android:lines="2" android:ellipsize="end"/>
+            <Button
+                    android:text="Yes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:id="@+id/positiveBtn"
+                    android:background="@android:color/transparent"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/dialogMsgTv"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="16dp" android:ellipsize="end"/>
+
+            <Button
+                    android:text="No"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:id="@+id/negativeBtn"
+                    android:background="@android:color/transparent"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/dialogMsgTv"
+                    app:layout_constraintEnd_toStartOf="@+id/positiveBtn"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="16dp"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@color/common_google_signin_btn_text_light_focused"
+            android:id="@+id/backgroundIv"
+            android:layout_margin="0dp"/>
+
+</android.support.design.widget.CoordinatorLayout>

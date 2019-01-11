@@ -1,7 +1,8 @@
-package studios.aestheticapps.linker.model
+package studios.aestheticapps.linker.validation
 
 import org.apache.commons.validator.routines.UrlValidator
 import org.apache.commons.validator.routines.UrlValidator.ALLOW_ALL_SCHEMES
+import java.util.regex.Pattern
 
 /**
  * Provides vaild urls for model.
@@ -10,7 +11,7 @@ class LinkValidator(private var url: String)
 {
     fun build(): String
     {
-        if (isValid())
+        if (isValidRegex())
         {
             return url
         }
@@ -18,7 +19,7 @@ class LinkValidator(private var url: String)
         {
             url = repair(url)
 
-            return if (isValid())
+            return if (isValidRegex())
             {
                 url
             }
@@ -29,7 +30,15 @@ class LinkValidator(private var url: String)
         }
     }
 
-    private fun isValid(): Boolean
+    private fun isValidRegex(): Boolean
+    {
+        if ((url == EMPTY_URL) or containsSpaces(url))
+            return false
+
+        return matchesRegex(url) && beginsWithValidProtocol(url) && containsCharacteristicChars(url)
+    }
+
+    private fun isValidApache(): Boolean
     {
         if (url == EMPTY_URL)
             return false
@@ -38,13 +47,17 @@ class LinkValidator(private var url: String)
         return urlValidator.isValid(url)
     }
 
+    private fun isValidSimpleCase(): Boolean
+    {
+        if ((url == EMPTY_URL) or containsSpaces(url))
+            return false
+
+        return beginsWithValidProtocol(url) or containsCharacteristicChars(url)
+    }
 
     private fun repair(url: String): String
     {
         var repairedUrl = url
-
-        if (repairedUrl.indexOf(" ") >= 0)
-            repairedUrl = repairedUrl.replace(" ", "")
 
         if (beginsWithValidProtocol(repairedUrl))
         {
@@ -59,14 +72,20 @@ class LinkValidator(private var url: String)
         }
     }
 
+    private fun matchesRegex(url: String) = pattern.matcher(url).find()
+
     private fun beginsWithValidWww(url: String) = url.startsWith("www.")
 
     private fun beginsWithValidProtocol(url: String) = url.startsWith("http://") or url.startsWith("https://")
 
     private fun containsCharacteristicChars(url: String) = (url.indexOf(".") >= 0) or (url.indexOf(":") >= 0)
 
+    private fun containsSpaces(url: String) = url.contains(" ")
+
     companion object
     {
         const val EMPTY_URL = ""
+        private const val URL_REGEX = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
+        private val pattern = Pattern.compile(URL_REGEX)
     }
 }

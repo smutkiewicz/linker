@@ -38,5 +38,8 @@ interface LibraryContract
         fun removeItem(model: Link)
         fun setItemFavourite(model: Link)
         fun setItemRecent(model: Link)
+
+        fun attachDataObserver(o: Observer)
+        fun detachDataObserver(o: Observer)
     }
 }

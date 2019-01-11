@@ -1,4 +1,4 @@
-package studios.aestheticapps.linker.persistence.category
+package studios.aestheticapps.linker.persistence
 
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Database
@@ -7,16 +7,22 @@ import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import android.os.AsyncTask
 import studios.aestheticapps.linker.model.Category
-import studios.aestheticapps.linker.persistence.link.LinkRoomDatabase
+import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.persistence.category.CategoryDao
+import studios.aestheticapps.linker.persistence.link.LinkDao
+import java.util.*
 
-@Database(entities = [Category::class], version = 1)
-abstract class CategoryRoomDatabase : RoomDatabase()
+@Database(entities = [Link::class, Category::class], version = 1, exportSchema = false)
+abstract class LinkRoomDatabase : RoomDatabase()
 {
+    abstract fun linkDao(): LinkDao
     abstract fun categoryDao(): CategoryDao
+
+    val observers: LinkedList<Observer> = LinkedList()
 
     companion object
     {
-        private var INSTANCE: CategoryRoomDatabase? = null
+        private var INSTANCE: LinkRoomDatabase? = null
 
         private const val USAGE_VERY_IMPORTANT = 20
         private const val USAGE_IMPORTANT = 10
@@ -24,7 +30,7 @@ abstract class CategoryRoomDatabase : RoomDatabase()
         private const val USAGE_MINIMUM = 1
         private const val USAGE_UNUSED = 0
 
-        fun getInstance(context: Context): CategoryRoomDatabase?
+        fun getInstance(context: Context): LinkRoomDatabase?
         {
             if (INSTANCE == null)
             {
@@ -32,8 +38,8 @@ abstract class CategoryRoomDatabase : RoomDatabase()
                 {
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
-                        CategoryRoomDatabase::class.java,
-                        "category_database")
+                        LinkRoomDatabase::class.java,
+                        "linker_database")
                         .addCallback(roomDatabaseCallback)
                         .build()
                 }
@@ -62,7 +68,7 @@ abstract class CategoryRoomDatabase : RoomDatabase()
             }
         }
 
-        private class PopulateDbAsync internal constructor(db: CategoryRoomDatabase) : AsyncTask<Void, Void, Void>()
+        private class PopulateDbAsync internal constructor(db: LinkRoomDatabase) : AsyncTask<Void, Void, Void>()
         {
             private val dao: CategoryDao = db.categoryDao()
 

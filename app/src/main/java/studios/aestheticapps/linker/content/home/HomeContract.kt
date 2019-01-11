@@ -19,13 +19,14 @@ interface HomeContract
         fun setUpFavoritesRecyclerView()
         fun setUpTagsCloudRecyclerView()
 
-        fun startInternetAction(link: Link)
-        fun startDetailsAction(link: Link)
-        fun startShareView(link: Link)
+        fun startInternetAction(model: Link)
+        fun startDetailsAction(model: Link)
+        fun startShareView(model: Link)
         fun startCopyAction(content: String)
 
         fun updateRecentLinkAdapter()
         fun updateFavLinkAdapter()
+        fun updateTagCloudAdapter()
     }
 
     interface Presenter : BasePresenter
@@ -35,7 +36,10 @@ interface HomeContract
         fun getRecentItems(): LinkedList<Link>
         fun getFavoriteItems(): LinkedList<Link>
         fun getTagsCloudItems(): LinkedList<String>
-        fun setItemFavourite(link: Link)
-        fun setItemRecent(link: Link)
+        fun setItemFavourite(model: Link)
+        fun setItemRecent(model: Link)
+
+        fun attachDataObserver(o: Observer)
+        fun detachDataObserver(o: Observer)
     }
 }

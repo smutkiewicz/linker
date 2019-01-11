@@ -6,6 +6,7 @@ import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.link.LinkRepository
 import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.FAVORITES
 import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.RECENT
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.RECENT_UPDATE
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
@@ -55,17 +56,21 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnMyA
         return LinkedList(tagCloudSet)
     }
 
-    override fun setItemFavourite(link: Link)
+    override fun setItemFavourite(model: Link)
     {
-        link.isFavorite = !link.isFavorite
-        repository.update(link)
+        model.isFavorite = !model.isFavorite
+        repository.update(model)
     }
 
-    override fun setItemRecent(link: Link)
+    override fun setItemRecent(model: Link)
     {
-        link.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
-        repository.update(link)
+        model.lastUsed = DateTimeHelper.getCurrentDateTimeStamp()
+        repository.update(model, RECENT_UPDATE)
     }
+
+    override fun attachDataObserver(o: Observer) = repository.addObserver(o)
+
+    override fun detachDataObserver(o: Observer) = repository.deleteObserver(o)
 
     override fun onItemClicked(model: Link)
     {
@@ -87,6 +92,6 @@ class HomePresenter(val view: HomeContract.View) : HomeContract.Presenter, OnMyA
 
     private companion object
     {
-        const val MAX_TAGS = 6
+        const val MAX_TAGS = 10
     }
 }

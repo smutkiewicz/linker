@@ -23,17 +23,19 @@ import studios.aestheticapps.linker.adapters.RecentLinkAdapter
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.SearchCallback
-import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.FAV_UPDATE
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.LINK_UPDATE
+import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.RECENT_UPDATE
 import studios.aestheticapps.linker.utils.ClipboardHelper
+import java.util.*
 
-class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListener
+class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListener, Observer
 {
     override var presenter: HomeContract.Presenter = HomePresenter(this)
 
     private lateinit var callback: SearchCallback
-    private lateinit var updateViewCallback: UpdateViewCallback
 
     private lateinit var recentLinkAdapter: RecentLinkAdapter
     private lateinit var favLinkAdapter: FavoritesAdapter
@@ -46,6 +48,7 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     {
         super.onStart()
         presenter.start(activity!!.application)
+        presenter.attachDataObserver(this)
 
         setUpRecentRecyclerView()
         setUpFavoritesRecyclerView()
@@ -56,6 +59,7 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     override fun onDestroy()
     {
         super.onDestroy()
+        presenter.detachDataObserver(this)
         presenter.stop()
     }
 
@@ -63,7 +67,6 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     {
         super.onAttach(context)
         callback = context as SearchCallback
-        updateViewCallback = context as UpdateViewCallback
     }
 
     override fun populateViewAdaptersWithContent()
@@ -134,15 +137,32 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    override fun startInternetAction(link: Link) = IntentActionHelper.startInternetAction(context!!, link)
+    override fun startInternetAction(model: Link) = IntentActionHelper.startInternetAction(context!!, model)
 
-    override fun startDetailsAction(link: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, link)
+    override fun startDetailsAction(model: Link) = IntentActionHelper.startDetailsAction(fragmentManager!!, model)
 
-    override fun startShareView(link: Link) = IntentActionHelper.startShareView(context!!, link)
+    override fun startShareView(model: Link) = IntentActionHelper.startShareView(context!!, model)
 
     override fun onSearchTag(tag: String) = callback.onOpenSearchView(tag)
 
     override fun startCopyAction(content: String) = ClipboardHelper(context!!).copyToCliboard(content)
+
+    override fun update(p0: Observable?, mode: Any?)
+    {
+        when (mode)
+        {
+            LINK_UPDATE ->
+            {
+                updateFavLinkAdapter()
+                updateRecentLinkAdapter()
+                updateTagCloudAdapter()
+            }
+
+            RECENT_UPDATE -> updateRecentLinkAdapter()
+
+            FAV_UPDATE -> updateFavLinkAdapter()
+        }
+    }
 
     override fun updateRecentLinkAdapter()
     {
@@ -152,6 +172,11 @@ class HomeFragment : Fragment(), HomeContract.View, TagAdapter.OnTagClickedListe
     override fun updateFavLinkAdapter()
     {
         favLinkAdapter.elements = presenter.getFavoriteItems()
+    }
+
+    override fun updateTagCloudAdapter()
+    {
+        tagCloudAdapter.elements = presenter.getTagsCloudItems()
     }
 
     private fun showEmptyViewIfNeeded()

@@ -1,7 +1,6 @@
 package studios.aestheticapps.linker.content.categories
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
@@ -38,16 +37,6 @@ class CategoriesDialogFragment : DialogFragment(), CategoriesContract.View
         super.onStart()
         presenter.start(activity!!.application)
         populateViewAdaptersWithContent()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onAttach(context: Context)
-    {
-        super.onAttach(context)
     }
 
     override fun createRecyclerView(view: View)
@@ -139,11 +128,6 @@ class CategoriesDialogFragment : DialogFragment(), CategoriesContract.View
         presenter.removeItem(categoryName)
         categoriesRecyclerViewAdapter.removeItem(adapterPosition)
         callback.updateCategories()
-    }
-
-    interface CategoriesChangedCallback
-    {
-        fun updateCategories()
     }
 
     companion object

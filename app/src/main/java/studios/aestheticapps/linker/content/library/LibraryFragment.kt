@@ -1,7 +1,6 @@
 package studios.aestheticapps.linker.content.library
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -23,7 +22,6 @@ import studios.aestheticapps.linker.adapters.LinkAdapter
 import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.adapters.SortByAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
-import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.persistence.link.LinkRepository.Companion.CATEGORY_COLUMN
@@ -36,8 +34,6 @@ import studios.aestheticapps.linker.utils.PrefsHelper
 class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSelectedListener
 {
     override var presenter: LibraryContract.Presenter = LibraryPresenter(this)
-
-    private lateinit var updateViewCallback: UpdateViewCallback
 
     private lateinit var linkAdapter: LinkAdapter
     private lateinit var orderByColumn: String
@@ -61,12 +57,6 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
     {
         super.onDestroy()
         presenter.stop()
-    }
-
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        updateViewCallback = context as UpdateViewCallback
     }
 
     override fun populateViewAdaptersWithContent()

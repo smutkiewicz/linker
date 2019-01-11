@@ -1,29 +1,43 @@
-package studios.aestheticapps.linker.content.details
-
+package studios.aestheticapps.linker.floatingmenu.content
+/*
+import android.app.Application
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.DialogFragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.GridLayout.VERTICAL
+import android.widget.FrameLayout
+import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.picasso.Picasso
+import io.mattcarroll.hover.Content
+import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.OnMyAdapterItemClickListener
 import studios.aestheticapps.linker.adapters.TagAdapter
 import studios.aestheticapps.linker.content.IntentActionHelper
 import studios.aestheticapps.linker.content.SearchCallback
+import studios.aestheticapps.linker.content.details.DetailsContract
+import studios.aestheticapps.linker.content.details.DetailsPresenter
+import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.validation.LinkMetadataFormatter
 import studios.aestheticapps.linker.utils.ClipboardHelper
 
-class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter.OnTagClickedListener
+class DetailsBubbleContent(context: Context,
+                           application: Application,
+                           private val callback: BubbleContentCallback) : FrameLayout(context),
+    Content,
+    DetailsContract.View,
+    TagAdapter.OnTagClickedListener
 {
     override var presenter: DetailsContract.Presenter = DetailsPresenter(this)
 
@@ -32,6 +46,38 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter
 
     private lateinit var tagAdapter: TagAdapter
     private lateinit var model: Link
+
+    init
+    {
+        LayoutInflater.from(context).inflate(R.layout.content_details, this, true)
+        presenter.start(application)
+        presenter.attachDataObserver(this)
+
+        setUpRecentRecyclerView()
+        setUpFavoritesRecyclerView()
+        setUpTagsCloudRecyclerView()
+        setUpExitToAppBtn()
+        populateViewAdaptersWithContent()
+    }
+
+    override fun getView() = this
+
+    override fun isFullscreen() = true
+
+    override fun onShown() {}
+
+    override fun onHidden() {}
+
+    override fun hideBubbles()
+    {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        ContextCompat.startActivity(context, intent, null)
+
+        BubbleMenuService.destroyFloatingMenu(context)
+    }
+
+    /////////
 
     override fun onCreateDialog(bundle: Bundle?): Dialog
     {
@@ -112,7 +158,7 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter
             isNestedScrollingEnabled = false
             layoutManager = StaggeredGridLayoutManager(
                 resources.getInteger(R.integer.tags_details_column_count),
-                VERTICAL
+                GridLayout.VERTICAL
             )
         }
     }
@@ -168,4 +214,4 @@ class DetailsDialogFragment : DialogFragment(), DetailsContract.View, TagAdapter
         val clipboardHelper = ClipboardHelper(context!!)
         clipboardHelper.copyToCliboard(model.url)
     }
-}
+}*/

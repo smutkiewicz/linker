@@ -3,7 +3,7 @@ package studios.aestheticapps.linker
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
-import studios.aestheticapps.linker.model.LinkValidator
+import studios.aestheticapps.linker.validation.LinkValidator
 
 /**
  * Example local unit test, which will execute on the development machine (host).

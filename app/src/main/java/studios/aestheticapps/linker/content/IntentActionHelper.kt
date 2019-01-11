@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import studios.aestheticapps.linker.SettingsActivity
 import studios.aestheticapps.linker.content.addedit.EditActivity
+import studios.aestheticapps.linker.content.categories.CategoriesChangedCallback
 import studios.aestheticapps.linker.content.categories.CategoriesDialogFragment
 import studios.aestheticapps.linker.content.details.DetailsDialogFragment
 import studios.aestheticapps.linker.model.Link
@@ -60,8 +61,7 @@ object IntentActionHelper
         context.startActivity(intent)
     }
 
-    fun startCategoriesDialogAction(manager: FragmentManager,
-                                    callback: CategoriesDialogFragment.CategoriesChangedCallback)
+    fun startCategoriesDialogAction(manager: FragmentManager, callback: CategoriesChangedCallback)
         = CategoriesDialogFragment.newInstance(callback).show(manager, "Categories")
 
     fun startSettingsAction(context: Context)

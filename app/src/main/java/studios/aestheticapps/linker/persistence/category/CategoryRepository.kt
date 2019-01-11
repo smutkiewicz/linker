@@ -5,28 +5,18 @@ import android.util.Log
 import studios.aestheticapps.linker.model.Category
 import studios.aestheticapps.linker.persistence.DatabaseAsyncTask
 import studios.aestheticapps.linker.persistence.DatabaseTask
+import studios.aestheticapps.linker.persistence.LinkRoomDatabase
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
 class CategoryRepository internal constructor(application: Application)
 {
-    private val db: CategoryRoomDatabase = CategoryRoomDatabase.getInstance(application)!!
+    private val db: LinkRoomDatabase = LinkRoomDatabase.getInstance(application)!!
     private val categoryDao: CategoryDao
 
     init
     {
         categoryDao = db.categoryDao()
-    }
-
-    private fun printAll()
-    {
-        val categories = DatabaseAsyncTask(
-            object : DatabaseTask<LinkedList<Category>>
-            {
-                override fun performOperation() = LinkedList(categoryDao.getAll())
-            }
-        ).execute().get()
-        Log.d("CATEGORIES", categories.toString())
     }
 
     fun getAllCategories(): LinkedList<String>
@@ -139,5 +129,16 @@ class CategoryRepository internal constructor(application: Application)
                 override fun performOperation() = categoryDao.deleteCategory(categoryName)
             }
         ).execute()
+    }
+
+    private fun printAll()
+    {
+        val categories = DatabaseAsyncTask(
+            object : DatabaseTask<LinkedList<Category>>
+            {
+                override fun performOperation() = LinkedList(categoryDao.getAll())
+            }
+        ).execute().get()
+        Log.d("CATEGORIES", categories.toString())
     }
 }

@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.model.Link
-import studios.aestheticapps.linker.model.LinkMetadataFormatter
+import studios.aestheticapps.linker.validation.LinkMetadataFormatter
 import studios.aestheticapps.linker.utils.DateTimeHelper
 import java.util.*
 
