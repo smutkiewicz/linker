@@ -23,6 +23,7 @@ import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.content.categories.CategoriesChangedCallback
 import studios.aestheticapps.linker.extensions.disableChildrenOf
 import studios.aestheticapps.linker.extensions.enableChildrenOf
+import studios.aestheticapps.linker.extensions.scrollToBottom
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.model.Link.CREATOR.PARCEL_LINK
 import studios.aestheticapps.linker.utils.ClipboardHelper
@@ -75,6 +76,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         createFab()
         createTagBtn()
         createButtons()
+        createEditText()
     }
 
     override fun onResume()
@@ -193,7 +195,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         tagRecyclerView.apply {
             adapter = tagAdapter
             layoutManager = StaggeredGridLayoutManager(
-                resources.getInteger(R.integer.tags_column_count),
+                resources.getInteger(R.integer.tags_add_edit_column_count),
                 StaggeredGridLayoutManager.VERTICAL
             )
         }
@@ -203,6 +205,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     {
         addTagBtn.setOnClickListener {
             addTag()
+            addEditDetailsScrollView.scrollToBottom()
         }
     }
 
@@ -234,6 +237,8 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
             clipboardHelper.cutFrom(addEditDescriptionEt)
         }
     }
+
+    override fun createEditText() = newTagEt.setOnClickListener { addEditDetailsScrollView.scrollToBottom() }
 
     override fun mapModelToView(model: Link?)
     {

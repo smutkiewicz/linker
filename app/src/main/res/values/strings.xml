@@ -12,13 +12,14 @@
     <string name="info_title">About version and author</string>
     <string name="info_summary">v. %1$s by Aesthetic Apps Studios</string>
     <string name="info_author_title">About Linker</string>
-    <string name="info_author">Linker&lt;br/>&lt;br/>
-        Let us organize links to the people, places and things you love.&lt;br/>&lt;br/>
-        All rights reserved.&lt;br/>
-        Created by Mike.&lt;br/>&lt;br/>
-        Version %1$s.&lt;br/>
-        &lt;b>&#169; Aesthetic Apps Studios 2018-19&lt;/b>
-    </string>
+    <string name="info_author"><![CDATA[
+        Linker - Let us organize links to the people, places and things you love.<br/><br/>
+        All rights reserved.<br/>
+        Features Hover Library © Nest Labs used under Apache License 2.0<br/><br/>
+        Created by Mike. L logo by Tuptaju.<br/><br/>
+        Version %1$s.<br/>
+        <b>© Aesthetic Apps Studios 2018-19</b>
+    ]]></string>
 
     <!-- Service -->
     <string name="service_is_active">Linker service is active.</string>
@@ -32,7 +33,7 @@
     <string name="title_confirm_delete">Remove item</string>
     <string name="message_confirm_delete">Are you sure you want to remove this item?</string>
     <string name="please_delete">Delete</string>
-    <string name="dont_delete">No, save this item</string>
+    <string name="dont_delete">Don\'t delete</string>
 
     <!-- Home content -->
     <string name="recent">Quick Share</string>
@@ -70,10 +71,7 @@
     <string name="sample_link">github.com</string>
     <string name="sample_recent_item">Example Item</string>
     <string name="sample_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a,
-        scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet
-        tellus. Phasellus pharetra nulla ac diam. Quisque semper justo at risus.
-        Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus, sed posuere libero dui id orci. Nam congue,
-        pede vitae dapibus aliquet, elit magna vulputate arcu, vel tempus metus leo non est.
+        scelerisque sed, lacinia in, mi. Cras vel lorem.
     </string>
     <string name="sample_enormously_long_tag">#Enormously Long Tag</string>
 

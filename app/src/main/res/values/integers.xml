@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="tags_details_column_count">3</integer>
+    <integer name="tags_add_edit_column_count">2</integer>
     <integer name="tags_column_count">3</integer>
     <integer name="favs_column_count">2</integer>
 </resources>

@@ -21,6 +21,7 @@ import studios.aestheticapps.linker.content.addedit.AddEditTaskContract
 import studios.aestheticapps.linker.content.categories.CategoriesChangedCallback
 import studios.aestheticapps.linker.extensions.disableChildren
 import studios.aestheticapps.linker.extensions.enableChildren
+import studios.aestheticapps.linker.extensions.scrollToBottom
 import studios.aestheticapps.linker.floatingmenu.ui.BubbleCategoriesDialog
 import studios.aestheticapps.linker.model.Link
 import studios.aestheticapps.linker.utils.ClipboardHelper
@@ -62,6 +63,7 @@ class AddEditBubbleContent(context: Context,
         createFab()
         createTagBtn()
         createButtons()
+        createEditText()
     }
 
     override fun onShown()
@@ -100,10 +102,7 @@ class AddEditBubbleContent(context: Context,
 
     override fun isFullscreen() = true
 
-    override fun obtainModelFromArguments()
-    {
-        //mode = arguments!!.getInt(AddEditFragment.MODE, AddEditFragment.MODE_ADD)
-    }
+    override fun obtainModelFromArguments() {}
 
     override fun createViewFromModel()
     {
@@ -161,6 +160,7 @@ class AddEditBubbleContent(context: Context,
     {
         addTagBtn.setOnClickListener {
             addTag()
+            addEditDetailsScrollView.scrollToBottom()
         }
     }
 
@@ -192,6 +192,8 @@ class AddEditBubbleContent(context: Context,
             clipboardHelper.cutFrom(addEditDescriptionEt)
         }
     }
+
+    override fun createEditText() = newTagEt.setOnClickListener { addEditDetailsScrollView.scrollToBottom() }
 
     override fun mapModelToView(model: Link?)
     {

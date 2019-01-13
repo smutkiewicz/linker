@@ -70,11 +70,13 @@ class MainActivity : AppCompatActivity(),
         supportActionBar?.setDisplayShowTitleEnabled(false)
         PrefsHelper.setLatestView(this, VIEW_APP)
 
+        autheticateUser()
+
         setUpBottomNavigation()
         setUpViewPager()
         setUpDrawer()
 
-        authenticateUserAndFetchAccountSettings()
+        fetchAccountSettings()
 
         when
         {
@@ -303,12 +305,22 @@ class MainActivity : AppCompatActivity(),
 
     override fun onUpdateView() = viewPagerAdapter.notifyDataSetChanged()
 
-    private fun authenticateUserAndFetchAccountSettings()
+    private fun autheticateUser()
     {
         auth = FirebaseAuth.getInstance()
+        currentUser = auth.currentUser
+
+        if (currentUser == null)
+        {
+            IntentActionHelper.startLoginView(this)
+            finish()
+        }
+    }
+
+    private fun fetchAccountSettings()
+    {
         val headerView = navView.getHeaderView(0)
 
-        currentUser = auth.currentUser
         currentUser?.let {
             headerView.usernameTv.text = currentUser!!.displayName
             headerView.userEmailTv.text = currentUser!!.email

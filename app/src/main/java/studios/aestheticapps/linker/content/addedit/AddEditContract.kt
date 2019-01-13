@@ -18,6 +18,7 @@ interface AddEditTaskContract
         fun createViewFromModel()
         fun createTagRecyclerView()
         fun createButtons()
+        fun createEditText()
         fun addTag()
         fun buildItemFromView(): Link
         fun buildSampleModelFromClipboardContent()

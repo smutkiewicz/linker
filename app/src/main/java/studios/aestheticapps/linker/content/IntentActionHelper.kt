@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
+import studios.aestheticapps.linker.LoginActivity
 import studios.aestheticapps.linker.SettingsActivity
 import studios.aestheticapps.linker.content.addedit.EditActivity
 import studios.aestheticapps.linker.content.categories.CategoriesChangedCallback
@@ -68,5 +69,11 @@ object IntentActionHelper
     {
         val preferencesIntent = Intent(context, SettingsActivity::class.java)
         context.startActivity(preferencesIntent)
+    }
+
+    fun startLoginView(context: Context)
+    {
+        val loginIntent = Intent(context, LoginActivity::class.java)
+        context.startActivity(loginIntent)
     }
 }
