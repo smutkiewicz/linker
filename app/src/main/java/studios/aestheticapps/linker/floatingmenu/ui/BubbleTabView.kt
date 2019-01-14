@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.support.annotation.ColorInt
 import android.util.TypedValue
+import android.view.KeyEvent
 import android.view.View
 
 /**
@@ -35,6 +36,11 @@ class BubbleTabView(private val myContext: Context,
         iconInsetRight = iconInsetBottom
         iconInsetTop = iconInsetRight
         iconInsetLeft = iconInsetTop
+    }
+
+    override fun dispatchKeyEventPreIme(keyEvent: KeyEvent?): Boolean
+    {
+        return super.dispatchKeyEvent(keyEvent)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int)

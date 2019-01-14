@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -21,6 +22,7 @@ import studios.aestheticapps.linker.content.addedit.AddEditTaskContract
 import studios.aestheticapps.linker.content.categories.CategoriesChangedCallback
 import studios.aestheticapps.linker.extensions.disableChildren
 import studios.aestheticapps.linker.extensions.enableChildren
+import studios.aestheticapps.linker.extensions.hideSoftInput
 import studios.aestheticapps.linker.extensions.scrollToBottom
 import studios.aestheticapps.linker.floatingmenu.ui.BubbleCategoriesDialog
 import studios.aestheticapps.linker.model.Link
@@ -101,6 +103,16 @@ class AddEditBubbleContent(context: Context,
     }
 
     override fun isFullscreen() = true
+
+    override fun dispatchKeyEventPreIme(event: KeyEvent?): Boolean
+    {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            return !this.hideSoftInput(context)
+        }
+
+        return super.dispatchKeyEventPreIme(event)
+    }
 
     override fun obtainModelFromArguments() {}
 

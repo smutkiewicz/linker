@@ -47,16 +47,15 @@ class BubbleDialog(myContext: Context,
         destroy()
     }
 
-    override fun dispatchKeyEvent(keyEvent: KeyEvent?): Boolean
+    override fun dispatchKeyEventPreIme(keyEvent: KeyEvent?): Boolean
     {
-        super.dispatchKeyEvent(keyEvent)
-
-        return if (keyEvent?.action == KeyEvent.ACTION_UP && keyEvent.keyCode == KeyEvent.KEYCODE_BACK)
+        if (keyEvent?.action == KeyEvent.ACTION_UP || keyEvent?.keyCode == KeyEvent.KEYCODE_BACK)
         {
             destroy()
-            true
+            return true
         }
-        else false
+
+        return super.dispatchKeyEventPreIme(keyEvent)
     }
 
     fun destroy()
