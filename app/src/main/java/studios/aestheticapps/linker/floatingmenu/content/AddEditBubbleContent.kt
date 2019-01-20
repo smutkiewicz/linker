@@ -162,7 +162,7 @@ class AddEditBubbleContent(context: Context,
         tagRecyclerView.apply {
             adapter = tagAdapter
             layoutManager = StaggeredGridLayoutManager(
-                resources.getInteger(R.integer.tags_column_count),
+                resources.getInteger(R.integer.tags_add_edit_column_count),
                 StaggeredGridLayoutManager.VERTICAL
             )
         }

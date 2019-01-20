@@ -20,7 +20,6 @@ class SplashActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
 
         val auth = FirebaseAuth.getInstance()
-
         when(auth.currentUser)
         {
             null -> launchLoginActivity()

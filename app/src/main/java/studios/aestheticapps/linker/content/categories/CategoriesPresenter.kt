@@ -19,7 +19,14 @@ class CategoriesPresenter(val view: CategoriesContract.View) : CategoriesContrac
         categoriesAdapter = CategoriesAdapter(application)
     }
 
-    override fun getAll() = LinkedList(categoriesAdapter.obtainAllCategories())
+    override fun getAll(): LinkedList<String>
+    {
+        // Undefined is a special Category, we don't pass it to the View.
+        val list = LinkedList(categoriesAdapter.obtainAllCategories())
+        list.remove("Undefined")
+
+        return list
+    }
 
     // Add item to db
     override fun addItem(categoryName: String) = categoriesAdapter.insertCategory(categoryName)
