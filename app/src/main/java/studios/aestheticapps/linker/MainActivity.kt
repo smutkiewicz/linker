@@ -65,6 +65,9 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+
+        showWelcomeScreenIfNeeded()
+
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -304,6 +307,16 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onUpdateView() = viewPagerAdapter.notifyDataSetChanged()
+
+    private fun showWelcomeScreenIfNeeded()
+    {
+        if (PrefsHelper.obtainFirstRun(this))
+        {
+            // TODO disabled only for presentation purposes
+            /*IntentActionHelper.startWelcomeView(this)
+            finish()*/
+        }
+    }
 
     private fun autheticateUser()
     {

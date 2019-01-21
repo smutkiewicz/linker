@@ -6,7 +6,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import studios.aestheticapps.linker.LoginActivity
+import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.SettingsActivity
+import studios.aestheticapps.linker.WelcomeActivity
 import studios.aestheticapps.linker.content.addedit.EditActivity
 import studios.aestheticapps.linker.content.categories.CategoriesChangedCallback
 import studios.aestheticapps.linker.content.categories.CategoriesDialogFragment
@@ -65,15 +67,17 @@ object IntentActionHelper
     fun startCategoriesDialogAction(manager: FragmentManager, callback: CategoriesChangedCallback)
         = CategoriesDialogFragment.newInstance(callback).show(manager, "Categories")
 
-    fun startSettingsAction(context: Context)
-    {
-        val preferencesIntent = Intent(context, SettingsActivity::class.java)
-        context.startActivity(preferencesIntent)
-    }
+    fun startSettingsAction(context: Context) = startActivityFrom(context, SettingsActivity::class.java)
 
-    fun startLoginView(context: Context)
+    fun startLoginView(context: Context) = startActivityFrom(context, LoginActivity::class.java)
+
+    fun startWelcomeView(context: Context) = startActivityFrom(context, WelcomeActivity::class.java)
+
+    fun startMainView(context: Context) = startActivityFrom(context, MainActivity::class.java)
+
+    private fun startActivityFrom(context: Context, clazz: Class<*>)
     {
-        val loginIntent = Intent(context, LoginActivity::class.java)
-        context.startActivity(loginIntent)
+        val intent = Intent(context, clazz)
+        context.startActivity(intent)
     }
 }

@@ -1,0 +1,195 @@
+package studios.aestheticapps.linker
+
+import android.content.Context
+import android.content.pm.ActivityInfo
+import android.graphics.Color
+import android.os.Build
+import android.os.Bundle
+import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
+import android.text.Html
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import studios.aestheticapps.linker.content.IntentActionHelper
+import studios.aestheticapps.linker.utils.PrefsHelper
+
+/**
+ * Class thanks to tutorial on AndroidHive
+ * https://www.androidhive.info/2016/05/android-build-intro-slider-app/
+ */
+class WelcomeActivity : AppCompatActivity()
+{
+    private lateinit var dots: Array<TextView?>
+
+    private lateinit var viewPager: ViewPager
+    private lateinit var myViewPagerAdapter: MyViewPagerAdapter
+    private lateinit var dotsLayout: LinearLayout
+    private lateinit var layouts: IntArray
+    private lateinit var btnSkip: Button
+    private lateinit var btnNext: Button
+
+    // viewpager change listener
+    private var viewPagerPageChangeListener: ViewPager.OnPageChangeListener = object : ViewPager.OnPageChangeListener
+    {
+        override fun onPageSelected(position: Int)
+        {
+            addBottomDots(position)
+
+            // changing the next button text 'NEXT' / 'GOT IT'
+            if (position == layouts.size - 1)
+            {
+                btnNext.text = getString(R.string.start)
+                btnSkip.visibility = View.GONE
+            }
+            else
+            {
+                btnNext.text = getString(R.string.next)
+                btnSkip.visibility = View.VISIBLE
+            }
+        }
+
+        override fun onPageScrolled(arg0: Int, arg1: Float, arg2: Int) {}
+
+        override fun onPageScrollStateChanged(arg0: Int) {}
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        // Making notification bar transparent
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        }
+
+        setContentView(R.layout.activity_welcome)
+
+        viewPager = findViewById(R.id.viewPager)
+        dotsLayout = findViewById(R.id.layoutDots)
+        btnSkip = findViewById(R.id.btnSkip)
+        btnNext = findViewById(R.id.btnNext)
+
+        // layouts of all welcome sliders
+        // add few more layouts if you want
+        layouts = getLayoutsArray()
+
+        // adding bottom dots
+        addBottomDots(0)
+
+        // making notification bar transparent
+        changeStatusBarColor()
+
+        myViewPagerAdapter = MyViewPagerAdapter()
+        viewPager.adapter = myViewPagerAdapter
+        viewPager.addOnPageChangeListener(viewPagerPageChangeListener)
+
+        btnSkip.setOnClickListener { launchMainActivity() }
+
+        btnNext.setOnClickListener {
+            // checking for last page
+            // if last page home screen will be launched
+            val current = getItem(+1)
+            if (current < layouts.size)
+            {
+                // move to next screen
+                viewPager.currentItem = current
+            }
+            else
+            {
+                launchMainActivity()
+            }
+        }
+    }
+
+    private fun addBottomDots(currentPage: Int)
+    {
+        dots = arrayOfNulls(layouts.size)
+
+        val colorsActive = resources.getIntArray(R.array.array_dot_active)
+        val colorsInactive = resources.getIntArray(R.array.array_dot_inactive)
+
+        dotsLayout.removeAllViews()
+        for (i in 0 until layouts.size)
+        {
+            dots[i] = TextView(this)
+            dots[i]!!.apply {
+                text = Html.fromHtml("&#8226;")
+                textSize = 35.toFloat()
+                setTextColor(colorsInactive[currentPage])
+            }
+
+            dotsLayout.addView(dots[i])
+        }
+
+        if (dots.isNotEmpty()) dots[currentPage]!!.setTextColor(colorsActive[currentPage])
+    }
+
+    private fun getItem(i: Int) = viewPager.currentItem + i
+
+    private fun launchMainActivity()
+    {
+        PrefsHelper.setFirstTimeRun(this)
+        IntentActionHelper.startMainView(this@WelcomeActivity)
+        finish()
+    }
+
+    /**
+     * Making notification bar transparent
+     */
+    private fun changeStatusBarColor()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            val window = window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = Color.TRANSPARENT
+        }
+    }
+
+    private fun getLayoutsArray() = intArrayOf(
+        R.layout.welcome_slide1,
+        R.layout.welcome_slide2,
+        R.layout.welcome_slide3,
+        R.layout.welcome_slide4,
+        R.layout.welcome_slide5,
+        R.layout.welcome_slide6,
+        R.layout.welcome_slide7
+    )
+
+    /**
+     * View pager adapter
+     */
+    inner class MyViewPagerAdapter : PagerAdapter()
+    {
+        private var layoutInflater: LayoutInflater? = null
+
+        override fun instantiateItem(container: ViewGroup, position: Int): Any
+        {
+            layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+            val view = layoutInflater!!.inflate(layouts[position], container, false)
+            container.addView(view)
+
+            return view
+        }
+
+        override fun getCount() = layouts.size
+
+        override fun isViewFromObject(view: View, obj: Any) = (view === obj)
+
+        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any)
+        {
+            val view = `object` as View
+            container.removeView(view)
+        }
+    }
+}

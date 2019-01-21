@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_login.*
+import studios.aestheticapps.linker.content.IntentActionHelper
+import studios.aestheticapps.linker.utils.PrefsHelper
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener
 {
@@ -146,8 +148,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener
 
     private fun launchMainActivity()
     {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+        // launch Welcome Screen for new users
+        if (PrefsHelper.obtainFirstRun(this))
+            IntentActionHelper.startWelcomeView(this@LoginActivity)
+        else
+            IntentActionHelper.startMainView(this@LoginActivity)
+
         finish()
     }
 

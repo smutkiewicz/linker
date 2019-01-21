@@ -125,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:lines="2"
-                    android:inputType="text|textAutoCorrect|textAutoComplete|textMultiLine|textImeMultiLine"
+                    android:inputType="text|textMultiLine|textImeMultiLine"
                     android:hint="@string/add_edit_my_description"
                     android:singleLine="false"
                     android:layout_marginTop="8dp"

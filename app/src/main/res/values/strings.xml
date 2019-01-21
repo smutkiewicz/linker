@@ -100,5 +100,32 @@
     <string name="swipe_to_remove_category">Swipe to remove Category…</string>
     <string name="categories_nonunique_name_error">Category already exists!</string>
 
+    <!--Welcome Screen-->
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <!--slider-->
+    <string name="slide_1_title">Welcome to Linker!</string>
+    <string name="slide_1_desc">Thank you for using our app! Let\'s take a short tour on what you can do with us now!</string>
+
+    <string name="slide_2_title">Organize your places on the Internet</string>
+    <string name="slide_2_desc">So many ways of managing your important stuff.</string>
+
+    <string name="slide_3_title">Two types of UI – easy access</string>
+    <string name="slide_3_desc">Standard or Floating Bubble.</string>
+
+    <string name="slide_4_title">Automatic parsing and categorizing URLs</string>
+    <string name="slide_4_desc">From anywhere you want.</string>
+
+    <string name="slide_5_title">App learns how to categorize your links</string>
+    <string name="slide_5_desc">Quick and convenient way to keep everything in its place.</string>
+
+    <string name="slide_6_title">Easy tag system</string>
+    <string name="slide_6_desc">Click on tag from TagCloud or any item to search library.</string>
+
+    <string name="slide_7_title">Start your experience with Linker!</string>
+    <string name="slide_7_desc">Your experience begins now!</string>
+
     <!-- New stuff, for refactor -->
 </resources>
