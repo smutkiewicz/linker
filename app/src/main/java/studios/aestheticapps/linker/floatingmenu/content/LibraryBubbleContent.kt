@@ -157,6 +157,7 @@ class LibraryBubbleContent(context: Context,
 
         val columnNameForView = SortByAdapter.columnNameToColumnNameForView(context!!, orderByColumn)
         sortByTv.text = context.getString(R.string.sort_by_column, columnNameForView)
+        searchBox.queryHint = context.getString(R.string.sort_by_column, columnNameForView)
     }
 
     override fun hideKeyboardFrom(view: View)
@@ -233,6 +234,7 @@ class LibraryBubbleContent(context: Context,
         PrefsHelper.setOrderByColumn(context!!, column)
 
         sortByTv.text = context.getString(R.string.sort_by_column, columnNameForView)
+        searchBox.queryHint = context.getString(R.string.sort_by_column, columnNameForView)
 
         // reload content
         populateViewAdaptersWithContent()

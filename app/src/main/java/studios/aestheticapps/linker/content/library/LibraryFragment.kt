@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.content_library.*
+import kotlinx.android.synthetic.main.content_library.view.*
 import studios.aestheticapps.linker.MainActivity
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.adapters.LinkAdapter
@@ -158,6 +159,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
 
         val columnNameForView = SortByAdapter.columnNameToColumnNameForView(context!!, orderByColumn)
         sortByTv.text = getString(R.string.sort_by_column, columnNameForView)
+        searchBox.queryHint = getString(R.string.sort_by_column, columnNameForView)
     }
 
     override fun hideKeyboardFrom(view: View)
@@ -221,6 +223,7 @@ class LibraryFragment : Fragment(), LibraryContract.View, AdapterView.OnItemSele
         PrefsHelper.setOrderByColumn(context!!, column)
 
         sortByTv.text = getString(R.string.sort_by_column, columnNameForView)
+        searchBox.queryHint = getString(R.string.sort_by_column, columnNameForView)
 
         // reload content
         populateViewAdaptersWithContent()
