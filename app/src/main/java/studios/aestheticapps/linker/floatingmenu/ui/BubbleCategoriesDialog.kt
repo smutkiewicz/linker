@@ -103,14 +103,15 @@ class BubbleCategoriesDialog(myContext: Context, application: Application) : Vie
         newCategoryBtn.setOnClickListener {
             val categoryName = newCategoryEditText.text.toString()
 
-            if (presenter.addItem(categoryName))
+            when
             {
-                reloadItems()
-                newCategoryEditText.text.clear()
-            }
-            else
-            {
-                newCategoryEditText.error = resources.getString(R.string.categories_nonunique_name_error)
+                categoryName.isBlank() -> newCategoryEditText.error = resources.getString(R.string.categories_blank_name_error)
+                presenter.addItem(categoryName) ->
+                {
+                    reloadItems()
+                    newCategoryEditText.text.clear()
+                }
+                else -> newCategoryEditText.error = resources.getString(R.string.categories_nonunique_name_error)
             }
         }
 

@@ -26,6 +26,7 @@
             android:background="@android:color/white" />
 
     <Button
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:id="@+id/btnNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,6 +40,7 @@
             android:textColor="@android:color/white" />
 
     <Button
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:id="@+id/btnSkip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

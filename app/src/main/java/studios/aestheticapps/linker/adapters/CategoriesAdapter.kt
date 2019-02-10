@@ -46,7 +46,10 @@ class CategoriesAdapter(private val application: Application)
     {
         // Check if categoryName is unique.
         val allCategories = obtainAllCategories()
-        if (allCategories.contains(categoryName)) return false
+        var contains = false
+
+        allCategories.forEach { c -> if (categoryName.equals(c, ignoreCase = true)) contains = true }
+        if (contains) return false
 
         // New empty Category
         repository.insert(buildUnused(categoryName))
