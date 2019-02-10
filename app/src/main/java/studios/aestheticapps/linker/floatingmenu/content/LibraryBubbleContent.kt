@@ -123,7 +123,7 @@ class LibraryBubbleContent(context: Context,
                     buildExitDialogAndConfirmDelete(holder.model, viewHolder.adapterPosition)
                 }
 
-                override fun onMove(rv: RecyclerView?, h: RecyclerView.ViewHolder?, t: RecyclerView.ViewHolder?) = false
+                override fun onMove(p0: RecyclerView, p1: RecyclerView.ViewHolder, p2: RecyclerView.ViewHolder): Boolean = false
             })
 
         helper.attachToRecyclerView(linksRecyclerView)

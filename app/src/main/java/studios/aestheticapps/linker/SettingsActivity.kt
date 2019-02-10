@@ -5,12 +5,10 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.Preference
 import android.preference.PreferenceFragment
-import android.preference.PreferenceManager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.Html
-
-
+import studios.aestheticapps.linker.utils.PrefsHelper
 
 class SettingsActivity : AppCompatActivity()
 {
@@ -39,16 +37,27 @@ class SettingsActivity : AppCompatActivity()
         {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.preferences)
-            sp = PreferenceManager.getDefaultSharedPreferences(activity)
+            sp = PrefsHelper.obtainSharedPrefs(activity)
 
+            setShortcutsPreferenceListener()
             setInfoPreferenceListener()
+        }
+
+        private fun setShortcutsPreferenceListener()
+        {
+            val pref = preferenceManager.findPreference(SHORTCUTS)
+
+            pref!!.setOnPreferenceChangeListener { _, newValue ->
+                PrefsHelper.setShortcuts(activity, newValue as Boolean)
+                true
+            }
         }
 
         @SuppressLint("StringFormatMatches")
         private fun setInfoPreferenceListener()
         {
             val info = preferenceManager.findPreference(INFO)
-            info.summary = getString(R.string.info_summary, BuildConfig.VERSION_NAME)
+            info!!.summary = getString(R.string.info_summary, BuildConfig.VERSION_NAME)
 
             info.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 onInfoPreferenceClicked()
@@ -73,6 +82,7 @@ class SettingsActivity : AppCompatActivity()
 
         private companion object
         {
+            const val SHORTCUTS = "pref_paste_cut_shortcuts"
             const val INFO = "pref_info"
         }
     }

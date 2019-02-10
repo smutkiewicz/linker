@@ -8,14 +8,14 @@ apply plugin: 'kotlin-kapt'
 
 android {
 
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "studios.aestheticapps.linker"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
-        versionName "0.7"
+        versionName "0.71"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -42,7 +42,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     /**Kotlin**/
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinGradlePlugin"
 
     /**Android Support Libraries**/
     implementation(

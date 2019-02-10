@@ -23,6 +23,6 @@ class BubbleMenuFactory
 
     private companion object
     {
-        const val MENU_ID = "linker"
+        const val MENU_ID = "linker2"
     }
 }

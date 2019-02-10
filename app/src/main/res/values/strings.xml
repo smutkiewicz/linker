@@ -126,6 +126,8 @@
 
     <string name="slide_7_title">Start your experience with Linker!</string>
     <string name="slide_7_desc">Your experience begins now!</string>
+    <string name="paste_cut_shortcuts_title">Quick Shortcuts</string>
+    <string name="paste_cut_shortcuts_summary">Show Cut/Paste buttons in Add/Edit Link Screen</string>
 
     <!-- New stuff, for refactor -->
 </resources>

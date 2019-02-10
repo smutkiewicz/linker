@@ -10,6 +10,7 @@ object PrefsHelper
     private const val PREF_LATEST_URL = "latest_url"
     private const val PREF_LATEST_VIEW = "latest_view"
     private const val PREF_FIRST_RUN = "first_run"
+    private const val PREF_SHORTCUTS = "pref_paste_cut_shortcuts"
 
     const val VIEW_BUBBLE = "bubble"
     const val VIEW_APP = "app"
@@ -26,6 +27,10 @@ object PrefsHelper
         .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         .getString(PREF_LATEST_VIEW, VIEW_APP)
 
+    fun obtainShortcuts(context: Context) = context
+        .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        .getBoolean(PREF_SHORTCUTS, true)
+
     fun obtainFirstRun(context: Context): Boolean
     {
         val firstRun = context
@@ -37,11 +42,15 @@ object PrefsHelper
         return true
     }
 
+    fun obtainSharedPrefs(context: Context) = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+
     fun setOrderByColumn(context: Context, column: String) = putStringValue(context, PREF_ORDER_BY, column)
 
     fun setLatestParsedUrl(context: Context, url: String) = putStringValue(context, PREF_LATEST_URL, url)
 
     fun setLatestView(context: Context, viewType: String) = putStringValue(context, PREF_LATEST_VIEW, viewType)
+
+    fun setShortcuts(context: Context, isEnabled: Boolean) = putBooleanValue(context, PREF_SHORTCUTS, isEnabled)
 
     fun setFirstTimeRun(context: Context) = putBooleanValue(context, PREF_FIRST_RUN, false)
 

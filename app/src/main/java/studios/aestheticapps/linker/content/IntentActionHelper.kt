@@ -2,6 +2,7 @@ package studios.aestheticapps.linker.content
 
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
@@ -59,6 +60,7 @@ object IntentActionHelper
     {
         val intent = Intent(context, EditActivity::class.java).apply {
             putExtra(PARCEL_LINK, model)
+            addFlags(FLAG_ACTIVITY_NEW_TASK)
         }
         
         context.startActivity(intent)

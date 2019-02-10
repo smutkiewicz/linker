@@ -217,24 +217,23 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
 
     override fun createButtons()
     {
-        addCategoryIb.setOnClickListener {
-            startCategoriesDialogAction()
-        }
+        addCategoryIb.setOnClickListener { startCategoriesDialogAction() }
 
-        pasteUrlIb.setOnClickListener {
-            clipboardHelper.pasteTo(addEditUrlEt)
-        }
+        if (PrefsHelper.obtainShortcuts(context!!))
+        {
+            listOf(pasteUrlIb, pasteDescrIb, cutUrlIb, cutDescrIb)
+                .forEach { ib -> ib.visibility = VISIBLE }
 
-        pasteDescrIb.setOnClickListener {
-            clipboardHelper.pasteTo(addEditDescriptionEt)
-        }
+            pasteUrlIb.setOnClickListener { clipboardHelper.pasteTo(addEditUrlEt) }
+            pasteDescrIb.setOnClickListener { clipboardHelper.pasteTo(addEditDescriptionEt) }
 
-        cutUrlIb.setOnClickListener {
-            clipboardHelper.cutFrom(addEditUrlEt)
+            cutUrlIb.setOnClickListener { clipboardHelper.cutFrom(addEditUrlEt) }
+            cutDescrIb.setOnClickListener { clipboardHelper.cutFrom(addEditDescriptionEt) }
         }
-
-        cutDescrIb.setOnClickListener {
-            clipboardHelper.cutFrom(addEditDescriptionEt)
+        else
+        {
+            listOf(pasteUrlIb, pasteDescrIb, cutUrlIb, cutDescrIb)
+                .forEach { ib -> ib.visibility = GONE }
         }
     }
 
@@ -288,9 +287,9 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
     {
         callback.returnToMainView()
 
-        addEditLinkTitleEt.text.clear()
-        addEditUrlEt.text.clear()
-        addEditDescriptionEt.text.clear()
+        addEditLinkTitleEt.text?.clear()
+        addEditUrlEt.text?.clear()
+        addEditDescriptionEt.text?.clear()
         tagAdapter.elements.clear()
         categoriesSpinner.setSelection(0)
         model = null
@@ -394,7 +393,7 @@ class AddEditFragment : Fragment(), AddEditTaskContract.View,
         var isValid = true
 
         // Check fields validity
-        if (addEditLinkTitleEt.text.isBlank())
+        if (addEditLinkTitleEt.text!!.isBlank())
         {
             addEditLinkTitleEt.error = getString(R.string.title_error)
             isValid = false

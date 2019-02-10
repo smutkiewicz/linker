@@ -98,25 +98,6 @@ class BubbleMenu(private val context: Context,
         return view
     }
 
-    /*private fun insertTab(position: Int)
-    {
-        val id = Integer.toString(sections.size)
-        sections.add(sections.size, HoverMenu.Section(
-            HoverMenu.SectionId(id),
-            createTabView(),
-            HoverMenuScreen(mContext, "Screen $id")
-        ))
-        notifyMenuChanged()
-    }
-
-    private fun createTabView(): View
-    {
-        val imageView = ImageView(mContext)
-        imageView.setImageResource(R.drawable.tab_background)
-        imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-        return imageView
-    }*/
-
     companion object
     {
         const val ADD_TAB = "add_tab"
