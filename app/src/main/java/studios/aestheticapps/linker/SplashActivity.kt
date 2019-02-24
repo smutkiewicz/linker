@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import studios.aestheticapps.linker.extensions.checkForDrawOverlaysPermissions
+import studios.aestheticapps.linker.extensions.checkForDrawOverlayPermissions
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleThemeManager
@@ -45,7 +45,7 @@ class SplashActivity : AppCompatActivity()
 
     private fun launchBubbles()
     {
-        if(checkForDrawOverlaysPermissions())
+        if(checkForDrawOverlayPermissions())
         {
             initThemeManager()
             BubbleMenuService.showFloatingMenu(this)

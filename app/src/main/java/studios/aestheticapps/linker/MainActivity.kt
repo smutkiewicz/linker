@@ -35,7 +35,7 @@ import studios.aestheticapps.linker.content.library.LibraryFragment
 import studios.aestheticapps.linker.content.library.LibraryFragment.Companion.TAG_PHRASE
 import studios.aestheticapps.linker.content.main.MainContract
 import studios.aestheticapps.linker.content.main.MainPresenter
-import studios.aestheticapps.linker.extensions.checkForDrawOverlaysPermissions
+import studios.aestheticapps.linker.extensions.checkForDrawOverlayPermissions
 import studios.aestheticapps.linker.extensions.createDrawOverlayPermissionsIntent
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
@@ -204,8 +204,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun setUpDrawer()
     {
-        val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -214,7 +213,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun openBubbles()
     {
-        if(checkForDrawOverlaysPermissions())
+        if(checkForDrawOverlayPermissions())
         {
             initThemeManager()
             BubbleMenuService.showFloatingMenu(this@MainActivity)
@@ -352,7 +351,6 @@ class MainActivity : AppCompatActivity(),
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 

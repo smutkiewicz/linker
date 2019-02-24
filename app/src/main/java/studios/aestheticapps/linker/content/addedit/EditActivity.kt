@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_edit.*
 import studios.aestheticapps.linker.R
 import studios.aestheticapps.linker.content.UpdateViewCallback
 import studios.aestheticapps.linker.content.addedit.AddEditFragment.Companion.MODE_EDIT
-import studios.aestheticapps.linker.extensions.checkForDrawOverlaysPermissions
+import studios.aestheticapps.linker.extensions.checkForDrawOverlayPermissions
 import studios.aestheticapps.linker.extensions.createDrawOverlayPermissionsIntent
 import studios.aestheticapps.linker.floatingmenu.BubbleMenuService
 import studios.aestheticapps.linker.floatingmenu.theme.BubbleTheme
@@ -164,7 +164,7 @@ class EditActivity : AppCompatActivity(), AddEditFragment.AddEditCallback, Updat
 
     private fun openBubbles()
     {
-        if(checkForDrawOverlaysPermissions())
+        if(checkForDrawOverlayPermissions())
         {
             initThemeManager()
             BubbleMenuService.showFloatingMenu(this)

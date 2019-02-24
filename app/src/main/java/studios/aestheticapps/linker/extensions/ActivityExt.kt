@@ -18,7 +18,7 @@ fun Activity.showToast(text: String) = Toast.makeText(this, text, Toast.LENGTH_S
 /**
  * Permission for draw overlays is only needed for API >= 23
  */
-fun Activity.checkForDrawOverlaysPermissions()
+fun Activity.checkForDrawOverlayPermissions()
     = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) Settings.canDrawOverlays(applicationContext) else true
 
 /**

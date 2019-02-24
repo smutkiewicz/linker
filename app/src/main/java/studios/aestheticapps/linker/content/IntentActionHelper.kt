@@ -24,6 +24,7 @@ object IntentActionHelper
     fun startInternetAction(context: Context, model: Link)
     {
         val intent = Intent(Intent.ACTION_VIEW).apply {
+            addFlags(FLAG_ACTIVITY_NEW_TASK)
             data = Uri.parse(model.url)
         }
 
@@ -47,20 +48,20 @@ object IntentActionHelper
         val intent = Intent(android.content.Intent.ACTION_SEND)
         intent.apply {
             type = "text/plain"
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+            addFlags(FLAG_ACTIVITY_NEW_TASK)
 
             putExtra(Intent.EXTRA_SUBJECT, model.title)
             putExtra(Intent.EXTRA_TEXT, model.url)
         }
 
-        context.startActivity(Intent.createChooser(intent, SHARE_INTENT_TITLE))
+        context.startActivity(Intent.createChooser(intent, SHARE_INTENT_TITLE).addFlags(FLAG_ACTIVITY_NEW_TASK))
     }
 
     fun startEditView(context: Context, model: Link)
     {
         val intent = Intent(context, EditActivity::class.java).apply {
-            putExtra(PARCEL_LINK, model)
             addFlags(FLAG_ACTIVITY_NEW_TASK)
+            putExtra(PARCEL_LINK, model)
         }
         
         context.startActivity(intent)
